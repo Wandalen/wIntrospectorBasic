@@ -1,0 +1,34 @@
+
+{
+  "name": "wroutinefundamentals",
+  "version": "0.3.0",
+  "description": "Collection of routines to generate functions, manage execution of such and analyze them.",
+  "author": "Kostiantyn Wandalen <wanalen@willbe.so>",
+  "license": "MIT",
+  "main": "proto/dwtools/abase/l3/RoutineFundamentals.s",
+  "files": [
+    "proto/dwtools/abase/l3",
+    "proto/dwtools/Tools.s",
+    "production"
+  ],
+  "scripts": {
+    "test": "wtest proto",
+    "docgen": "wdocgen proto"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Wandalen/wRoutineFundamentals.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Wandalen/wRoutineFundamentals/issues"
+  },
+  "dependencies": {
+    "wTools": ""
+  },
+  "devDependencies": {
+    "wTesting": ""
+  },
+  "keywords": [
+    "wTools"
+  ]
+}
