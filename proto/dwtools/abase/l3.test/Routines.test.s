@@ -8,6 +8,7 @@ if( typeof module !== 'undefined' )
   let _ = require( '../../Tools.s' );
 
   _.include( 'wTesting' );
+  _.include( 'wConsequence' );
 
   require( '../l3/RoutineFundamentals.s' );
 
@@ -256,6 +257,120 @@ function routinesCall( test )
 
 }
 
+//
+
+function routineMake( test )
+{
+  let self = this;
+
+  test.case = 'trivial';
+  var src = 'return 1 + 1';
+  var got = _.routineMake( src );
+  test.identical( got(), 2 );
+
+  test.case = 'with name';
+  var src = 'return 1 + 1';
+  var got = _.routineMake({ code : src, name : 'trivial' });
+  test.identical( got.name, 'trivial')
+  test.identical( got(), 2 );
+
+  test.case = 'with return';
+  var src = '1 + 1';
+  var got = _.routineMake({ code : src, prependingReturn : 1 });
+  test.identical( got(), 2 );
+
+  test.case = 'with externals';
+  var src = 'return a + b';
+  var got = _.routineMake({ code : src, externals : { a : 1, b : 1 } });
+  test.identical( got(), 2 );
+
+  test.case = 'debugger, strict, filePath in code';
+  var src = 'return 1 + 1';
+  var got = _.routineMake
+  ({
+    code : src,
+    filePath : '/source.js',
+    usingStrict : 1,
+    debug : 1
+  });
+  var source = got.toString();
+  test.is( _.strHas( source, '// /source.js' ) );
+  test.is( _.strHas( source, 'use strict' ) );
+  test.is( _.strHas( source, 'debugger' ) );
+  test.identical( got(), 2 );
+}
+
+//
+
+function exec( test )
+{
+  var self = this;
+
+  test.case = 'trivial';
+  var src = 'return 1 + 1';
+  var got = _.exec( src );
+  test.identical( got, 2 );
+
+  test.case = 'with context';
+  var src = 'return this.a + this.b';
+  var got = _.exec({ code : src, context : { a : 1, b : 1 } });
+  test.identical( got, 2 );
+
+  test.case = 'with return';
+  var src = '1 + 1';
+  var got = _.exec({ code : src, prependingReturn : 1 });
+  test.identical( got, 2 );
+
+  test.case = 'with externals';
+  var src = 'return a + b';
+  var got = _.exec({ code : src, externals : { a : 1, b : 1 } });
+  test.identical( got, 2 );
+
+  test.case = 'with externals + context';
+  var src = 'return this.a + a + this.b + b';
+  var got = _.exec
+  ({
+    code : src,
+    externals : { a : 1, b : 1 },
+    context : { a : 1, b : 1 }
+  });
+  test.identical( got, 4 );
+}
+
+//
+
+function execStages( test )
+{
+  let self = this;
+
+  test.case = 'trivial';
+
+  var src1Result;
+  var src2Result;
+
+  function src1( o )
+  {
+    src1Result = o.a;
+    return o.a;
+  }
+
+  function src2( o )
+  {
+    src2Result = o.b;
+    return o.b;
+  }
+
+  var o = { a : 1, b : 2 };
+  var got = _.execStages( [ src1, src2 ], { args : [ o ] });
+
+  return got.thenKeep( ( got ) =>
+  {
+    test.identical( src1Result, 1 );
+    test.identical( src2Result, 2 );
+    return got;
+  })
+}
+
 // --
 // declare
 // --
@@ -275,7 +390,12 @@ var Self =
     routineCall,
     routineTolerantCall,
 
-    routinesCall
+    routinesCall,
+
+    routineMake,
+    exec,
+
+    execStages
   },
 
 }
