@@ -1,7 +1,0 @@
-
-let _ = require( 'wTools' );
-
-/**/
-
-...
-
