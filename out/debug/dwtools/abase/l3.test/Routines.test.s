@@ -206,9 +206,7 @@ function routinesCall( test )
     ];
 
   test.case = 'call single function without arguments and context';
-  debugger;
   var got = _.routinesCall( function1 );
-  debugger;
   test.identical( got, expected1 );
 
   test.case = 'call single function with context and arguments';
