@@ -1042,8 +1042,8 @@ function _routineCollectAssets( dst,routine,visited )
     debugger;
     dst[ a ] = _.mapsFlatten
     ({
-      maps : [ dst[ a ],routine[ a ] ],
-      assertingUniqueness : 1,
+      src : [ dst[ a ],routine[ a ] ],
+      allowingCollision : 0,
     });
 
   }
@@ -1221,8 +1221,8 @@ function routineParse( o )
     _.assertMapHasNone( o.inline,o.routine.inline );
     o.inline = _.mapsFlatten
     ({
-      maps : [ o.inline,o.routine.inline ],
-      assertingUniqueness : 1,
+      src : [ o.inline,o.routine.inline ],
+      allowingCollision : 0,
     });
 
   }
