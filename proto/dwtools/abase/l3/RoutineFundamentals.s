@@ -62,6 +62,15 @@ function routineDelayed( delay, routine )
 
 //
 
+/**
+ * Calls function( routine ) with custom context( context ) and arguments( args ).
+ * @param {Object} context custom context
+ * @param {Function} routine function that will be called
+ * @param {Array} args arrat of arguments
+ * @function routineCall
+ * @memberof wTools
+ */
+
 function routineCall( context, routine, args )
 {
   let result;
@@ -95,6 +104,17 @@ function routineCall( context, routine, args )
 }
 
 //
+
+/**
+ * Calls function with custom context and options.
+ * Takes only options that are supported by provided routines.
+ *
+ * @param {Object} context custom context
+ * @param {Function} routine function that will be called
+ * @param {Object} options options map
+ * @function routineTolerantCall
+ * @memberof wTools
+ */
 
 function routineTolerantCall( context, routine, options )
 {
@@ -364,6 +384,16 @@ function routinesCallEvery()
 }
 
 //
+
+/**
+ * Calls provided methods with custom context and arguments. Saves results into array.
+ * @param {Array} contexts array of contexts
+ * @param {Function} methods methods that will be called
+ * @param {Array} args arguments array
+ * @returns {Array} Returns results of methods call as array.
+ * @function methodsCall
+ * @memberof wTools
+ */
 
 function methodsCall( contexts, methods, args )
 {
