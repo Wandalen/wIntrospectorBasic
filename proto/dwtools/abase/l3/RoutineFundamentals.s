@@ -7,6 +7,13 @@
   @module Tools/base/RoutineFundamentals
 */
 
+/**
+ * Collection of routines to generate functions.
+  @namespace RoutineFundamentals
+  @memberof module:Tools/base/RoutineFundamentals
+  @augments wTools
+*/
+
 if( typeof module !== 'undefined' )
 {
 
@@ -37,7 +44,7 @@ let _arraySlice = _.longSlice;
  * @throws {Error} If `delay` is not a number
  * @throws {Error} If `routine` is not a function
  * @function routineDelayed
- * @memberof wTools
+ * @memberof module:Tools/base/RoutineFundamentals.RoutineFundamentals
  */
 
 function routineDelayed( delay, routine )
@@ -68,7 +75,7 @@ function routineDelayed( delay, routine )
  * @param {Function} routine function that will be called
  * @param {Array} args arrat of arguments
  * @function routineCall
- * @memberof wTools
+ * @memberof module:Tools/base/RoutineFundamentals.RoutineFundamentals
  */
 
 function routineCall( context, routine, args )
@@ -113,7 +120,7 @@ function routineCall( context, routine, args )
  * @param {Function} routine function that will be called
  * @param {Object} options options map
  * @function routineTolerantCall
- * @memberof wTools
+ * @memberof module:Tools/base/RoutineFundamentals.RoutineFundamentals
  */
 
 function routineTolerantCall( context, routine, options )
@@ -328,11 +335,11 @@ _routinesCall.defaults =
 //
 
 /**
- * Call each routines in array with passed context and arguments.
-    The context and arguments are same for each called functions.
-    Can accept only routines without context and args.
-    Can accept single routine instead array.
- * @example
+* Call each routines in array with passed context and arguments.
+   The context and arguments are same for each called functions.
+   Can accept only routines without context and args.
+   Can accept single routine instead array.
+* @example
     let x = 2, y = 3,
         o { z : 6 };
 
@@ -345,15 +352,15 @@ _routinesCall.defaults =
         return x * y * this.z;
     },
     routines = [ sum, prod ];
-    let res = wTools.routinesCall( o, routines, [ x, y ] );
- // [ 11, 36 ]
- * @param {Object} [context] Context in which calls each function.
- * @param {Function[]} routines Array of called function
- * @param {Array<*>} [args] Arguments that will be passed to each functions.
- * @returns {Array<*>} Array with results of functions invocation.
- * @function routinesCall
- * @memberof wTools
- */
+    let res = wTools.routinesCall( o, routines, [ x, y ] ); // [ 11, 36 ]
+*
+* @param {Object} [context] Context in which calls each function.
+* @param {Function} routines Array of called function
+* @param {Array} [args] Arguments that will be passed to each functions.
+* @returns {Array} Array with results of functions invocation.
+* @function routinesCall
+* @memberof module:Tools/base/RoutineFundamentals.RoutineFundamentals
+*/
 
 function routinesCall()
 {
@@ -386,13 +393,16 @@ function routinesCallEvery()
 //
 
 /**
- * Calls provided methods with custom context and arguments. Saves results into array.
+ * @summary Calls provided methods with custom context and arguments.
+ * @description
+ * Each method is called with own context. Arguments are common. Saves result of each call into array.
  * @param {Array} contexts array of contexts
  * @param {Function} methods methods that will be called
- * @param {Array} args arguments array
+ * @param {Array} [args] arguments array
+ * @throws {Error} If context for the method doesn't exist or vise versa.
  * @returns {Array} Returns results of methods call as array.
  * @function methodsCall
- * @memberof wTools
+ * @memberof module:Tools/base/RoutineFundamentals.RoutineFundamentals
  */
 
 function methodsCall( contexts, methods, args )
@@ -501,6 +511,28 @@ function methodsCall( contexts, methods, args )
 
 //
 
+/**
+ * @summary Extracts routine's source code.
+ * @description
+ * Accepts options map or routine as single argument.
+ * @param {Object} o options map
+ * @param {Function} o.routine source function
+ * @param {Boolean} o.wrap=1
+ * @param {Boolean} o.withWrap=1 wraps source code with routine definition
+ * @param {Boolean} o.usingInline=1
+ * @param {Object} o.toJsOptions=null options for {@link module:Tools/base/Stringer.Stringer.toJs} routine
+ *
+ * @example //source code and definition
+ * _.routineSourceGet( _.routineDelayed );
+ *
+ * @example //only source code
+ * _.routineSourceGet({ routine : _.routineDelayed, withWrap : 0 });
+ *
+ * @returns {String} Returns routine's source code as string.
+ * @function routineSourceGet
+ * @memberof module:Tools/base/RoutineFundamentals.RoutineFundamentals
+ */
+
 function routineSourceGet( o )
 {
   if( _.routineIs( o ) )
@@ -562,6 +594,45 @@ routineSourceGet.defaults =
 }
 
 //
+
+/**
+ * @summary Makes routine from source code.
+ * @description
+ * Accepts options map or routine's source code as single argument.
+ * @param {Object} o options map
+ * @param {Boolean} o.debug=0 prepends `debugger` prefix
+ * @param {String} o.code=null source code
+ * @param {String} o.filePath=null path to source file, will be inserted as comment
+ * @param {Boolean} o.prependingReturn=0 prepends `return` statement before source code
+ * @param {Boolean} o.fallingBack=1 tries to make routine without `return` prefix if first attempt with `o.prependingReturn:1` fails.
+ * @param {Boolean} o.usingStrict=0 enables strict mode
+ * @param {Object} o.externals=null map with external properties that are needed for routine
+ * @param {String} o.name=null name of the routine
+ *
+ * @example //source code and definition
+ * let src = 'return 1'
+ * let routine = _.routineMake( src );
+ * routine(); //1
+ *
+ * @example //filePath
+ * let src = 'return 1'
+ * let routine = _.routineMake({ code : src, filePath : '/path/to/source.js' });
+ * routine.toString();
+ *
+ * @example //prependingReturn
+ * let src = '1'
+ * let routine = _.routineMake({ code : src, prependingReturn : 1 });
+ * routine(); //1
+ *
+ * @example //using externals option
+ * let src = 'return a';
+ * let routine = _.routineMake({ code : src, externals : { a : 1 } });
+ * routine();
+ *
+ * @returns {Function} Returns created function.
+ * @function routineSourceGet
+ * @memberof module:Tools/base/RoutineFundamentals.RoutineFundamentals
+ */
 
 function routineMake( o )
 {
@@ -718,6 +789,36 @@ routineMake.defaults =
 
 //
 
+/**
+ * @summary Makes routine from source code and executes it.
+ * @description
+ * Accepts options map or routine's source code as single argument.
+ * @param {Object} o options map
+ * @param {Boolean} o.debug=0 prepends `debugger` prefix
+ * @param {String} o.code=null source code
+ * @param {String} o.filePath=null path to source file, will be inserted as comment
+ * @param {Boolean} o.prependingReturn=0 prepends `return` statement before source code
+ * @param {Boolean} o.fallingBack=1 tries to make routine without `return` prefix if first attempt with `o.prependingReturn:1` fails.
+ * @param {Boolean} o.usingStrict=0 enables strict mode
+ * @param {Object} o.externals=null map with external properties that are needed for routine
+ * @param {String} o.name=null name of the routine
+ * @param {Object} o.context=null executes routine with provided context
+ *
+ * @example
+ * let src = 'return 1'
+ * let r = _.routineExec( src );
+ * console.log( r.result ); //1
+ *
+ * @example //execute with custom context
+ * let src = 'return this.a'
+ * let r = _.routineExec({ code : src, context : { a : 1 } });
+ * console.log( r.result ); //1
+ *
+ * @returns {Object} Returns options map with result of execution in `result` property.
+ * @function routineExec
+ * @memberof module:Tools/base/RoutineFundamentals.RoutineFundamentals
+ */
+
 function routineExec( o )
 {
   let result = Object.create( null );
@@ -765,6 +866,35 @@ var defaults = routineExec.defaults = Object.create( routineMake.defaults );
 defaults.context = null;
 
 //
+
+/**
+ * @summary Short-cut for {@link module:Tools/base/RoutineFundamentals.RoutineFundamentals.routineExec} routine.
+ * Returns result of routine execution instead of options map.
+ * @param {Object} o options map
+ * @param {Boolean} o.debug=0 prepends `debugger` prefix
+ * @param {String} o.code=null source code
+ * @param {String} o.filePath=null path to source file, will be inserted as comment
+ * @param {Boolean} o.prependingReturn=0 prepends `return` statement before source code
+ * @param {Boolean} o.fallingBack=1 tries to make routine without `return` prefix if first attempt with `o.prependingReturn:1` fails.
+ * @param {Boolean} o.usingStrict=0 enables strict mode
+ * @param {Object} o.externals=null map with external properties that are needed for routine
+ * @param {String} o.name=null name of the routine
+ * @param {Object} o.context=null executes routine with provided context
+ *
+ * @example
+ * let src = 'return 1'
+ * let r = _.exec( src );
+ * console.log( r); //1
+ *
+ * @example //execute with custom context
+ * let src = 'return this.a'
+ * let r = _.exec({ code : src, context : { a : 1 } });
+ * console.log( r ); //1
+ *
+ * @returns {} Returns result of routine execution.
+ * @function exec
+ * @memberof module:Tools/base/RoutineFundamentals.RoutineFundamentals
+ */
 
 function exec( o )
 {
@@ -1203,6 +1333,20 @@ routineIsolate.defaults =
 }
 
 //
+
+/**
+ * @summary Gets information about routine( routine ).
+ * Result contains such information:
+ * * routine's name
+ * * arguments
+ * * full source code( including definition )
+ * * routine's body( code inside square brackets )
+ * @param {Function} routine source routine
+ *
+ * @returns {Object} Returns map with information about provided routine.
+ * @function routineParse
+ * @memberof module:Tools/base/RoutineFundamentals.RoutineFundamentals
+ */
 
 function routineParse( o )
 {
