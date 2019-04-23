@@ -9,7 +9,7 @@
 
 /**
  * Collection of routines to generate functions.
-  @namespace wTools(module:RoutineFundamentals)
+  @namespace Tools( module::RoutineFundamentals )
   @memberof module:Tools/base/RoutineFundamentals
 */
 
@@ -43,7 +43,7 @@ let _arraySlice = _.longSlice;
  * @throws {Error} If `delay` is not a number
  * @throws {Error} If `routine` is not a function
  * @function routineDelayed
- * @memberof module:Tools/base/RoutineFundamentals.wTools(module:RoutineFundamentals)
+ * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
  */
 
 function routineDelayed( delay, routine )
@@ -74,7 +74,7 @@ function routineDelayed( delay, routine )
  * @param {Function} routine function that will be called
  * @param {Array} args arrat of arguments
  * @function routineCall
- * @memberof module:Tools/base/RoutineFundamentals.wTools(module:RoutineFundamentals)
+ * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
  */
 
 function routineCall( context, routine, args )
@@ -119,7 +119,7 @@ function routineCall( context, routine, args )
  * @param {Function} routine function that will be called
  * @param {Object} options options map
  * @function routineTolerantCall
- * @memberof module:Tools/base/RoutineFundamentals.wTools(module:RoutineFundamentals)
+ * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
  */
 
 function routineTolerantCall( context, routine, options )
@@ -358,7 +358,7 @@ _routinesCall.defaults =
 * @param {Array} [args] Arguments that will be passed to each functions.
 * @returns {Array} Array with results of functions invocation.
 * @function routinesCall
-* @memberof module:Tools/base/RoutineFundamentals.wTools(module:RoutineFundamentals)
+* @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
 */
 
 function routinesCall()
@@ -401,7 +401,7 @@ function routinesCallEvery()
  * @throws {Error} If context for the method doesn't exist or vise versa.
  * @returns {Array} Returns results of methods call as array.
  * @function methodsCall
- * @memberof module:Tools/base/RoutineFundamentals.wTools(module:RoutineFundamentals)
+ * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
  */
 
 function methodsCall( contexts, methods, args )
@@ -529,7 +529,7 @@ function methodsCall( contexts, methods, args )
  *
  * @returns {String} Returns routine's source code as string.
  * @function routineSourceGet
- * @memberof module:Tools/base/RoutineFundamentals.wTools(module:RoutineFundamentals)
+ * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
  */
 
 function routineSourceGet( o )
@@ -630,7 +630,7 @@ routineSourceGet.defaults =
  *
  * @returns {Function} Returns created function.
  * @function routineSourceGet
- * @memberof module:Tools/base/RoutineFundamentals.wTools(module:RoutineFundamentals)
+ * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
  */
 
 function routineMake( o )
@@ -815,7 +815,7 @@ routineMake.defaults =
  *
  * @returns {Object} Returns options map with result of execution in `result` property.
  * @function routineExec
- * @memberof module:Tools/base/RoutineFundamentals.wTools(module:RoutineFundamentals)
+ * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
  */
 
 function routineExec( o )
@@ -892,7 +892,7 @@ defaults.context = null;
  *
  * @returns {} Returns result of routine execution.
  * @function exec
- * @memberof module:Tools/base/RoutineFundamentals.wTools(module:RoutineFundamentals)
+ * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
  */
 
 function exec( o )
@@ -1344,7 +1344,7 @@ routineIsolate.defaults =
  *
  * @returns {Object} Returns map with information about provided routine.
  * @function routineParse
- * @memberof module:Tools/base/RoutineFundamentals.wTools(module:RoutineFundamentals)
+ * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
  */
 
 function routineParse( o )
