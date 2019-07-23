@@ -1135,7 +1135,7 @@ function routineInfo( routine )
 
   let result = _routineInfo
   ({
-    /*ttt*/routine,
+    routine,
     tab : '',
   });
 
@@ -1196,7 +1196,7 @@ function _routineCollectAssets( dst,routine,visited )
     if( !routine[ a ] )
     continue;
 
-    dst[ a ] = dst[ a ] || {};
+    dst[ a ] = dst[ a ] || Object.create( null );
     _.assertMapHasNone( dst[ a ],routine[ a ] );
     debugger;
     dst[ a ] = _.mapsFlatten
@@ -1240,7 +1240,7 @@ function routineIsolate( o )
   if( o.inline || o.routine.inline )
   {
 
-    parsed = _.routineParse
+    parsed = _.routineInline
     ({
       routine : o.routine,
       inline : o.inline,
@@ -1287,7 +1287,7 @@ function routineIsolate( o )
   if( o.external )
   {
 
-    let descriptor = {};
+    let descriptor = Object.create( null );
     _routineIsolate.push( descriptor );
     descriptor.external = o.external;
 
@@ -1333,81 +1333,84 @@ routineIsolate.defaults =
 
 //
 
-/**
- * @summary Gets information about routine( routine ).
- * Result contains such information:
- * * routine's name
- * * arguments
- * * full source code( including definition )
- * * routine's body( code inside square brackets )
- * @param {Function} routine source routine
- *
- * @returns {Object} Returns map with information about provided routine.
- * @function routineParse
- * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
- */
-
-function routineParse( o )
+function routineInline( o )
 {
+
   if( _.routineIs( o ) )
   o = { routine : o };
-  _.assert( o.routine );
+  _.assert( _.routineIs( o.routine ) );
+  _.assert( arguments.length === 1 );
+  _.routineOptions( routineInline, o );
 
-  if( o.routine.debugParse )
-  debugger;
+  // if( _.routineIs( o ) )
+  // o = { routine : o };
+  // _.assert( o.routine );
+  //
+  // if( o.routine.debugParse )
+  // debugger;
 
   let source = o.routine.toString();
-  let result = {};
+  let result = Object.create( null );
   result.source = source;
-
-  //
-
-  function parse()
-  {
-
-    let r = /function\s+(\w*)\s*\(([^\)]*)\)(\s*{[^]*})$/;
-
-    let parsed = r.exec( source );
-
-    result.name = parsed[ 1 ];
-    result.args = _.strSplitNonPreserving
-    ({
-      src : parsed[ 2 ],
-      delimeter : ',',
-      preservingDelimeters : 0,
-    });
-    result.body = parsed[ 3 ];
-
-    result.reproduceSource = function()
-    {
-      return 'function ' + result.name + '( ' + result.args.join( ', ' ) + ' )\n' + result.body;
-    }
-
-    return result;
-  }
 
   //
 
   if( o.routine.inline )
   {
-    o.inline = o.inline || {};
+    o.inline = o.inline || Object.create( null );
     _.assertMapHasNone( o.inline,o.routine.inline );
     o.inline = _.mapsFlatten
     ({
       src : [ o.inline,o.routine.inline ],
       allowingCollision : 0,
     });
-
   }
 
   //
 
   if( !o.inline || !Object.keys( o.inline ).length )
-  return parse();
-
-  //
+  return _.routineParse( o.routine );
 
   let inlined = 0;
+
+  if( !inlines() )
+  return _.routineParse( o.routine );
+
+  if( !inlines() )
+  return _.routineParse( o.routine );
+
+  debugger;
+  while( inlines() );
+  debugger;
+
+  return _.routineParse( o.routine );
+  // return parse();
+
+  // //
+  //
+  // function parse()
+  // {
+  //
+  //   let r = /function\s+(\w*)\s*\(([^\)]*)\)(\s*{[^]*})$/;
+  //
+  //   let parsed = r.exec( source );
+  //
+  //   result.name = parsed[ 1 ];
+  //   result.args = _.strSplitNonPreserving
+  //   ({
+  //     src : parsed[ 2 ],
+  //     delimeter : ',',
+  //     preservingDelimeters : 0,
+  //   });
+  //   result.body = parsed[ 3 ];
+  //
+  //   result.reproduceSource = function()
+  //   {
+  //     return 'function ' + result.name + '( ' + result.args.join( ', ' ) + ' )\n' + result.body;
+  //   }
+  //
+  //   return result;
+  // }
 
   //
 
@@ -1530,7 +1533,7 @@ function routineParse( o )
 /*
     if( _.routineIs( sub ) )
     {
-      sub = _.routineParse( sub );
+      sub = _.routineInline( sub );
     }
     else
     {
@@ -1539,7 +1542,7 @@ function routineParse( o )
     }
 */
 
-    sub = _.routineParse( sub );
+    sub = _.routineInline( sub );
 
     let regexp = new RegExp( 'function\\s+' + ins + '\\s*\\(','gm' );
     sub.source = sub.source.replace( regexp,'function _' + ins + '_(' );
@@ -1576,22 +1579,87 @@ function routineParse( o )
     return r;
   }
 
-  //
-
-  if( !inlines() )
-  return parse();
-
-  if( !inlines() )
-  return parse();
-
-  debugger;
-  while( inlines() );
-  debugger;
-
-  return parse();
 }
 
-// let
+routineInline.defaults =
+{
+  routine : null,
+  inline : null,
+}
+
+//
+
+/**
+ * @summary Gets information about routine( routine ).
+ * Result contains such information:
+ * * routine's name
+ * * arguments
+ * * full source code( including definition )
+ * * routine's body( code inside square brackets )
+ * @param {Function} routine source routine
+ *
+ * @returns {Object} Returns map with information about provided routine.
+ * @function routineParse
+ * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
+ */
+
+function routineParse( o )
+{
+
+  if( _.routineIs( o ) )
+  o = { routine : o };
+  _.assert( _.routineIs( o.routine ) );
+  _.assert( arguments.length === 1 );
+  _.routineOptions( routineParse, o );
+
+  if( o.routine.debugParse )
+  debugger;
+
+  let source = o.routine.toString();
+  let result = Object.create( null );
+  result.source = source;
+
+  return parse();
+
+  /* */
+
+  function parse()
+  {
+
+    let r = /function\s+(\w*)\s*\(([^\)]*)\)(\s*{[^]*})$/;
+    let parsed = r.exec( source );
+
+    result.name = parsed[ 1 ];
+    result.args = _.strSplitNonPreserving
+    ({
+      src : parsed[ 2 ],
+      delimeter : ',',
+      preservingDelimeters : 0,
+      preservingEmpty : 0,
+      stripping : 1,
+      quoting : 0,
+    });
+    result.body = parsed[ 3 ];
+    result.bodyUnwrapped = _.strRemove( result.body, /(?:^\s*{)|(?:}\s*$)/g );
+
+    result.reproduceSource = function()
+    {
+      return 'function ' + result.name + '( ' + result.args.join( ', ' ) + ' )\n' + result.body;
+    }
+
+    return result;
+  }
+
+}
+
+routineParse.defaults =
+{
+  routine : null,
+}
+
+// --
+// declare
+// --
 
 let _routineAssets =
 {
@@ -1599,10 +1667,6 @@ let _routineAssets =
   external : 'external',
   constant : 'constant',
 }
-
-// --
-// declare
-// --
 
 let Extend =
 {
@@ -1642,6 +1706,8 @@ let Extend =
   routineCollectAssets,
   _routineCollectAssets,
   routineIsolate,
+  routineInline,
+
   routineParse,
 
   _routineAssets,
@@ -1655,10 +1721,6 @@ _.mapExtend( Self, Extend );
 // --
 // export
 // --
-
-// if( typeof module !== 'undefined' )
-// if( _global_.WTOOLS_PRIVATE )
-// { /* delete require.cache[ module.id ]; */ }
 
 if( typeof module !== 'undefined' && module !== null )
 module[ 'exports' ] = Self;
