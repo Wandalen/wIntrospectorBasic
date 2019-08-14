@@ -449,66 +449,6 @@ function methodsCall( contexts, methods, args )
 // --
 //
 // --
-//
-// // function jsonParse( o )
-// // {
-// //   let result;
-//
-// //   if( _.strIs( o ) )
-// //   o = { src : o }
-// //   _.routineOptions( jsonParse, o );
-// //   _.assert( arguments.length === 1 );
-//
-// //   debugger; /* xxx: implement via GDF */
-//
-// //   try
-// //   {
-// //     result = JSON.parse( o.src );
-// //   }
-// //   catch( err )
-// //   {
-// //     let src = o.src;
-// //     let position = /at position (\d+)/.exec( err.message );
-// //     if( position )
-// //     position = Number( position[ 1 ] );
-// //     let first = 0;
-// //     if( !isNaN( position ) )
-// //     {
-// //       let nearest = _.strLinesNearest( src, position );
-// //       first = _.strLinesCount( src.substring( 0, nearest.spans[ 0 ] ) );
-// //       src = nearest.splits.join( '' );
-// //     }
-// //     let err2 = _.err( 'Error parsing JSON\n', err, '\n', _.strLinesNumber( src, first ) );
-// //     throw err2;
-// //   }
-//
-// //   return result;
-// // }
-//
-// function jsonParse( o )
-// {
-//   let result;
-//
-//   if( _.strIs( o ) )
-//   o = { src : o }
-//   _.routineOptions( jsonParse, o );
-//   _.assert( arguments.length === 1 );
-//
-//   let selected = _.Gdf.Select({ in : 'string', out : 'structure', ext : 'json' });
-//   _.assert( selected.length === 1 );
-//   let jsonParser = selected[ 0 ];
-//
-//   result = jsonParser.encode({ data : o.src });
-//
-//   return result.data;
-// }
-//
-// jsonParse.defaults =
-// {
-//   src : null,
-// }
-
-//
 
 /**
  * @summary Extracts routine's source code.
@@ -698,8 +638,6 @@ function routineMake( o )
   catch( err )
   {
 
-    // console.error( 'Cant parse the routine :' );
-    // console.error( code );
     err = _.err( 'Cant parse the routine\n', _.strLinesNumber( '\n' + code ), '\n', err );
 
     if( _global.document )
@@ -1683,8 +1621,6 @@ let Extend =
   methodsCall,
 
   //
-
-  // jsonParse,
 
   routineSourceGet,
 

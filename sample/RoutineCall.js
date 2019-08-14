@@ -1,5 +1,5 @@
 
-let _ = require( 'wroutinefundamentals' );
+let _ = require( 'wroutinebasic' );
 
 /* call routine with context and arguments */
 
