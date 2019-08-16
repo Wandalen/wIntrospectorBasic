@@ -20,6 +20,7 @@ if( typeof module !== 'undefined' )
 
 }
 
+let Esprima;
 let Self = _global_.wTools;
 let _global = _global_;
 let _ = _global_.wTools;
@@ -654,6 +655,7 @@ function routineMake( o )
     else
     {
 
+      debugger;
       if( !Esprima && !_global.esprima )
       try
       {
@@ -665,10 +667,10 @@ function routineMake( o )
 
       if( Esprima || _global.esprima )
       {
-        let Esp = Esprima || _global.esprima;
+        let esprima = Esprima || _global.esprima;
         try
         {
-          let parsed = Esp.parse( '(function(){\n' + code + '\n})();' );
+          let parsed = esprima.parse( '(function(){\n' + code + '\n})();' );
         }
         catch( err2 )
         {
