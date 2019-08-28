@@ -4,13 +4,13 @@
 
 /**
  * Collection of routines to generate functions, manage execution of such and analyze them.
-  @module Tools/base/RoutineFundamentals
+  @module Tools/base/RoutineBasic
 */
 
 /**
  * Collection of routines to generate functions.
-  @namespace Tools( module::RoutineFundamentals )
-  @memberof module:Tools/base/RoutineFundamentals
+  @namespace Tools( module::RoutineBasic )
+  @memberof module:Tools/base/RoutineBasic
 */
 
 if( typeof module !== 'undefined' )
@@ -44,7 +44,7 @@ let _arraySlice = _.longSlice;
  * @throws {Error} If `delay` is not a number
  * @throws {Error} If `routine` is not a function
  * @function routineDelayed
- * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
+ * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
  */
 
 function routineDelayed( delay, routine )
@@ -75,7 +75,7 @@ function routineDelayed( delay, routine )
  * @param {Function} routine function that will be called
  * @param {Array} args arrat of arguments
  * @function routineCall
- * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
+ * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
  */
 
 function routineCall( context, routine, args )
@@ -120,7 +120,7 @@ function routineCall( context, routine, args )
  * @param {Function} routine function that will be called
  * @param {Object} options options map
  * @function routineTolerantCall
- * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
+ * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
  */
 
 function routineTolerantCall( context, routine, options )
@@ -359,7 +359,7 @@ _routinesCall.defaults =
 * @param {Array} [args] Arguments that will be passed to each functions.
 * @returns {Array} Array with results of functions invocation.
 * @function routinesCall
-* @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
+* @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
 */
 
 function routinesCall()
@@ -402,7 +402,7 @@ function routinesCallEvery()
  * @throws {Error} If context for the method doesn't exist or vise versa.
  * @returns {Array} Returns results of methods call as array.
  * @function methodsCall
- * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
+ * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
  */
 
 function methodsCall( contexts, methods, args )
@@ -470,7 +470,7 @@ function methodsCall( contexts, methods, args )
  *
  * @returns {String} Returns routine's source code as string.
  * @function routineSourceGet
- * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
+ * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
  */
 
 function routineSourceGet( o )
@@ -571,7 +571,7 @@ routineSourceGet.defaults =
  *
  * @returns {Function} Returns created function.
  * @function routineSourceGet
- * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
+ * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
  */
 
 function routineMake( o )
@@ -755,7 +755,7 @@ routineMake.defaults =
  *
  * @returns {Object} Returns options map with result of execution in `result` property.
  * @function routineExec
- * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
+ * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
  */
 
 function routineExec( o )
@@ -807,7 +807,7 @@ defaults.context = null;
 //
 
 /**
- * @summary Short-cut for {@link module:Tools/base/RoutineFundamentals.RoutineFundamentals.routineExec} routine.
+ * @summary Short-cut for {@link module:Tools/base/RoutineBasic.RoutineBasic.routineExec} routine.
  * Returns result of routine execution instead of options map.
  * @param {Object} o options map
  * @param {Boolean} o.debug=0 prepends `debugger` prefix
@@ -832,7 +832,7 @@ defaults.context = null;
  *
  * @returns {} Returns result of routine execution.
  * @function exec
- * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
+ * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
  */
 
 function exec( o )
@@ -1540,7 +1540,7 @@ routineInline.defaults =
  *
  * @returns {Object} Returns map with information about provided routine.
  * @function routineParse
- * @memberof module:Tools/base/RoutineFundamentals.Tools( module::RoutineFundamentals )
+ * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
  */
 
 function routineParse( o )

@@ -10,7 +10,7 @@ if( typeof module !== 'undefined' )
   _.include( 'wTesting' );
   _.include( 'wConsequence' );
 
-  require( '../l3/RoutineFundamentals.s' );
+  require( '../l3/RoutineBasic.s' );
 
 }
 
@@ -96,11 +96,11 @@ function routineCall( test )
 
   test.case = 'no args';
   test.shouldThrowErrorSync( () => _.routineCall() );
-  test.case = 'expects routine as single arg';
+  test.case = 'Expects routine as single arg';
   test.shouldThrowErrorSync( () => _.routineCall( {} ) );
-  test.case = 'expects context as first arg';
+  test.case = 'Expects context as first arg';
   test.shouldThrowErrorSync( () => _.routineCall( routine, {} ) );
-  test.case = 'expects arguments in array';
+  test.case = 'Expects arguments in array';
   test.shouldThrowErrorSync( () => _.routineCall( {}, routine, 1 ) );
 
 }
@@ -151,11 +151,11 @@ function routineTolerantCall( test )
 
   test.case = 'no args';
   test.shouldThrowErrorSync( () => _.routineTolerantCall() );
-  test.case = 'expects routine as single arg';
+  test.case = 'Expects routine as single arg';
   test.shouldThrowErrorSync( () => _.routineTolerantCall( {} ) );
-  test.case = 'expects context as first arg';
+  test.case = 'Expects context as first arg';
   test.shouldThrowErrorSync( () => _.routineTolerantCall( routine, {} ) );
-  test.case = 'expects options map as last arg';
+  test.case = 'Expects options map as last arg';
   test.shouldThrowErrorSync( () => _.routineTolerantCall( {}, routine, 1 ) );
   test.case = 'routine without defaults';
   test.shouldThrowErrorSync( () => _.routineTolerantCall( {}, function a(){}, { a : 1 } ) );
@@ -376,7 +376,7 @@ function execStages( test )
 var Self =
 {
 
-  name : 'Tools/base/l3/RoutineFundamentals',
+  name : 'Tools/base/l3/RoutineBasic',
   silencing : 1,
 
   context :
