@@ -82,7 +82,7 @@ path:
       - ../proto/dwtools/Tools.s
       - ../proto/dwtools/abase
       - ../proto/dwtools/abase/l3
-      - ../proto/dwtools/abase/l3/RoutineFundamentals.s
+      - ../proto/dwtools/abase/l3/RoutineBasic.s
       - ../proto/dwtools/abase/l3.test
       - ../proto/dwtools/abase/l3.test/Routines.test.s
       - ../proto/dwtools/amid
@@ -369,7 +369,7 @@ module:
           - proto/dwtools/Tools.s
           - proto/dwtools/abase
           - proto/dwtools/abase/l3
-          - proto/dwtools/abase/l3/RoutineFundamentals.s
+          - proto/dwtools/abase/l3/RoutineBasic.s
           - proto/dwtools/abase/l3.test
           - proto/dwtools/abase/l3.test/Routines.test.s
           - proto/dwtools/amid

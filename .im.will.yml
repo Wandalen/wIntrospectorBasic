@@ -49,7 +49,7 @@ path :
       content : prime
 
   entry.proto.no.tests :
-    path : proto/dwtools/abase/l3/RoutineFundamentals.s
+    path : proto/dwtools/abase/l3/RoutineBasic.s
     criterion :
       tests : 'no.tests'
   entry.proto.only.tests :
@@ -61,7 +61,7 @@ path :
   # npm.files : proto
 
   entry.out.raw.debug :
-    path : '{path::out.*=1}/source/dwtools/abase/l3/RoutineFundamentals.s'
+    path : '{path::out.*=1}/source/dwtools/abase/l3/RoutineBasic.s'
     criterion :
       debug : [ debug, release ]
       raw : raw
