@@ -225,13 +225,13 @@ function routinesCall( test )
   return;
 
   test.case = 'missed argument';
-  test.shouldThrowError( function()
+  test.shouldThrowErrorOfAnyKind( function()
   {
     _.routinesCall();
   });
 
   test.case = 'extra argument';
-  test.shouldThrowError( function()
+  test.shouldThrowErrorOfAnyKind( function()
   {
     _.routinesCall(
       context3,
@@ -242,13 +242,13 @@ function routinesCall( test )
   });
 
   test.case = 'passed non callable object';
-  test.shouldThrowError( function()
+  test.shouldThrowErrorOfAnyKind( function()
   {
     _.routinesCall( null );
   });
 
   test.case = 'passed arguments as primitive value (no wrapped into array)';
-  test.shouldThrowError( function()
+  test.shouldThrowErrorOfAnyKind( function()
   {
      _.routinesCall( context3, testFunction3, value2 )
   });
@@ -376,7 +376,7 @@ function execStages( test )
 var Self =
 {
 
-  name : 'Tools/base/l3/RoutineBasic',
+  name : 'Tools.base.l3.RoutineBasic',
   silencing : 1,
 
   context :

@@ -156,7 +156,7 @@ function routinesJoin()
     if( _.routineIs( routines ) )
     routines = [ routines ];
 
-    result = _.entityMake( routines );
+    result = _.entityMakeConstructing( routines );
 
   }
 
@@ -320,7 +320,7 @@ function _routinesCall( o )
     if( _.routineIs( routines ) )
     routines = [ routines ];
 
-    result = _.entityMake( routines );
+    result = _.entityMakeConstructing( routines );
 
   }
 
@@ -951,6 +951,10 @@ function execStages( stages,o )
   if( o.onBegin )
   ready.finally( o.onBegin );
 
+  handleStage();
+
+  return ready;
+
   /* end */
 
   function handleEnd()
@@ -1001,6 +1005,7 @@ function execStages( stages,o )
 
     function routineCall()
     {
+      // debugger;
       let ret = iteration.routine();
       return ret;
     }
@@ -1021,11 +1026,6 @@ function execStages( stages,o )
 
   }
 
-  /* */
-
-  handleStage();
-
-  return ready;
 }
 
 execStages.defaults =
