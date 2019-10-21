@@ -23,7 +23,7 @@ about :
 path :
 
   repository : git+https:///github.com/Wandalen/wRoutineBasic.git
-  remotes :
+  origins :
    - git+https:///github.com/Wandalen/wRoutineBasic.git
    - npm:///wroutinebasic
   bugtracker : https:///github.com/Wandalen/wRoutineBasic/issues
