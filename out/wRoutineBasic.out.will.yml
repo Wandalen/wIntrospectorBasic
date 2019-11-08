@@ -6,12 +6,13 @@ consistency:
     hash: dfa69d133c4082d8af8a4410bf2c5a15
     size: 1763
   ../.im.will.yml: &ref_1
-    hash: 89418eea864d8057c0bdd8a8562c8148
-    size: 4874
+    hash: 620178f9e05193e7a338d07eb50e51de
+    size: 4948
 module:
   wRoutineBasic.out:
     about:
       name: wRoutineBasic
+      org: noorg
       description: >-
         Collection of routines to generate functions, manage execution of such
         and analyze them.
@@ -59,9 +60,6 @@ module:
       download:
         criterion:
           predefined: 1
-      remote:
-        criterion:
-          predefined: 1
       repository:
         path: 'git+https:///github.com/Wandalen/wRoutineBasic.git'
       origins:
@@ -71,15 +69,15 @@ module:
       bugtracker:
         path: 'https:///github.com/Wandalen/wRoutineBasic/issues'
       in:
-        criterion:
-          predefined: 0
         path: .
       out:
-        criterion:
-          predefined: 0
         path: .
       temp:
-        path: 'path::out'
+        path:
+          - 'path::out'
+          - ../package-lock.json
+          - ../package.json
+          - ../node_modules
       proto:
         path: ../proto
       export:
@@ -144,11 +142,13 @@ module:
         path: '{path::out.*=}/source/Index.s'
       exported.dir.proto.export:
         criterion:
+          generated: 1
           content: proto
           export: 1
         path: ../proto
       exported.files.proto.export:
         criterion:
+          generated: 1
           content: proto
           export: 1
         path:
@@ -327,6 +327,7 @@ module:
           prefixPath: ../proto
         mandatory: 1
         criterion:
+          generated: 1
           content: proto
           export: 1
       exported.files.proto.export:
@@ -339,6 +340,7 @@ module:
         recursive: 0
         mandatory: 1
         criterion:
+          generated: 1
           content: proto
           export: 1
     step:
@@ -785,6 +787,7 @@ module:
   ../:
     about:
       name: wRoutineBasic
+      org: noorg
       description: >-
         Collection of routines to generate functions, manage execution of such
         and analyze them.
@@ -825,9 +828,6 @@ module:
       download:
         criterion:
           predefined: 1
-      remote:
-        criterion:
-          predefined: 1
       repository:
         path: 'git+https:///github.com/Wandalen/wRoutineBasic.git'
       origins:
@@ -837,21 +837,21 @@ module:
       bugtracker:
         path: 'https:///github.com/Wandalen/wRoutineBasic/issues'
       in:
-        criterion:
-          predefined: 0
         path: .
       out:
-        criterion:
-          predefined: 0
         path: out
       temp:
-        path: 'path::out'
+        path:
+          - 'path::out'
+          - package-lock.json
+          - package.json
+          - node_modules
       proto:
-        path: ./proto
+        path: proto
       export:
         path: '{path::proto}/**'
       doc:
-        path: ./doc
+        path: doc
       out.raw.debug:
         criterion:
           debug: debug
@@ -1469,5 +1469,5 @@ module:
         hash: dfa69d133c4082d8af8a4410bf2c5a15
         size: 1763
       ../.im.will.yml:
-        hash: 89418eea864d8057c0bdd8a8562c8148
-        size: 4874
+        hash: 620178f9e05193e7a338d07eb50e51de
+        size: 4948
