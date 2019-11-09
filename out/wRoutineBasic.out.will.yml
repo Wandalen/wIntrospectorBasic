@@ -2,10 +2,13 @@ format: outwillfile-2.0
 root:
   - wRoutineBasic.out
 consistency:
-  ../.ex.will.yml: &ref_0
+  wRoutineBasic.out.will.yml: &ref_0
+    hash: d48ec263cfd6370d193a67c06539114d
+    size: 38119
+  ../.ex.will.yml: &ref_1
     hash: dfa69d133c4082d8af8a4410bf2c5a15
     size: 1763
-  ../.im.will.yml: &ref_1
+  ../.im.will.yml: &ref_2
     hash: 620178f9e05193e7a338d07eb50e51de
     size: 4948
 module:
@@ -18,18 +21,18 @@ module:
         and analyze them.
       enabled: 1
       version: 0.4.0
-      interpreters: &ref_2
+      interpreters:
         - njs >= 8.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords: &ref_3
+      keywords:
         - wTools
       license: MIT
       author: Kostiantyn Wandalen <wanalen@willbe.so>
-      contributors: &ref_4
+      contributors:
         - Kostiantyn Wandalen <wanalen@willbe.so>
       npm.name: wroutinebasic
-      npm.scripts: &ref_5
+      npm.scripts:
         test: wtest .run proto/**
         docgen: wdocgen .build proto
     path:
@@ -694,6 +697,24 @@ module:
           content: prime
         inherit:
           - files.transpile
+      exported.proto.export:
+        opts:
+          reflector: 'reflector::exported.proto.export*'
+        criterion:
+          generated: 1
+          content: proto
+          export: 1
+        inherit:
+          - files.reflect
+      exported.files.proto.export:
+        opts:
+          reflector: 'reflector::exported.files.proto.export*'
+        criterion:
+          generated: 1
+          content: proto
+          export: 1
+        inherit:
+          - files.reflect
     build:
       proto.export:
         steps:
@@ -782,8 +803,9 @@ module:
           content: proto
           export: 1
     consistency:
-      ../.ex.will.yml: *ref_0
-      ../.im.will.yml: *ref_1
+      wRoutineBasic.out.will.yml: *ref_0
+      ../.ex.will.yml: *ref_1
+      ../.im.will.yml: *ref_2
   ../:
     about:
       name: wRoutineBasic
@@ -793,13 +815,20 @@ module:
         and analyze them.
       enabled: 1
       version: 0.4.0
-      interpreters: *ref_2
-      keywords: *ref_3
+      interpreters:
+        - njs >= 8.0.0
+        - chrome >= 60.0.0
+        - firefox >= 60.0.0
+      keywords:
+        - wTools
       license: MIT
       author: Kostiantyn Wandalen <wanalen@willbe.so>
-      contributors: *ref_4
+      contributors:
+        - Kostiantyn Wandalen <wanalen@willbe.so>
       npm.name: wroutinebasic
-      npm.scripts: *ref_5
+      npm.scripts:
+        test: wtest .run proto/**
+        docgen: wdocgen .build proto
     path:
       module.willfiles:
         criterion:
@@ -1471,3 +1500,6 @@ module:
       ../.im.will.yml:
         hash: 620178f9e05193e7a338d07eb50e51de
         size: 4948
+      wRoutineBasic.out.will.yml:
+        hash: d48ec263cfd6370d193a67c06539114d
+        size: 38119
