@@ -1500,6 +1500,4 @@ module:
       ../.im.will.yml:
         hash: 620178f9e05193e7a338d07eb50e51de
         size: 4948
-      wRoutineBasic.out.will.yml:
-        hash: d48ec263cfd6370d193a67c06539114d
-        size: 38119
+      wRoutineBasic.out.will.yml: *ref_0
