@@ -62,7 +62,7 @@ function routineDelayed( delay, routine )
 
   return function delayed()
   {
-    _.timeOut( delay, this, routine, arguments );
+    _.time.out( delay, this, routine, arguments );
   }
 
 }
@@ -767,7 +767,7 @@ function routineExec( o )
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.routineOptions( routineExec,o );
 
-  o.routine = routineMake
+  o.routine = _.routineMake
   ({
     code : o.code,
     debug : o.debug,
@@ -796,6 +796,8 @@ function routineExec( o )
       location : { path : o.filePath },
     });
   }
+
+  /* */
 
   return o;
 }
@@ -899,7 +901,7 @@ makeWorker.defaults =
 //
 //   let args = longSlice( arguments,3 ); throw _.err( 'not tested' );
 //
-//   _.timeOut( 0,function()
+//   _.time.out( 0,function()
 //   {
 //
 //     routine.apply( context,args );
@@ -913,6 +915,8 @@ makeWorker.defaults =
 
 function execStages( stages,o )
 {
+  let logger = _global.logger || _global.console;
+
   o = o || Object.create( null );
 
   _.routineOptionsPreservingUndefines( execStages,o );
@@ -940,7 +944,7 @@ function execStages( stages,o )
 
   /*  let */
 
-  let ready = _.timeOut( 1 );
+  let ready = _.time.out( 1 );
   let keys = Object.keys( stages );
   let s = 0;
 
@@ -960,13 +964,21 @@ function execStages( stages,o )
   function handleEnd()
   {
 
-    ready.finally( function( err,data )
+    ready.finally( function( err, data )
     {
 
+      // debugger;
       if( err )
+      {
+        // err = _.err( err );
+        // logger.error( _.errOnce( err ) );
+        // throw err;
       throw _.errLogOnce( err );
+      }
       else
-      return data;
+      {
+        return data;
+      }
 
     });
 
