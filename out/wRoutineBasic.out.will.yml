@@ -2,14 +2,11 @@ format: outwillfile-2.0
 root:
   - wRoutineBasic.out
 consistency:
-  wRoutineBasic.out.will.yml: &ref_0
-    hash: d48ec263cfd6370d193a67c06539114d
-    size: 38119
-  ../.ex.will.yml: &ref_1
+  ../.ex.will.yml: &ref_0
     hash: dfa69d133c4082d8af8a4410bf2c5a15
     size: 1763
-  ../.im.will.yml: &ref_2
-    hash: 620178f9e05193e7a338d07eb50e51de
+  ../.im.will.yml: &ref_1
+    hash: d4700694f10fb3babf31ce92dbe0cde0
     size: 4948
 module:
   wRoutineBasic.out:
@@ -21,18 +18,18 @@ module:
         and analyze them.
       enabled: 1
       version: 0.4.0
-      interpreters:
+      interpreters: &ref_2
         - njs >= 8.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords:
+      keywords: &ref_3
         - wTools
       license: MIT
       author: Kostiantyn Wandalen <wanalen@willbe.so>
-      contributors:
+      contributors: &ref_4
         - Kostiantyn Wandalen <wanalen@willbe.so>
       npm.name: wroutinebasic
-      npm.scripts:
+      npm.scripts: &ref_5
         test: wtest .run proto/**
         docgen: wdocgen .build proto
     path:
@@ -114,7 +111,7 @@ module:
       entry.proto.no.tests:
         criterion:
           tests: no.tests
-        path: ../proto/dwtools/abase/l3/RoutineBasic.s
+        path: ../proto/dwtools/abase/l2/RoutineBasic.s
       entry.proto.only.tests:
         criterion:
           tests: only.tests
@@ -124,13 +121,13 @@ module:
           debug: debug
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/abase/l3/RoutineBasic.s'
+        path: '{path::out.*=1}/source/dwtools/abase/l2/RoutineBasic.s'
       entry.out.raw.debug.release:
         criterion:
           debug: release
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/abase/l3/RoutineBasic.s'
+        path: '{path::out.*=1}/source/dwtools/abase/l2/RoutineBasic.s'
       entry.out.compiled.debug.debug:
         criterion:
           debug: debug
@@ -159,10 +156,10 @@ module:
           - ../proto/dwtools
           - ../proto/dwtools/Tools.s
           - ../proto/dwtools/abase
-          - ../proto/dwtools/abase/l3
-          - ../proto/dwtools/abase/l3/RoutineBasic.s
-          - ../proto/dwtools/abase/l3.test
-          - ../proto/dwtools/abase/l3.test/Routine.test.s
+          - ../proto/dwtools/abase/l2
+          - ../proto/dwtools/abase/l2/RoutineBasic.s
+          - ../proto/dwtools/abase/l2.test
+          - ../proto/dwtools/abase/l2.test/Routine.test.s
           - ../proto/dwtools/amid
           - ../proto/dwtools/atop
     submodule:
@@ -697,24 +694,6 @@ module:
           content: prime
         inherit:
           - files.transpile
-      exported.proto.export:
-        opts:
-          reflector: 'reflector::exported.proto.export*'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
-      exported.files.proto.export:
-        opts:
-          reflector: 'reflector::exported.files.proto.export*'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
     build:
       proto.export:
         steps:
@@ -803,9 +782,8 @@ module:
           content: proto
           export: 1
     consistency:
-      wRoutineBasic.out.will.yml: *ref_0
-      ../.ex.will.yml: *ref_1
-      ../.im.will.yml: *ref_2
+      ../.ex.will.yml: *ref_0
+      ../.im.will.yml: *ref_1
   ../:
     about:
       name: wRoutineBasic
@@ -815,20 +793,13 @@ module:
         and analyze them.
       enabled: 1
       version: 0.4.0
-      interpreters:
-        - njs >= 8.0.0
-        - chrome >= 60.0.0
-        - firefox >= 60.0.0
-      keywords:
-        - wTools
+      interpreters: *ref_2
+      keywords: *ref_3
       license: MIT
       author: Kostiantyn Wandalen <wanalen@willbe.so>
-      contributors:
-        - Kostiantyn Wandalen <wanalen@willbe.so>
+      contributors: *ref_4
       npm.name: wroutinebasic
-      npm.scripts:
-        test: wtest .run proto/**
-        docgen: wdocgen .build proto
+      npm.scripts: *ref_5
     path:
       module.willfiles:
         criterion:
@@ -908,7 +879,7 @@ module:
       entry.proto.no.tests:
         criterion:
           tests: no.tests
-        path: proto/dwtools/abase/l3/RoutineBasic.s
+        path: proto/dwtools/abase/l2/RoutineBasic.s
       entry.proto.only.tests:
         criterion:
           tests: only.tests
@@ -918,13 +889,13 @@ module:
           debug: debug
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/abase/l3/RoutineBasic.s'
+        path: '{path::out.*=1}/source/dwtools/abase/l2/RoutineBasic.s'
       entry.out.raw.debug.release:
         criterion:
           debug: release
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/dwtools/abase/l3/RoutineBasic.s'
+        path: '{path::out.*=1}/source/dwtools/abase/l2/RoutineBasic.s'
       entry.out.compiled.debug.debug:
         criterion:
           debug: debug
@@ -1498,6 +1469,5 @@ module:
         hash: dfa69d133c4082d8af8a4410bf2c5a15
         size: 1763
       ../.im.will.yml:
-        hash: 620178f9e05193e7a338d07eb50e51de
+        hash: d4700694f10fb3babf31ce92dbe0cde0
         size: 4948
-      wRoutineBasic.out.will.yml: *ref_0

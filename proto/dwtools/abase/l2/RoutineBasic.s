@@ -842,7 +842,7 @@ function exec( o )
   _.assert( arguments.length === 1, 'Expects single argument' );
   if( _.strIs( o ) )
   o = { code : o };
-  routineExec( o );
+  _.routineExec( o );
   return o.result;
 }
 
