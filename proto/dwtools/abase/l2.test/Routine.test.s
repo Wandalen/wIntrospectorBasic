@@ -7,10 +7,10 @@ if( typeof module !== 'undefined' )
 
   let _ = require( '../../Tools.s' );
 
+  require( '../l2/RoutineBasic.s' );
+
   _.include( 'wTesting' );
   _.include( 'wConsequence' );
-
-  require( '../l2/RoutineBasic.s' );
 
 }
 
@@ -393,7 +393,7 @@ var Self =
     routineMake,
     exec,
 
-    execStages
+    execStages,
   },
 
 }
