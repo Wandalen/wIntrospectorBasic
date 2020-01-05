@@ -24,6 +24,7 @@ let Esprima;
 let Self = _global_.wTools;
 let _global = _global_;
 let _ = _global_.wTools;
+_.program = _.program || Object.create( null );
 
 let _ArraySlice = Array.prototype.slice;
 let _FunctionBind = Function.prototype.bind;
@@ -484,24 +485,6 @@ function routineSourceGet( o )
 
   let result = o.routine.toSource ? o.routine.toSource() : o.routine.toString();
 
-  function unwrap( code )
-  {
-
-    let reg1 = /^\s*function\s*\w*\s*\([^\)]*\)\s*\{/;
-    let reg2 = /\}\s*$/;
-
-    let before = reg1.exec( code );
-    let after = reg2.exec( code );
-
-    if( before && after )
-    {
-      code = code.replace( reg1,'' );
-      code = code.replace( reg2,'' );
-    }
-
-    return [ before[ 0 ], code, after[ 0 ] ];
-  }
-
   if( !o.withWrap )
   result = unwrap( result )[ 1 ];
 
@@ -522,6 +505,25 @@ function routineSourceGet( o )
   }
 
   return result;
+
+  function unwrap( code )
+  {
+
+    let reg1 = /^\s*function\s*\w*\s*\([^\)]*\)\s*\{/;
+    let reg2 = /\}\s*$/;
+
+    let before = reg1.exec( code );
+    let after = reg2.exec( code );
+
+    if( before && after )
+    {
+      code = code.replace( reg1,'' );
+      code = code.replace( reg2,'' );
+    }
+
+    return [ before[ 0 ], code, after[ 0 ] ];
+  }
+
 }
 
 routineSourceGet.defaults =
@@ -1610,6 +1612,121 @@ routineParse.defaults =
 }
 
 // --
+//
+// --
+
+function preform_pre( routine, args )
+{
+
+  let o = args[ 0 ];
+  if( !_.mapIs( o ) )
+  o = { routine : o }
+  _.routineOptions( routine, o );
+  // _.assert( _.routineIs( o.routine ) || _.strIs( o.routine ) );
+  _.assert( args.length === 1 );
+  _.assert( arguments.length === 2 );
+
+  if( !o.name )
+  o.name = o.routine.name;
+
+  _.assert( _.routineIs( o.routine ) || _.strIs( o.routine ) );
+  _.assert( _.strDefined( o.name ), 'Program should have name' );
+
+  return o;
+}
+
+//
+
+function preform_body( o )
+{
+
+  // if( !_.mapIs( o ) )
+  // o = { routine : o }
+  // _.routineOptions( preform, o );
+  // _.assert( arguments.length === 1 );
+
+  _.assertRoutineOptions( preform_body, o );
+  // if( !o.name )
+  // o.name = o.routine.name;
+  _.assert( _.routineIs( o.routine ) || _.strIs( o.routine ) );
+  _.assert( _.strDefined( o.name ), 'Program should have name' );
+
+  if( o.globals === null )
+  {
+    o.globals = Object.create( null );
+    o.globals.toolsPath = _.path.nativize( _.path.join( __dirname, '../../Tools.s' ) );
+  }
+
+  if( o.sourceCode === null )
+  {
+
+    if( _.routineIs( o.routine ) )
+    o.sourceCode = o.routine.toString();
+    else
+    o.sourceCode = o.routine;
+
+    o.sourceCode += '\n\n';
+
+    for( let g in o.globals )
+    {
+      o.sourceCode += `var ${g} = ${_.toJs( o.globals[ g ] )};\n`
+    }
+
+    o.sourceCode +=
+`
+${o.name}();
+`
+
+  }
+
+  return o;
+}
+
+preform_body.defaults =
+{
+  routine : null,
+  name : null,
+  sourceCode : null,
+  globals : null,
+}
+
+let preform = _.routineFromPreAndBody( preform_pre, preform_body );
+
+//
+
+function write_body( o )
+{
+
+  _.assertRoutineOptions( write_body, o );
+
+  let o2 = this.preform.body.call( this, _.mapOnly( o, this.preform.body.defaults ) );
+  _.mapExtend( o, o2 );
+
+  if( o.programPath === null )
+  {
+    _.assert( _.strIs( o.tempPath ), 'Expects temp path {- o.tempPath -}' );
+    o.programPath = _.path.join( o.tempPath, o.name + '.js' );
+  }
+
+  // logger.log( _.strLinesNumber( o.sourceCode ) );
+
+  _.sure( !_.fileProvider.fileExists( o.programPath ) );
+
+  _.fileProvider.fileWrite( o.programPath, o.sourceCode );
+
+  return o;
+}
+
+write_body.defaults =
+{
+  ... preform_body.defaults,
+  tempPath : null,
+  programPath : null,
+}
+
+let write = _.routineFromPreAndBody( preform_pre, write_body );
+
+// --
 // declare
 // --
 
@@ -1620,7 +1737,7 @@ let _routineAssets =
   constant : 'constant',
 }
 
-let Extend =
+let ToolsExtension =
 {
 
   routineDelayed,
@@ -1662,11 +1779,16 @@ let Extend =
 
   _routineAssets,
 
-  //
-
 }
 
-_.mapExtend( Self, Extend );
+let ProgramExtension =
+{
+  preform,
+  write,
+}
+
+_.mapExtend( Self, ToolsExtension );
+_.mapExtend( _.program, ProgramExtension );
 
 // --
 // export
