@@ -1,22 +1,16 @@
 
-var _ = require( '..' /* 'wresolver' */ );
+var _ = require( 'wresolverextra' );
 var src =
 {
   dir :
   {
     val1 : 'Hello'
   },
-  val2 : 'here',
 }
 
-let resolved = _.Resolver.resolve
-({
-  src : src,
-  selector : '{::dir/val1} from {::val2}!',
-});
-
+var resolved = _.resolver.resolve( src, 'dir/val1' )
 console.log( resolved );
 
 /*
-`Hello from here!`
+log : `Hello`
 */
