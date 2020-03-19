@@ -1622,7 +1622,6 @@ function preform_pre( routine, args )
   if( !_.mapIs( o ) )
   o = { routine : o }
   _.routineOptions( routine, o );
-  // _.assert( _.routineIs( o.routine ) || _.strIs( o.routine ) );
   _.assert( args.length === 1 );
   _.assert( arguments.length === 2 );
 
@@ -1640,21 +1639,15 @@ function preform_pre( routine, args )
 function preform_body( o )
 {
 
-  // if( !_.mapIs( o ) )
-  // o = { routine : o }
-  // _.routineOptions( preform, o );
-  // _.assert( arguments.length === 1 );
-
   _.assertRoutineOptions( preform_body, o );
-  // if( !o.name )
-  // o.name = o.routine.name;
   _.assert( _.routineIs( o.routine ) || _.strIs( o.routine ) );
   _.assert( _.strDefined( o.name ), 'Program should have name' );
 
-  if( o.globals === null )
+  if( o.locals === null )
   {
-    o.globals = Object.create( null );
-    o.globals.toolsPath = _.path.nativize( _.path.join( __dirname, '../../Tools.s' ) );
+    o.locals = Object.create( null );
+    o.locals.toolsPath = _.path.nativize( _.module.toolsPathGet() );
+    // o.locals.toolsPath = _.path.nativize( _.path.join( __dirname, '../../Tools.s' ) ); /* xxx : rename the variable */
   }
 
   if( o.sourceCode === null )
@@ -1667,9 +1660,9 @@ function preform_body( o )
 
     o.sourceCode += '\n\n';
 
-    for( let g in o.globals )
+    for( let g in o.locals )
     {
-      o.sourceCode += `var ${g} = ${_.toJs( o.globals[ g ] )};\n`
+      o.sourceCode += `var ${g} = ${_.toJs( o.locals[ g ] )};\n`
     }
 
     o.sourceCode +=
@@ -1687,7 +1680,7 @@ preform_body.defaults =
   routine : null,
   name : null,
   sourceCode : null,
-  globals : null,
+  locals : null,
 }
 
 let preform = _.routineFromPreAndBody( preform_pre, preform_body );
