@@ -9,7 +9,7 @@
 
 /**
  * Collection of routines to generate functions.
-  @namespace Tools( module::RoutineBasic )
+  @namespace Tools.RoutineBasic 
   @memberof module:Tools/base/RoutineBasic
 */
 
