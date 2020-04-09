@@ -9,8 +9,9 @@
 
 /**
  * Collection of routines to generate functions.
-  @namespace Tools.RoutineBasic 
-  @memberof module:Tools/base/RoutineBasic
+  @namespace "Tools.program"
+  @extends Tools
+  @module Tools/base/RoutineBasic
 */
 
 if( typeof module !== 'undefined' )
@@ -45,7 +46,7 @@ let _arraySlice = _.longSlice;
  * @throws {Error} If `delay` is not a number
  * @throws {Error} If `routine` is not a function
  * @function routineDelayed
- * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
+ * @namespace Tools.program
  */
 
 function routineDelayed( delay, routine )
@@ -76,7 +77,7 @@ function routineDelayed( delay, routine )
  * @param {Function} routine function that will be called
  * @param {Array} args arrat of arguments
  * @function routineCall
- * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
+ * @namespace Tools.program
  */
 
 function routineCall( context, routine, args )
@@ -121,7 +122,7 @@ function routineCall( context, routine, args )
  * @param {Function} routine function that will be called
  * @param {Object} options options map
  * @function routineTolerantCall
- * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
+ * @namespace Tools.program
  */
 
 function routineTolerantCall( context, routine, options )
@@ -360,7 +361,7 @@ _routinesCall.defaults =
 * @param {Array} [args] Arguments that will be passed to each functions.
 * @returns {Array} Array with results of functions invocation.
 * @function routinesCall
-* @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
+* @namespace Tools.program
 */
 
 function routinesCall()
@@ -403,7 +404,7 @@ function routinesCallEvery()
  * @throws {Error} If context for the method doesn't exist or vise versa.
  * @returns {Array} Returns results of methods call as array.
  * @function methodsCall
- * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
+ * @namespace Tools.program
  */
 
 function methodsCall( contexts, methods, args )
@@ -471,7 +472,7 @@ function methodsCall( contexts, methods, args )
  *
  * @returns {String} Returns routine's source code as string.
  * @function routineSourceGet
- * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
+ * @namespace Tools.program
  */
 
 function routineSourceGet( o )
@@ -573,7 +574,7 @@ routineSourceGet.defaults =
  *
  * @returns {Function} Returns created function.
  * @function routineSourceGet
- * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
+ * @namespace Tools.program
  */
 
 function routineMake( o )
@@ -757,7 +758,7 @@ routineMake.defaults =
  *
  * @returns {Object} Returns options map with result of execution in `result` property.
  * @function routineExec
- * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
+ * @namespace Tools.program
  */
 
 function routineExec( o )
@@ -836,7 +837,7 @@ defaults.context = null;
  *
  * @returns {} Returns result of routine execution.
  * @function exec
- * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
+ * @namespace Tools.program
  */
 
 function exec( o )
@@ -1554,7 +1555,7 @@ routineInline.defaults =
  *
  * @returns {Object} Returns map with information about provided routine.
  * @function routineParse
- * @memberof module:Tools/base/RoutineBasic.Tools( module::RoutineBasic )
+ * @namespace Tools.program
  */
 
 function routineParse( o )
