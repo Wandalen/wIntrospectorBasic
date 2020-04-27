@@ -1,6 +1,6 @@
 {
   "name" : "wroutinebasic",
-  "version" : "0.3.87",
+  "version" : "0.3.88",
   "description" : "Collection of routines to generate functions, manage execution of such and analyze them.",
   "author" : "Kostiantyn Wandalen <wanalen@willbe.so>",
   "license" : "MIT",
@@ -16,7 +16,7 @@
   {
     "url" : "https://github.com/Wandalen/wRoutineBasic/issues"
   },
-  "dependencies" : { "wTools" : "gamma" },
-  "devDependencies" : { "wTesting" : "gamma" },
+  "dependencies" : { "wTools" : "beta" },
+  "devDependencies" : { "wTesting" : "beta" },
   "keywords" : [ "wTools" ]
 }
