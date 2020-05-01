@@ -795,8 +795,8 @@ function routineExec( o )
     ({
       args : [ err ],
       level : 1,
-      sourceCode : o.routine.toString(),
-      location : { path : o.filePath },
+      sourceCode : { code : o.routine.toString() },
+      throwLocation : { filePath : o.filePath },
     });
   }
 
