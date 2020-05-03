@@ -1,6 +1,6 @@
 {
   "name" : "wroutinebasic",
-  "version" : "0.3.92",
+  "version" : "0.3.93",
   "description" : "Collection of routines to generate functions, manage execution of such and analyze them.",
   "author" : "Kostiantyn Wandalen <wanalen@willbe.so>",
   "license" : "MIT",
