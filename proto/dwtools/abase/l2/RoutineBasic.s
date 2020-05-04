@@ -1172,6 +1172,7 @@ function _routineCollectAssets( dst,routine,visited )
   }
 
 }
+
 //
 
 _global_._routineIsolate = [];
@@ -1613,7 +1614,305 @@ routineParse.defaults =
 }
 
 // --
+// introspector
+// --
+
+function _elementsExportString( o )
+{
+  let result = '';
+
+  _.routineOptions( _elementsExportString, arguments );
+
+  if( o.visited === null )
+  o.visited = [];
+  _.assert( !_.longHas( o.visited, o.srcContainer ) );
+
+  o.visited.push( o.srcContainer );
+
+  _.each( o.srcContainer, ( e, k ) =>
+  {
+    result += _.introspector._elementExportString
+    ({
+      ... o,
+      name : k,
+      element : e,
+    })
+  });
+
+  let poped = o.visited.pop();
+  _.assert( poped === o.srcContainer );
+
+  return result;
+}
+
+_elementsExportString.defaults =
+{
+  srcContainer : null ,
+  dstContainerPath : null,
+  writingAs : 'field',
+  visited : null,
+}
+
 //
+
+// function _elementExportString( element, dstContainerPath, name )
+function _elementExportString( o )
+{
+  let result = '';
+
+  _.routineOptions( _elementExportString, arguments );
+
+  if( o.visited === null )
+  o.visited = [];
+  if( o.srcContaienr && o.element === _.null )
+  o.element = o.srcContainer[ o.name ];
+
+  _.assert( _.longHas( [ 'field', 'local', 'global' ], o.writingAs ) );
+  _.assert( o.writingAs === 'field' );
+  _.assert
+  (
+    _.strDefined( o.name ),
+    () => `Cant export, expects defined {-o.name-}, but got ${_.strType( o.name )}`
+  );
+  _.assert
+  (
+       _.routineIs( o.element ) || _.primitiveIs( o.element ) || _.regexpIs( o.element )
+    || ( _.mapIs( o.element ) && _.lengthOf( o.element ) === 0 )
+    || ( _.arrayIs( o.element ) && _.lengthOf( o.element ) === 0 )
+    , () => `Cant export ${o.name} is ${_.strType( o.element )}`
+  );
+  _.assert( !_.longHas( o.visited, o.element ) );
+
+  o.visited.push( o.element );
+
+  if( _.routineIs( o.element ) )
+  {
+
+    if( o.element.vectorized )
+    {
+      // debugger;
+      let toVectorize = _.introspector._elementsExportString
+      ({
+        srcContainer : o.element.vectorized,
+        dstContainerPath : 'toVectorize',
+        writingAs : 'field',
+      });
+      // debugger;
+      result +=
+      `
+(function()
+{
+  debugger;
+  let toVectorize = Object.create( null );
+  ${toVectorize}
+  ${o.dstContainerPath}.${o.name} = _.vectorize( toVectorize );
+  debugger;
+})();
+      `
+      // debugger;
+    }
+
+    if( o.element.pre || o.element.body )
+    {
+      _.assert( _.routineIs( o.element.pre ) && _.routineIs( o.element.body ) );
+      result += routineFromPreAndBodyToString( o.element )
+      return result;
+    }
+
+    if( o.element.functor )
+    debugger;
+    if( o.element.functor )
+    result += '(' + o.element.functor.toString() + ')();';
+    else
+    result += o.element.toString();
+
+    if( o.element.defaults )
+    {
+      result += `\n${o.dstContainerPath}.${o.name}.defaults =\n` + _.toJs( o.element.defaults )
+    }
+  }
+  else
+  {
+    result += _.toJs( o.element );
+  }
+
+  /* */
+
+  if( _.routineIs( o.element ) )
+  result += `;\nvar ${o.name} = ${o.dstContainerPath + '.' + o.name}`
+
+  let r = o.dstContainerPath + '.' + o.name + ' = ' + _.strLinesIndentation( result, '  ' ) + ';\n\n//\n';
+
+  /* */
+
+  let poped = o.visited.pop();
+  _.assert( poped === o.element );
+
+  return r;
+
+  /* */
+
+  function routineProperties( dstContainerPath, routine )
+  {
+    let r = ''
+    for( var k in routine )
+    r += `${dstContainerPath}.${k} = ` + _.toJs( routine[ k ] ) + '\n'
+    if( r )
+    r = _.strLinesIndentation( r, '  ' );
+    return r;
+  }
+
+  /* */
+
+  function routineToString( routine )
+  {
+    return _.strLinesIndentation( routine.toString(), '  ' ) + '\n\n  //\n'
+  }
+
+  /* */
+
+  function routineFromPreAndBodyToString( element )
+  {
+    let str =
+`
+  var _${element.name}_pre = ${routineToString( element.pre )}
+${routineProperties( `_${element.name}_pre`, element.pre )}
+  var _${element.name}_body = ${routineToString( element.body )}
+${routineProperties( `_${element.name}_body`, element.body )};`
+
+    if( o.name === 'routineFromPreAndBody' )
+    {
+      str += `\n${o.dstContainerPath}.${o.name} = ` + _.strLinesIndentation( element.toString(), '  ' );
+      str += `\n${o.dstContainerPath}.${o.name}.pre = ` + `_${element.name}_pre;`
+      str += `\n${o.dstContainerPath}.${o.name}.body = ` + `_${element.name}_body;`
+      str += `\n${o.dstContainerPath}.${o.name}.defaults = ` + 'Object.create( ' + `_${element.name}_body.defaults` + ' );'
+    }
+    else
+    {
+      str += `\n${o.dstContainerPath}.${o.name} = _.routineFromPreAndBody( _${element.name}_pre, _${element.name}_body );`
+    }
+
+    return str;
+  }
+
+}
+
+_elementExportString.defaults =
+{
+  ... _elementsExportString.defaults,
+  name : null,
+  element : _.null,
+  // srcContainer : null ,
+  // dstContainerPath : null,
+  // name : null,
+  // writingAs : 'field',
+  // visited : null,
+}
+
+//
+
+function elementExportString( srcContainer, dstContainerPath, name )
+{
+  let element = srcContainer[ name ];
+
+  // _.introspector._elementExportString( element, dstContainerPath, name );
+
+  return _.introspector._elementExportString
+  ({
+    srcContainer : srcContainer,
+    dstContainerPath : dstContainerPath,
+    element : element,
+    name : name,
+    writingAs : 'field',
+  })
+
+}
+
+//
+
+function field( namesapce, name )
+{
+  if( arguments.length === 2 )
+  {
+    return _.introspector.elementExportString( _[ namesapce ], `_.${namesapce}`, name );
+  }
+  else
+  {
+    name = arguments[ 0 ];
+    return _.introspector.elementExportString( _, '_', name );
+  }
+}
+
+//
+
+function rou( namesapce, name )
+{
+  if( arguments.length === 2 )
+  {
+    return _.introspector.elementExportString( _[ namesapce ], `_.${namesapce}`, name );
+  }
+  else
+  {
+    name = arguments[ 0 ];
+    return _.introspector.elementExportString( _, '_', name );
+  }
+}
+
+//
+
+function fields( namespace )
+{
+  let result = [];
+  _.assert( _.objectIs( _[ namespace ] ) );
+  for( let f in _[ namespace ] )
+  {
+    let e = _[ namespace ][ f ];
+    if( _.strIs( e ) || _.regexpIs( e ) )
+    result.push( rou( namespace, f ) );
+  }
+  return result.join( '  ' );
+}
+
+//
+
+function cls( namesapce, name )
+{
+  let r;
+  if( arguments.length === 2 )
+  {
+    r = _.introspector.elementExportString( _[ namesapce ], `_.${namesapce}`, name );
+  }
+  else
+  {
+    name = arguments[ 0 ];
+    r = _.introspector.elementExportString( _, '_', name );
+  }
+  r =
+`
+(function()
+{
+
+let Self = ${r}
+
+})();
+`
+  return r;
+}
+
+//
+
+function clr( cls, method )
+{
+  let result = '';
+  if( _[ cls ][ method ] )
+  result = _.introspector.elementExportString( _[ cls ], `_.${cls}`, method );
+  if( _[ cls ][ 'prototype' ][ method ] )
+  result += '\n' + _.introspector.elementExportString( _[ cls ][ 'prototype' ], `_.${cls}.prototype`, method );
+  return result;
+}
+
+// --
+// program
 // --
 
 function preform_pre( routine, args )
@@ -1775,6 +2074,20 @@ let ToolsExtension =
 
 }
 
+let IntrospectorExtension =
+{
+
+  _elementsExportString,
+  _elementExportString,
+  elementExportString,
+  field,
+  rou,
+  fields,
+  cls,
+  clr,
+
+}
+
 let ProgramExtension =
 {
   preform,
@@ -1782,6 +2095,7 @@ let ProgramExtension =
 }
 
 _.mapExtend( Self, ToolsExtension );
+_.mapExtend( _.introspector, IntrospectorExtension );
 _.mapExtend( _.program, ProgramExtension );
 
 // --
