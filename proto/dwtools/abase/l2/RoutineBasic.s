@@ -1688,6 +1688,9 @@ function _elementExportString( o )
   if( _.routineIs( o.element ) )
   {
 
+    // if( o.name === 'globSplitsToRegexps' )
+    // debugger;
+
     if( o.element.vectorized )
     {
       // debugger;
@@ -1698,42 +1701,45 @@ function _elementExportString( o )
         writingAs : 'field',
       });
       // debugger;
-      result +=
+      result += o.dstContainerPath + '.' + o.name + ' = ' +
       `
 (function()
 {
-  debugger;
+  // debugger;
   let toVectorize = Object.create( null );
   ${toVectorize}
-  ${o.dstContainerPath}.${o.name} = _.vectorize( toVectorize );
-  debugger;
+  return _.vectorize( toVectorize );
 })();
       `
       // debugger;
     }
-
-    if( o.element.pre || o.element.body )
+    else if( o.element.pre || o.element.body )
     {
       _.assert( _.routineIs( o.element.pre ) && _.routineIs( o.element.body ) );
       result += routineFromPreAndBodyToString( o.element )
-      return result;
+      // return result;
+    }
+    else if( o.element.functor )
+    {
+      result += o.dstContainerPath + '.' + o.name + ' = ' + '(' + o.element.functor.toString() + ')();';
+    }
+    else
+    {
+      result += o.dstContainerPath + '.' + o.name + ' = ' + o.element.toString();
     }
 
-    if( o.element.functor )
-    debugger;
-    if( o.element.functor )
-    result += '(' + o.element.functor.toString() + ')();';
-    else
-    result += o.element.toString();
-
+    // if( o.name === 'globFilterKeys' )
     if( o.element.defaults )
     {
-      result += `\n${o.dstContainerPath}.${o.name}.defaults =\n` + _.toJs( o.element.defaults )
+      // debugger;
+      result += routineDefaults( `${o.dstContainerPath}.${o.name}`, o.element );
+      // result += `\n${o.dstContainerPath}.${o.name}.defaults =\n` + _.toJs( o.element.defaults )
     }
+
   }
   else
   {
-    result += _.toJs( o.element );
+    result += o.dstContainerPath + '.' + o.name + ' = ' + _.toJs( o.element );
   }
 
   /* */
@@ -1741,14 +1747,26 @@ function _elementExportString( o )
   if( _.routineIs( o.element ) )
   result += `;\nvar ${o.name} = ${o.dstContainerPath + '.' + o.name}`
 
-  let r = o.dstContainerPath + '.' + o.name + ' = ' + _.strLinesIndentation( result, '  ' ) + ';\n\n//\n';
+  // let r = o.dstContainerPath + '.' + o.name + ' = ' + _.strLinesIndentation( result, '  ' ) + ';\n\n//\n';
+  result = _.strLinesIndentation( result, '  ' ) + ';\n\n//\n';
 
   /* */
 
   let poped = o.visited.pop();
   _.assert( poped === o.element );
 
-  return r;
+  return result;
+  // return r;
+
+  /* */
+
+  function routineDefaults( dstContainerPath, routine )
+  {
+    let r = '';
+    let defaults = _._mapProperties({ srcMap : routine.defaults, enumerable : 1, own : 0 });
+    r += `\n${dstContainerPath}.defaults =\n` + _.toJs( defaults );
+    return r;
+  }
 
   /* */
 
@@ -1864,12 +1882,14 @@ function fields( namespace )
 {
   let result = [];
   _.assert( _.objectIs( _[ namespace ] ) );
+  // debugger;
   for( let f in _[ namespace ] )
   {
     let e = _[ namespace ][ f ];
     if( _.strIs( e ) || _.regexpIs( e ) )
     result.push( rou( namespace, f ) );
   }
+  // debugger;
   return result.join( '  ' );
 }
 
