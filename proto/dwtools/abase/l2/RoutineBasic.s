@@ -1677,7 +1677,7 @@ function _elementExportString( o )
   _.assert
   (
        _.routineIs( o.element ) || _.primitiveIs( o.element ) || _.regexpIs( o.element )
-    || ( _.mapIs( o.element ) && _.lengthOf( o.element ) === 0 )
+    || ( _.mapIs( o.element ) /*&& _.lengthOf( o.element ) === 0*/ )
     || ( _.arrayIs( o.element ) && _.lengthOf( o.element ) === 0 )
     , () => `Cant export ${o.name} is ${_.strType( o.element )}`
   );
