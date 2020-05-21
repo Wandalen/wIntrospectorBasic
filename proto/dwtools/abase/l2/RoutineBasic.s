@@ -2122,7 +2122,7 @@ _.mapExtend( _.program, ProgramExtension );
 // export
 // --
 
-if( typeof module !== 'undefined' && module !== null )
+if( typeof module !== 'undefined' )
 module[ 'exports' ] = Self;
 
 })();
