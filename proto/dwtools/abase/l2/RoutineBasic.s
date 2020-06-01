@@ -1688,7 +1688,7 @@ function _elementExportString( o )
   if( _.routineIs( o.element ) )
   {
 
-    // if( o.name === 'globSplitsToRegexps' )
+    // if( o.name === 'globShortSplitsToRegexps' )
     // debugger;
 
     if( o.element.vectorized )
@@ -1728,7 +1728,7 @@ function _elementExportString( o )
       result += o.dstContainerPath + '.' + o.name + ' = ' + o.element.toString();
     }
 
-    // if( o.name === 'globFilterKeys' )
+    // if( o.name === 'globShortFilterKeys' )
     if( o.element.defaults )
     {
       // debugger;
