@@ -642,7 +642,8 @@ function routineMake( o )
   catch( err )
   {
 
-    err = _.err( 'Cant parse the routine\n', _.strLinesNumber( '\n' + code ), '\n', err );
+    // err = _.err( 'Cant parse the routine\n', _.strLinesNumber( '\n' + code ), '\n', err );
+    err = _.err( err, `\nCant parse the routine ${o.name || ''}` );
 
     if( _global.document )
     {
@@ -653,46 +654,64 @@ function routineMake( o )
     }
     else if( _global.Blob && _global.Worker )
     {
-      let worker = _.makeWorker( code )
+      let worker = _.makeWorker( code );
     }
-    else
+    else handleErrorWithEsprima( err )
     {
-
-      debugger;
-      if( !Esprima && !_global.esprima )
-      try
-      {
-        Esprima = require( 'esprima' );
-      }
-      catch( err )
-      {
-      }
-
-      if( Esprima || _global.esprima )
-      {
-        let esprima = Esprima || _global.esprima;
-        try
-        {
-          let parsed = esprima.parse( '(function(){\n' + code + '\n})();' );
-        }
-        catch( err2 )
-        {
-          debugger;
-          throw _._err
-          ({
-            args : [ err , err2 ],
-            level : 1,
-            sourceCode : code,
-          });
-        }
-      }
+      err = _.err( _.strLinesNumber( code ), '\n', err );
     }
 
-    throw _.err( err, '\n', 'More information about error is comming asynchronously..' );
+    // throw _.err( err, '\n', 'More information about error is comming asynchronously..' );
+    throw err;
     return null;
   }
 
   return result;
+
+  /* */
+
+  function handleErrorWithEsprima( err )
+  {
+    debugger;
+
+    if( !Esprima && !_global.esprima )
+    try
+    {
+      Esprima = require( 'esprima' );
+    }
+    catch( err )
+    {
+    }
+
+    if( Esprima || _global.esprima )
+    {
+      let esprima = Esprima || _global.esprima;
+      try
+      {
+        let parsed = esprima.parse( '(function(){\n' + code + '\n})();' );
+      }
+      catch( err2 )
+      {
+        debugger;
+        if( err2.lineNumber !== undefined )
+        code = _.strLinesSelect
+        ({
+          src : code,
+          nearestLines : 5,
+          line : err2.lineNumber
+        });
+        throw _._err
+        ({
+          args : [ err , err2 ],
+          level : 1,
+          sourceCode : code,
+        });
+      }
+      return true;
+    }
+
+    return false;
+  }
 
   /* */
 
