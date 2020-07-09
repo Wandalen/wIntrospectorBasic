@@ -4,8 +4,8 @@
   "description" : "Collection of routines to generate functions, manage execution of such and analyze them.",
   "author" : "Kostiantyn Wandalen <wanalen@01.school>",
   "license" : "MIT",
-  "main" : "proto/dwtools/abase/l2/RoutineBasic.s",
-  "files" : [ "proto/dwtools/abase/l3", "proto/dwtools/Tools.s", "out" ],
+  "main" : "proto/wtools/abase/l2/RoutineBasic.s",
+  "files" : [ "proto/wtools/abase/l3", "proto/wtools/Tools.s", "out" ],
   "scripts" : { "test" : "wtest .run 'proto/**' rapidity:-3", "docgen" : "wdocgen proto" },
   "repository" :
   {

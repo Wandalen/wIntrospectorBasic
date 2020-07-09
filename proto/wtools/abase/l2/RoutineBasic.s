@@ -17,7 +17,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  let _ = require( '../../../dwtools/Tools.s' );
+  let _ = require( '../../../wtools/Tools.s' );
 
 }
 
@@ -1986,7 +1986,7 @@ function preform_body( o )
   {
     o.locals = Object.create( null );
     o.locals.toolsPath = _.path.nativize( _.module.toolsPathGet() );
-    // o.locals.toolsPath = _.path.nativize( _.path.join( __dirname, '../../../dwtools/Tools.s' ) ); /* xxx : rename the variable */
+    // o.locals.toolsPath = _.path.nativize( _.path.join( __dirname, '../../../wtools/Tools.s' ) ); /* xxx : rename the variable */
   }
 
   if( o.sourceCode === null )
