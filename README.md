@@ -6,5 +6,5 @@ Collection of routines to generate functions, manage execution of such and analy
 ## Try out
 ```
 npm install
-node sample/Sample.js
+node sample/Sample.s
 ```
