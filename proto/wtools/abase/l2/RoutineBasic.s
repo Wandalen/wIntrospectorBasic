@@ -2054,7 +2054,7 @@ write_body.defaults =
 {
   ... preform_body.defaults,
   tempPath : null,
-  dirPath : null,
+  dirPath : '.',
   programPath : null,
 }
 
