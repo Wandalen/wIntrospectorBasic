@@ -10,6 +10,7 @@ if( typeof module !== 'undefined' )
   require( '../l2/RoutineBasic.s' );
 
   _.include( 'wTesting' );
+  _.include( 'wFiles' )
   _.include( 'wConsequence' );
 
 }
@@ -369,6 +370,37 @@ function execStages( test )
   })
 }
 
+//
+
+function writeBasic( test )
+{
+  let context = this;
+  let a = test.assetFor( false );
+
+  test.case = 'options : tempPath, routine, dirPath - default';
+  var src =
+  {
+    tempPath : a.abs( '.' ),
+    routine : testApp
+  }
+  var got = _.program.write( src )
+  test.identical( got.programPath, a.abs( '.' ) + '/testApp.js' );
+
+  test.case = 'options : tempPath, routine, dirPath';
+  var src =
+  {
+    tempPath : a.abs( '.' ),
+    routine : testApp,
+    dirPath : 'dir'
+  }
+  var got = _.program.write( src )
+  test.identical( got.programPath, a.abs( '.' ) + '/dir/testApp.js' );
+  
+  /* - */
+
+  function testApp(){}
+}
+
 // --
 // declare
 // --
@@ -381,6 +413,7 @@ let Self =
 
   context :
   {
+    suiteTempPath : _.path.tempOpen( _.path.join( __dirname, '../..'  ), 'Routine' )
   },
 
   tests :
@@ -394,6 +427,8 @@ let Self =
     exec,
 
     execStages,
+
+    writeBasic,
   },
 
 }
