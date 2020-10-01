@@ -10,7 +10,7 @@ if( typeof module !== 'undefined' )
   require( '../l2/RoutineBasic.s' );
 
   _.include( 'wTesting' );
-  _.include( 'wFiles' )
+  _.include( 'wFiles' );
   _.include( 'wConsequence' );
 
 }
