@@ -10,12 +10,33 @@ if( typeof module !== 'undefined' )
   require( '../l2/RoutineBasic.s' );
 
   _.include( 'wTesting' );
+  _.include( 'wFiles' );
   _.include( 'wConsequence' );
 
 }
 
 let _global = _global_;
 let _ = _global_.wTools;
+let fileProvider = _testerGlobal_.wTools.fileProvider;
+let path = fileProvider.path;
+
+// --
+// context
+// --
+
+function onSuiteBegin()
+{
+  let self = this;
+  self.suiteTempPath = path.tempOpen( path.join( __dirname, '../..'  ), 'Routine' );
+
+}
+
+function onSuiteEnd()
+{
+  let self = this;
+  _.assert( _.strHas( self.suiteTempPath, 'Routine' ) )
+  path.tempClose( self.suiteTempPath );
+}
 
 //
 
@@ -369,6 +390,37 @@ function execStages( test )
   })
 }
 
+//
+
+function writeBasic( test )
+{
+  let context = this;
+  let a = test.assetFor( false );
+
+  test.case = 'options : tempPath, routine, dirPath - default';
+  var src =
+  {
+    tempPath : a.abs( '.' ),
+    routine : testApp
+  }
+  var got = _.program.write( src )
+  test.identical( got.programPath, a.abs( '.' ) + '/testApp.js' );
+
+  test.case = 'options : tempPath, routine, dirPath';
+  var src =
+  {
+    tempPath : a.abs( '.' ),
+    routine : testApp,
+    dirPath : 'dir'
+  }
+  var got = _.program.write( src )
+  test.identical( got.programPath, a.abs( '.' ) + '/dir/testApp.js' );
+  
+  /* - */
+
+  function testApp(){}
+}
+
 // --
 // declare
 // --
@@ -379,8 +431,12 @@ let Self =
   name : 'Tools.l3.RoutineBasic',
   silencing : 1,
 
+  onSuiteBegin,
+  onSuiteEnd,
+
   context :
   {
+    suiteTempPath : null,
   },
 
   tests :
@@ -394,6 +450,8 @@ let Self =
     exec,
 
     execStages,
+
+    writeBasic,
   },
 
 }
