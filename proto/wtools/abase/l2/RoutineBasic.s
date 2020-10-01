@@ -2037,7 +2037,8 @@ function write_body( o )
   if( o.programPath === null )
   {
     _.assert( _.strIs( o.tempPath ), 'Expects temp path {- o.tempPath -}' );
-    o.programPath = _.path.join( o.tempPath, o.name + '.js' );
+    _.assert( _.strIs( o.dirPath ), 'Expects dir path {- o.dirPath -}' );
+    o.programPath = _.path.join( o.tempPath, o.dirPath, o.name + '.js' );
   }
 
   // logger.log( _.strLinesNumber( o.sourceCode ) );
@@ -2053,6 +2054,7 @@ write_body.defaults =
 {
   ... preform_body.defaults,
   tempPath : null,
+  dirPath : '.',
   programPath : null,
 }
 
