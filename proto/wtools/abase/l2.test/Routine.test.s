@@ -17,6 +17,26 @@ if( typeof module !== 'undefined' )
 
 let _global = _global_;
 let _ = _global_.wTools;
+let fileProvider = _testerGlobal_.wTools.fileProvider;
+let path = fileProvider.path;
+
+// --
+// context
+// --
+
+function onSuiteBegin()
+{
+  let self = this;
+  self.suiteTempPath = path.tempOpen( _.path.join( __dirname, '../..'  ), 'Routine' );
+
+}
+
+function onSuiteEnd()
+{
+  let self = this;
+  _.assert( _.strHas( self.suiteTempPath, 'Routine' ) )
+  path.tempClose( self.suiteTempPath );
+}
 
 //
 
@@ -411,9 +431,12 @@ let Self =
   name : 'Tools.l3.RoutineBasic',
   silencing : 1,
 
+  onSuiteBegin,
+  onSuiteEnd,
+
   context :
   {
-    suiteTempPath : _.path.tempOpen( _.path.join( __dirname, '../..'  ), 'Routine' )
+    suiteTempPath : null,
   },
 
   tests :
