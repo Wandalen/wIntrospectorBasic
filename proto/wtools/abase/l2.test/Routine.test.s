@@ -27,7 +27,7 @@ let path = fileProvider.path;
 function onSuiteBegin()
 {
   let self = this;
-  self.suiteTempPath = path.tempOpen( _.path.join( __dirname, '../..'  ), 'Routine' );
+  self.suiteTempPath = path.tempOpen( path.join( __dirname, '../..'  ), 'Routine' );
 
 }
 
