@@ -17,6 +17,6 @@
     "url" : "https://github.com/Wandalen/wRoutineBasic/issues"
   },
   "dependencies" : { "wTools" : "alpha" },
-  "devDependencies" : { "wTesting" : "alpha", "wroutinebasic" : "file:." },
+  "devDependencies" : { "wTesting" : "alpha" },
   "keywords" : [ "wTools" ]
 }
