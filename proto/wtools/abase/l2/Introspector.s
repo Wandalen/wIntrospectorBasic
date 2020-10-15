@@ -3,12 +3,12 @@
 'use strict';
 
 /**
- * Collection of routines to generate functions, manage execution of such and analyze them.
+ * Collection of cross-platform routines to generate functions, manage execution of such and analyze them.
   @module Tools/base/IntrospectorBasic
 */
 
 /**
- * Collection of routines to generate functions.
+ * Collection of cross-platform routines to generate functions.
   @namespace Tools.program
   @extends Tools
   @module Tools/base/IntrospectorBasic
@@ -1732,10 +1732,10 @@ function _elementExportString( o )
       `
       // debugger;
     }
-    else if( o.element.pre || o.element.body )
+    else if( o.element.head || o.element.body )
     {
-      _.assert( _.routineIs( o.element.pre ) && _.routineIs( o.element.body ) );
-      result += routineFromPreAndBodyToString( o.element )
+      _.assert( _.routineIs( o.element.head ) && _.routineIs( o.element.body ) );
+      result += routineUniteToString( o.element )
       // return result;
     }
     else if( o.element.functor )
@@ -1808,25 +1808,25 @@ function _elementExportString( o )
 
   /* */
 
-  function routineFromPreAndBodyToString( element )
+  function routineUniteToString( element )
   {
     let str =
 `
-  var _${element.name}_pre = ${routineToString( element.pre )}
-${routineProperties( `_${element.name}_pre`, element.pre )}
+  var _${element.name}_head = ${routineToString( element.head )}
+${routineProperties( `_${element.name}_head`, element.head )}
   var _${element.name}_body = ${routineToString( element.body )}
 ${routineProperties( `_${element.name}_body`, element.body )};`
 
-    if( o.name === 'routineFromPreAndBody' )
+    if( o.name === 'routineUnite' )
     {
       str += `\n${o.dstContainerPath}.${o.name} = ` + _.strLinesIndentation( element.toString(), '  ' );
-      str += `\n${o.dstContainerPath}.${o.name}.pre = ` + `_${element.name}_pre;`
+      str += `\n${o.dstContainerPath}.${o.name}.head = ` + `_${element.name}_head;`
       str += `\n${o.dstContainerPath}.${o.name}.body = ` + `_${element.name}_body;`
       str += `\n${o.dstContainerPath}.${o.name}.defaults = ` + 'Object.create( ' + `_${element.name}_body.defaults` + ' );'
     }
     else
     {
-      str += `\n${o.dstContainerPath}.${o.name} = _.routineFromPreAndBody( _${element.name}_pre, _${element.name}_body );`
+      str += `\n${o.dstContainerPath}.${o.name} = _.routineUnite( _${element.name}_head, _${element.name}_body );`
     }
 
     return str;
@@ -1954,7 +1954,7 @@ function clr( cls, method )
 // program
 // --
 
-function preform_pre( routine, args )
+function preform_head( routine, args )
 {
 
   let o = args[ 0 ];
@@ -2022,7 +2022,7 @@ preform_body.defaults =
   locals : null,
 }
 
-let preform = _.routineFromPreAndBody( preform_pre, preform_body );
+let preform = _.routineUnite( preform_head, preform_body );
 
 //
 
@@ -2058,7 +2058,7 @@ write_body.defaults =
   programPath : null,
 }
 
-let write = _.routineFromPreAndBody( preform_pre, write_body );
+let write = _.routineUnite( preform_head, write_body );
 
 // --
 // declare

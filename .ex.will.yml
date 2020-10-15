@@ -2,7 +2,7 @@
 about :
 
   name : 'wIntrospectorBasic'
-  description : 'Collection of routines to generate functions, manage execution of such and analyze them.'
+  description : 'Collection of cross-platform routines to generate functions, manage execution of such and analyze them.'
   version : '0.4.0'
   enabled : 1
   interpreters :
