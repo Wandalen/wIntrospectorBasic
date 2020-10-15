@@ -3,8 +3,8 @@ root:
   - wIntrospectorBasic.out
 consistency:
   ../.ex.will.yml: &ref_0
-    hash: 470c5d0947f747d814fc23593b25c7e3
-    size: 1794
+    hash: 061147e73d82dadabd82783c901da6f0
+    size: 1809
   ../.im.will.yml: &ref_1
     hash: c9ed639edb1dd2b5f22aa1d91017e96a
     size: 4960
@@ -14,8 +14,8 @@ module:
       name: wIntrospectorBasic
       org: noorg
       description: >-
-        Collection of cross-platform routines to generate functions, manage execution of such
-        and analyze them.
+        Collection of cross-platform routines to generate functions, manage
+        execution of such and analyze them.
       enabled: 1
       version: 0.4.0
       interpreters: &ref_2
@@ -782,8 +782,8 @@ module:
       name: wIntrospectorBasic
       org: noorg
       description: >-
-        Collection of cross-platform routines to generate functions, manage execution of such
-        and analyze them.
+        Collection of cross-platform routines to generate functions, manage
+        execution of such and analyze them.
       enabled: 1
       version: 0.4.0
       interpreters: *ref_2
@@ -1450,8 +1450,8 @@ module:
           - 'build::npm'
     consistency:
       ../.ex.will.yml:
-        hash: 470c5d0947f747d814fc23593b25c7e3
-        size: 1794
+        hash: 061147e73d82dadabd82783c901da6f0
+        size: 1809
       ../.im.will.yml:
         hash: c9ed639edb1dd2b5f22aa1d91017e96a
         size: 4960
