@@ -1,8 +1,8 @@
 format: outwillfile-2.0
 root:
-  - wRoutineBasic.out
+  - wIntrospectorBasic.out
 consistency:
-  wRoutineBasic.out.will.yml: &ref_0
+  wIntrospectorBasic.out.will.yml: &ref_0
     hash: 36edfc6479ca1d1e9d1f0439a647f4d6
     size: 37943
   ../.ex.will.yml: &ref_1
@@ -12,9 +12,9 @@ consistency:
     hash: 0339cf7e8f02c2832726684aad3a205d
     size: 4945
 module:
-  wRoutineBasic.out:
+  wIntrospectorBasic.out:
     about:
-      name: wRoutineBasic
+      name: wIntrospectorBasic
       org: noorg
       description: >-
         Collection of routines to generate functions, manage execution of such
@@ -31,7 +31,7 @@ module:
       author: Kostiantyn Wandalen <wanalen@01.school>
       contributors:
         - Kostiantyn Wandalen <wanalen@01.school>
-      npm.name: wroutinebasic
+      npm.name: wintrospectorbasic
       npm.scripts:
         test: wtest .run proto/**
         docgen: wdocgen .build proto
@@ -39,11 +39,11 @@ module:
       module.willfiles:
         criterion:
           predefined: 1
-        path: wRoutineBasic.out.will.yml
+        path: wIntrospectorBasic.out.will.yml
       module.common:
         criterion:
           predefined: 1
-        path: wRoutineBasic.out
+        path: wIntrospectorBasic.out
       module.original.willfiles:
         criterion:
           predefined: 1
@@ -64,13 +64,13 @@ module:
         criterion:
           predefined: 1
       repository:
-        path: 'git+https:///github.com/Wandalen/wRoutineBasic.git'
+        path: 'git+https:///github.com/Wandalen/wIntrospectorBasic.git'
       origins:
         path:
-          - 'git+https:///github.com/Wandalen/wRoutineBasic.git'
-          - 'npm:///wroutinebasic'
+          - 'git+https:///github.com/Wandalen/wIntrospectorBasic.git'
+          - 'npm:///wintrospectorbasic'
       bugtracker:
-        path: 'https:///github.com/Wandalen/wRoutineBasic/issues'
+        path: 'https:///github.com/Wandalen/wIntrospectorBasic/issues'
       in:
         path: .
       out:
@@ -114,7 +114,7 @@ module:
       entry.proto.no.tests:
         criterion:
           tests: no.tests
-        path: ../proto/wtools/abase/l2/RoutineBasic.s
+        path: ../proto/wtools/abase/l2/IntrospectorBasic.s
       entry.proto.only.tests:
         criterion:
           tests: only.tests
@@ -124,13 +124,13 @@ module:
           debug: debug
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/wtools/abase/l2/RoutineBasic.s'
+        path: '{path::out.*=1}/source/wtools/abase/l2/IntrospectorBasic.s'
       entry.out.raw.debug.release:
         criterion:
           debug: release
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/wtools/abase/l2/RoutineBasic.s'
+        path: '{path::out.*=1}/source/wtools/abase/l2/IntrospectorBasic.s'
       entry.out.compiled.debug.debug:
         criterion:
           debug: debug
@@ -161,7 +161,7 @@ module:
           - ../proto/wtools/Tools.s
           - ../proto/wtools/abase
           - ../proto/wtools/abase/l2
-          - ../proto/wtools/abase/l2/RoutineBasic.s
+          - ../proto/wtools/abase/l2/IntrospectorBasic.s
           - ../proto/wtools/abase/l2.test
           - ../proto/wtools/abase/l2.test/Routine.test.s
           - ../proto/wtools/amid
@@ -171,7 +171,7 @@ module:
         path: 'npm:///wTools'
         autoExporting: 0
         enabled: 0
-      wroutinebasic:
+      wintrospectorbasic:
         path: 'hd://..'
         autoExporting: 0
         enabled: 0
@@ -796,12 +796,12 @@ module:
           content: proto
           export: 1
     consistency:
-      wRoutineBasic.out.will.yml: *ref_0
+      wIntrospectorBasic.out.will.yml: *ref_0
       ../.ex.will.yml: *ref_1
       ../.im.will.yml: *ref_2
   ../:
     about:
-      name: wRoutineBasic
+      name: wIntrospectorBasic
       org: noorg
       description: >-
         Collection of routines to generate functions, manage execution of such
@@ -818,7 +818,7 @@ module:
       author: Kostiantyn Wandalen <wanalen@01.school>
       contributors:
         - Kostiantyn Wandalen <wanalen@01.school>
-      npm.name: wroutinebasic
+      npm.name: wintrospectorbasic
       npm.scripts:
         test: wtest .run proto/**
         docgen: wdocgen .build proto
@@ -838,7 +838,7 @@ module:
       module.peer.willfiles:
         criterion:
           predefined: 1
-        path: out/wRoutineBasic.out.will.yml
+        path: out/wIntrospectorBasic.out.will.yml
       module.peer.in:
         criterion:
           predefined: 1
@@ -851,13 +851,13 @@ module:
         criterion:
           predefined: 1
       repository:
-        path: 'git+https:///github.com/Wandalen/wRoutineBasic.git'
+        path: 'git+https:///github.com/Wandalen/wIntrospectorBasic.git'
       origins:
         path:
-          - 'git+https:///github.com/Wandalen/wRoutineBasic.git'
-          - 'npm:///wroutinebasic'
+          - 'git+https:///github.com/Wandalen/wIntrospectorBasic.git'
+          - 'npm:///wintrospectorbasic'
       bugtracker:
-        path: 'https:///github.com/Wandalen/wRoutineBasic/issues'
+        path: 'https:///github.com/Wandalen/wIntrospectorBasic/issues'
       in:
         path: .
       out:
@@ -901,7 +901,7 @@ module:
       entry.proto.no.tests:
         criterion:
           tests: no.tests
-        path: proto/wtools/abase/l2/RoutineBasic.s
+        path: proto/wtools/abase/l2/IntrospectorBasic.s
       entry.proto.only.tests:
         criterion:
           tests: only.tests
@@ -911,13 +911,13 @@ module:
           debug: debug
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/wtools/abase/l2/RoutineBasic.s'
+        path: '{path::out.*=1}/source/wtools/abase/l2/IntrospectorBasic.s'
       entry.out.raw.debug.release:
         criterion:
           debug: release
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/wtools/abase/l2/RoutineBasic.s'
+        path: '{path::out.*=1}/source/wtools/abase/l2/IntrospectorBasic.s'
       entry.out.compiled.debug.debug:
         criterion:
           debug: debug
@@ -935,7 +935,7 @@ module:
         path: 'npm:///wTools'
         autoExporting: 0
         enabled: 0
-      wroutinebasic:
+      wintrospectorbasic:
         path: 'hd://.'
         autoExporting: 0
         enabled: 0
@@ -1484,4 +1484,4 @@ module:
       ../.im.will.yml:
         hash: 0339cf7e8f02c2832726684aad3a205d
         size: 4945
-      wRoutineBasic.out.will.yml: *ref_0
+      wIntrospectorBasic.out.will.yml: *ref_0

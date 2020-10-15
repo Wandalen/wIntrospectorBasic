@@ -1,4 +1,4 @@
-( function _Routines_test_s( ) {
+( function _Introspector_test_s( ) {
 
 'use strict';
 
@@ -7,7 +7,7 @@ if( typeof module !== 'undefined' )
 
   let _ = require( '../../../wtools/Tools.s' );
 
-  require( '../l2/RoutineBasic.s' );
+  require( '../l2/Introspector.s' );
 
   _.include( 'wTesting' );
   _.include( 'wFiles' );
@@ -415,7 +415,7 @@ function writeBasic( test )
   }
   var got = _.program.write( src )
   test.identical( got.programPath, a.abs( '.' ) + '/dir/testApp.js' );
-  
+
   /* - */
 
   function testApp(){}
@@ -428,7 +428,7 @@ function writeBasic( test )
 let Self =
 {
 
-  name : 'Tools.l3.RoutineBasic',
+  name : 'Tools.l3.IntrospectorBasic',
   silencing : 1,
 
   onSuiteBegin,

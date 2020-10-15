@@ -1,5 +1,5 @@
 
-let _ = require( 'wroutinebasic' );
+let _ = require( 'wintrospectorbasic' );
 
 /* exec source code with context */
 

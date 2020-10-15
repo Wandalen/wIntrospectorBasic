@@ -1,22 +1,22 @@
 {
-  "name" : "wroutinebasic",
+  "name" : "wintrospectorbasic",
   "version" : "0.3.123",
   "description" : "Collection of routines to generate functions, manage execution of such and analyze them.",
   "author" : "Kostiantyn Wandalen <wanalen@01.school>",
   "license" : "MIT",
-  "main" : "proto/wtools/abase/l2/RoutineBasic.s",
+  "main" : "proto/wtools/abase/l2/IntrospectorBasic.s",
   "files" : [ "proto/wtools/abase/l3", "proto/wtools/Tools.s", "out" ],
   "scripts" : { "test" : "wtest .run 'proto/**' rapidity:-3", "docgen" : "wdocgen proto" },
   "repository" :
   {
     "type" : "git",
-    "url" : "https://github.com/Wandalen/wRoutineBasic.git"
+    "url" : "https://github.com/Wandalen/wIntrospectorBasic.git"
   },
   "bugs" :
   {
-    "url" : "https://github.com/Wandalen/wRoutineBasic/issues"
+    "url" : "https://github.com/Wandalen/wIntrospectorBasic/issues"
   },
   "dependencies" : { "wTools" : "" },
-  "devDependencies" : { "wTesting" : "", "wroutinebasic" : "file:." },
+  "devDependencies" : { "wTesting" : "", "wintrospectorbasic" : "file:." },
   "keywords" : [ "wTools" ]
 }

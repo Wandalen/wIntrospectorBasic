@@ -1,5 +1,5 @@
 
-let _ = require( 'wroutinebasic' );
+let _ = require( 'wintrospectorbasic' );
 
 /* call routine with context and arguments */
 

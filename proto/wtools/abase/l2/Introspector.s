@@ -1,17 +1,17 @@
-(function _RoutineBasic_s_() {
+(function _Introspector_s_() {
 
 'use strict';
 
 /**
  * Collection of routines to generate functions, manage execution of such and analyze them.
-  @module Tools/base/RoutineBasic
+  @module Tools/base/IntrospectorBasic
 */
 
 /**
  * Collection of routines to generate functions.
   @namespace Tools.program
   @extends Tools
-  @module Tools/base/RoutineBasic
+  @module Tools/base/IntrospectorBasic
 */
 
 if( typeof module !== 'undefined' )
@@ -831,7 +831,7 @@ defaults.context = null;
 //
 
 /**
- * @summary Short-cut for {@link module:Tools/base/RoutineBasic.RoutineBasic.routineExec} routine.
+ * @summary Short-cut for {@link module:Tools/base/IntrospectorBasic.IntrospectorBasic.routineExec} routine.
  * Returns result of routine execution instead of options map.
  * @param {Object} o options map
  * @param {Boolean} o.debug=0 prepends `debugger` prefix

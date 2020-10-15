@@ -1,7 +1,7 @@
 
 about :
 
-  name : 'wRoutineBasic'
+  name : 'wIntrospectorBasic'
   description : 'Collection of routines to generate functions, manage execution of such and analyze them.'
   version : '0.4.0'
   enabled : 1
@@ -15,18 +15,18 @@ about :
   author : 'Kostiantyn Wandalen <wanalen@01.school>'
   contributors :
   - 'Kostiantyn Wandalen <wanalen@01.school>'
-  npm.name : 'wroutinebasic'
+  npm.name : 'wintrospectorbasic'
   npm.scripts :
     test : 'wtest .run proto/**'
     docgen : 'wdocgen .build proto'
 
 path :
 
-  repository : git+https:///github.com/Wandalen/wRoutineBasic.git
+  repository : git+https:///github.com/Wandalen/wIntrospectorBasic.git
   origins :
-   - git+https:///github.com/Wandalen/wRoutineBasic.git
-   - npm:///wroutinebasic
-  bugtracker : https:///github.com/Wandalen/wRoutineBasic/issues
+   - git+https:///github.com/Wandalen/wIntrospectorBasic.git
+   - npm:///wintrospectorbasic
+  bugtracker : https:///github.com/Wandalen/wIntrospectorBasic/issues
 
 step :
 
