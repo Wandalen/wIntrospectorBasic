@@ -4,7 +4,7 @@
   "description" : "Collection of cross-platform routines to generate functions, manage execution of such and analyze them.",
   "author" : "Kostiantyn Wandalen <wanalen@01.school>",
   "license" : "MIT",
-  "main" : "proto/wtools/abase/l2/IntrospectorBasic.s",
+  "main" : "proto/wtools/abase/l2/Introspector.s",
   "files" : [ "proto/wtools/abase/l2", "proto/wtools/Tools.s", "out" ],
   "scripts" : { "test" : "wtest .run 'proto/**' rapidity:-3", "docgen" : "wdocgen proto" },
   "repository" :
