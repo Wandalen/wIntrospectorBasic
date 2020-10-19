@@ -1054,7 +1054,7 @@ function execStages( stages,o )
     if( !o.manual )
     ready.ifNoErrorThen( routineCall );
 
-    ready.timeOut( o.delay );
+    ready.delay( o.delay );
 
     handleStage();
 
