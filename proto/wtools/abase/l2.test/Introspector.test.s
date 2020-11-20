@@ -313,9 +313,9 @@ function routineMake( test )
     debug : 1
   });
   var source = got.toString();
-  test.is( _.strHas( source, '// /source.js' ) );
-  test.is( _.strHas( source, 'use strict' ) );
-  test.is( _.strHas( source, 'debugger' ) );
+  test.true( _.strHas( source, '// /source.js' ) );
+  test.true( _.strHas( source, 'use strict' ) );
+  test.true( _.strHas( source, 'debugger' ) );
   test.identical( got(), 2 );
 }
 
