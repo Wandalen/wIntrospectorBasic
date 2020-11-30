@@ -1935,8 +1935,6 @@ let ToolsExtension =
   execInWorker,
   makeWorker,
 
-  // execStages, /* xxx qqq : move to module Consequence */
-
   //
 
   routineNew,
