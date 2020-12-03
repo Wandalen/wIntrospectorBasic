@@ -483,6 +483,7 @@ function routineSourceGet( o )
   _.routineOptions( routineSourceGet,o );
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.routineIs( o.routine ) );
+  _.assert( _.routineIs( o.routine.toSource ) || _.routineIs( o.routine.toString ) );
 
   let result = o.routine.toSource ? o.routine.toSource() : o.routine.toString();
 
