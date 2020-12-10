@@ -397,7 +397,7 @@ function routinesCallEvery()
 /**
  * @summary Calls provided methods with custom context and arguments.
  * @description
- * Each method is called with own context. Arguments are common. Saves result of each call into array.
+ * Each method is called with onlyOwn context. Arguments are common. Saves result of each call into array.
  * @param {Array} contexts array of contexts
  * @param {Function} methods methods that will be called
  * @param {Array} [args] arguments array
@@ -1621,7 +1621,7 @@ function _elementExportString( o )
   function routineDefaults( dstContainerPath, routine )
   {
     let r = '';
-    let defaults = _._mapProperties({ srcMap : routine.defaults, enumerable : 1, own : 0 });
+    let defaults = _.property._select({ srcMap : routine.defaults, enumerable : 1, onlyOwn : 0 });
     r += `\n${dstContainerPath}.defaults =\n` + _.toJs( defaults );
     return r;
   }
