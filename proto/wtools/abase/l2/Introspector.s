@@ -1621,7 +1621,7 @@ function _elementExportString( o )
   function routineDefaults( dstContainerPath, routine )
   {
     let r = '';
-    let defaults = _.property._select({ srcMap : routine.defaults, enumerable : 1, onlyOwn : 0 });
+    let defaults = _.property._ofAct({ srcMap : routine.defaults, onlyEnumerable : 1, onlyOwn : 0 });
     r += `\n${dstContainerPath}.defaults =\n` + _.toJs( defaults );
     return r;
   }
