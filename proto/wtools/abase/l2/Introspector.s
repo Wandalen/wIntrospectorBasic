@@ -659,9 +659,7 @@ function routineMake( o )
       let worker = _.makeWorker( code );
     }
     else handleErrorWithEsprima( err )
-    {
-      err = _.err( _.strLinesNumber( code ), '\n', err );
-    }
+    err = _.err( _.strLinesNumber( code ), '\n', err );
 
     // throw _.err( err, '\n', 'More information about error is comming asynchronously..' );
     throw err;
