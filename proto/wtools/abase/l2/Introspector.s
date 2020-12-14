@@ -971,7 +971,7 @@ function _routineInfo( o )
   for( let i in o.routine.inline )
   {
     result += o.tab + i + ' : ';
-    let opt = _.mapExtend( null,o );
+    let opt = _.mapExtend( null, o );
     o.routine = o.routine.inline[ i ];
     result += _routineInfo( o );
   }
