@@ -1,4 +1,5 @@
-(function _Introspector_s_() {
+(function _Introspector_s_()
+{
 
 'use strict';
 
@@ -480,7 +481,7 @@ function routineSourceGet( o )
   if( _.routineIs( o ) )
   o = { routine : o };
 
-  _.routineOptions( routineSourceGet,o );
+  _.routineOptions( routineSourceGet, o );
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.routineIs( o.routine ) );
   _.assert( _.routineIs( o.routine.toSource ) || _.routineIs( o.routine.toString ) );
@@ -519,8 +520,8 @@ function routineSourceGet( o )
 
     if( before && after )
     {
-      code = code.replace( reg1,'' );
-      code = code.replace( reg2,'' );
+      code = code.replace( reg1, '' );
+      code = code.replace( reg2, '' );
     }
 
     return [ before[ 0 ], code, after[ 0 ] ];
@@ -585,7 +586,7 @@ function routineMake( o )
   if( _.strIs( o ) )
   o = { code : o };
 
-  _.routineOptions( routineMake,o );
+  _.routineOptions( routineMake, o );
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.objectIs( o.externals ) || o.externals === null );
   _.assert( !!_realGlobal_ );
@@ -703,7 +704,7 @@ function routineMake( o )
         });
         throw _._err
         ({
-          args : [ err , err2 ],
+          args : [ err, err2 ],
           level : 1,
           sourceCode : code,
         });
@@ -788,7 +789,7 @@ function routineExec( o )
   if( _.strIs( o ) )
   o = { code : o };
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.routineOptions( routineExec,o );
+  _.routineOptions( routineExec, o );
 
   o.routine = _.routineMake
   ({
@@ -880,7 +881,7 @@ function execInWorker( o )
   if( _.strIs( o ) )
   o = { code : o };
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.routineOptions( execInWorker,o );
+  _.routineOptions( execInWorker, o );
 
   let blob = new Blob( [ o.code ], { type : 'text/javascript' } );
   let worker = new Worker( URL.createObjectURL( blob ) );
@@ -903,7 +904,7 @@ function makeWorker( o )
   if( _.strIs( o ) )
   o = { code : o };
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.routineOptions( makeWorker,o );
+  _.routineOptions( makeWorker, o );
 
   let blob = new Blob( [ o.code ], { type : 'text/javascript' } );
   let worker = new Worker( URL.createObjectURL( blob ) );
@@ -920,9 +921,9 @@ makeWorker.defaults =
 //
 // --
 
-function routineNew( routine,name,usingExtendtype )
+function routineNew( routine, name, usingExtendtype )
 {
-  _.assert( _.routineIs( routine ),'creating routine from string is not implemented' );
+  _.assert( _.routineIs( routine ), 'creating routine from string is not implemented' );
 
   if( usingExtendtype === undefined ) usingExtendtype = true;
   if( name === undefined ) name = '_noname_';
@@ -964,7 +965,7 @@ function _routineInfo( o )
 
   result += o.routine.name || 'noname';
   result += '\n';
-  result += _.toStr( assets,{ levels : 2, tab : o.tab, prependTab : 1, wrap : 0 });
+  result += _.toStr( assets, { levels : 2, tab : o.tab, prependTab : 1, wrap : 0 });
   result += '\n----------------\n';
 
   o.tab += '  ';
@@ -982,18 +983,18 @@ function _routineInfo( o )
 
 //
 
-function routineCollectAssets( dst,routine )
+function routineCollectAssets( dst, routine )
 {
 
   _.assert( arguments.length === 2, 'Expects exactly two arguments' );
   _.assert( _.routineIs( routine ) );
 
-  return _routineCollectAssets( dst,routine,[] );
+  return _routineCollectAssets( dst, routine, [] );
 }
 
 //
 
-function _routineCollectAssets( dst,routine,visited )
+function _routineCollectAssets( dst, routine, visited )
 {
 
   _.assert( _.routineIs( routine ) );
@@ -1010,11 +1011,11 @@ function _routineCollectAssets( dst,routine,visited )
     continue;
 
     dst[ a ] = dst[ a ] || Object.create( null );
-    _.assertMapHasNone( dst[ a ],routine[ a ] );
+    _.assertMapHasNone( dst[ a ], routine[ a ] );
     debugger;
     dst[ a ] = _.mapsFlatten
     ({
-      src : [ dst[ a ],routine[ a ] ],
+      src : [ dst[ a ], routine[ a ] ],
       allowingCollision : 0,
     });
 
@@ -1025,7 +1026,7 @@ function _routineCollectAssets( dst,routine,visited )
   {
 
     if( visited.indexOf( dst.inline[ i ] ) === -1 )
-    _routineCollectAssets( dst,dst.inline[ i ],visited );
+    _routineCollectAssets( dst, dst.inline[ i ], visited );
 
   }
 
@@ -1040,12 +1041,12 @@ function routineIsolate( o )
   if( _.routineIs( o ) )
   o = { routine : o };
   _.assert( o.routine );
-  _.assertMapHasOnly( o,routineIsolate.defaults );
+  _.assertMapHasOnly( o, routineIsolate.defaults );
 
   let name = o.name || o.routine.name;
   _.assert( _.strIs( name ) && name.length );
 
-  _.routineCollectAssets( o,o.routine );
+  _.routineCollectAssets( o, o.routine );
 
   //
 
@@ -1073,26 +1074,26 @@ function routineIsolate( o )
   if( o.routine.debugIsolate )
   debugger;
 
-/*
-  if( parsed.source.indexOf( 'doesAcceptZero' ) !== -1 )
-  debugger;
+  /*
+    if( parsed.source.indexOf( 'doesAcceptZero' ) !== -1 )
+    debugger;
 
-  if( parsed.source.indexOf( 'doesAcceptZero' ) !== -1 )
-  console.log( _.routineInfo( o.routine ) );
+    if( parsed.source.indexOf( 'doesAcceptZero' ) !== -1 )
+    console.log( _.routineInfo( o.routine ) );
 
-  if( parsed.source.indexOf( 'doesAcceptZero' ) !== -1 )
-  _.routineCollectAssets( o,o.routine );
+    if( parsed.source.indexOf( 'doesAcceptZero' ) !== -1 )
+    _.routineCollectAssets( o,o.routine );
 
-  if( parsed.source.indexOf( 'doesAcceptZero' ) !== -1 )
-  debugger;
-*/
+    if( parsed.source.indexOf( 'doesAcceptZero' ) !== -1 )
+    debugger;
+  */
   //
 
   let sconstant = '';
   if( o.constant )
   for( let s in o.constant )
   {
-    sconstant += 'const ' + s + ' = ' + _.toStr( o.constant[ s ],{ levels : 99, escaping : 1 } ) + ';\n';
+    sconstant += 'const ' + s + ' = ' + _.toStr( o.constant[ s ], { levels : 99, escaping : 1 } ) + ';\n';
   }
 
   //
@@ -1115,10 +1116,10 @@ function routineIsolate( o )
   //
 
   let source =
-  sconstant + '\n' +
-  sexternal + '\n' +
-  ( o.debug ? 'debugger;\n' : '' ) +
-  'return ( ' + parsed.source + ' );';
+  sconstant + '\n'
+  + sexternal + '\n'
+  + ( o.debug ? 'debugger;\n' : '' )
+  + 'return ( ' + parsed.source + ' );';
 
   //debugger;
 
@@ -1172,10 +1173,10 @@ function routineInline( o )
   if( o.routine.inline )
   {
     o.inline = o.inline || Object.create( null );
-    _.assertMapHasNone( o.inline,o.routine.inline );
+    _.assertMapHasNone( o.inline, o.routine.inline );
     o.inline = _.mapsFlatten
     ({
-      src : [ o.inline,o.routine.inline ],
+      src : [ o.inline, o.routine.inline ],
       allowingCollision : 0,
     });
   }
@@ -1228,12 +1229,12 @@ function routineInline( o )
 
   //
 
-  function inlineFull( ins,sub )
+  function inlineFull( ins, sub )
   {
 
-    let regexp = new RegExp( '(((let\\s+)?(\\w+)\\s*=\\s*)?|(\\W))(' + ins + ')\\s*\\.call\\s*\\(([^)]*)\\)','gm' );
+    let regexp = new RegExp( '(((let\\s+)?(\\w+)\\s*=\\s*)?|(\\W))(' + ins + ')\\s*\\.call\\s*\\(([^)]*)\\)', 'gm' );
     let rreturn = /return(\s+([^;}]+))?([;}]?)/mg;
-    result.source = result.source.replace( regexp,function( original )
+    result.source = result.source.replace( regexp, function( original )
     {
 
       _.assert( sub.name );
@@ -1270,7 +1271,7 @@ function routineInline( o )
       if( variableName )
       r += 'let ' + variableName + ';\n';
 
-      body = body.replace( rreturn,function()
+      body = body.replace( rreturn, function()
       {
         debugger;
         throw _.err( 'not tested' );
@@ -1308,11 +1309,11 @@ function routineInline( o )
 
   //
 
-  function inlineCall( ins,sub )
+  function inlineCall( ins, sub )
   {
 
-    let regexp = new RegExp( '(\\W)(' + ins + ')\\s*\\.','gm' );
-    result.source = result.source.replace( regexp,function( a,b,c,d,e )
+    let regexp = new RegExp( '(\\W)(' + ins + ')\\s*\\.', 'gm' );
+    result.source = result.source.replace( regexp, function( b ) /* Yevhen : was : a, b, c, d, e, removed unused a, c, d, e */
     {
       inlined += 1;
       return b + '/* _inlineCall_' + ins + '_ */' + '( ' + sub.source + ' ).' + '/* _inlineCall_' + ins + '_ */';
@@ -1322,11 +1323,11 @@ function routineInline( o )
 
   //
 
-  function inlineRegular( ins,sub )
+  function inlineRegular( ins, sub )
   {
 
-    let regexp = new RegExp( '(\\W)(' + ins + ')(\\W)','gm' );
-    result.source = result.source.replace( regexp,function( a,b,c,d,e )
+    let regexp = new RegExp( '(\\W)(' + ins + ')(\\W)', 'gm' );
+    result.source = result.source.replace( regexp, function( b, d ) /* Yevhen : was : a, b, c, d, e, removed unused a, c, e */
     {
       inlined += 1;
       return b + '/* _inlineRegular_' + ins + '_ */( ' + sub.source + ' )/* _inlineRegular_' + ins + '_ */' + d;
@@ -1336,7 +1337,7 @@ function routineInline( o )
 
   //
 
-  function inline( ins,sub )
+  function inline( ins, sub )
   {
 
     inlined = 0;
@@ -1344,35 +1345,35 @@ function routineInline( o )
     if( !_.routineIs( sub ) )
     throw _.err( 'not tested' );
 
-/*
-    if( _.routineIs( sub ) )
-    {
-      sub = _.routineInline( sub );
-    }
-    else
-    {
-      let sub = { source : sub };
-      throw _.err( 'not tested' );
-    }
-*/
+    /*
+        if( _.routineIs( sub ) )
+        {
+          sub = _.routineInline( sub );
+        }
+        else
+        {
+          let sub = { source : sub };
+          throw _.err( 'not tested' );
+        }
+    */
 
     sub = _.routineInline( sub );
 
-    let regexp = new RegExp( 'function\\s+' + ins + '\\s*\\(','gm' );
-    sub.source = sub.source.replace( regexp,'function _' + ins + '_(' );
+    let regexp = new RegExp( 'function\\s+' + ins + '\\s*\\(', 'gm' );
+    sub.source = sub.source.replace( regexp, 'function _' + ins + '_(' );
 
     /**/
 
-    let returnCount = _.strCount( sub.source,'return' );
+    let returnCount = _.strCount( sub.source, 'return' );
     if( returnCount === 0 && sub.body )
     {
 
-      inlineFull( ins,sub );
+      inlineFull( ins, sub );
 
     }
 
-    inlineCall( ins,sub );
-    inlineRegular( ins,sub );
+    inlineCall( ins, sub );
+    inlineRegular( ins, sub );
 
     /**/
 
@@ -1387,7 +1388,7 @@ function routineInline( o )
 
     for( let i in o.inline )
     {
-      r += inline( i,o.inline[ i ] );
+      r += inline( i, o.inline[ i ] );
     }
 
     return r;
@@ -1505,7 +1506,7 @@ function _elementsExportString( o )
 
 _elementsExportString.defaults =
 {
-  srcContainer : null ,
+  srcContainer : null,
   dstContainerPath : null,
   writingAs : 'field',
   visited : null,
@@ -1534,7 +1535,7 @@ function _elementExportString( o )
   );
   _.assert
   (
-       _.routineIs( o.element ) || _.primitiveIs( o.element ) || _.regexpIs( o.element )
+    _.routineIs( o.element ) || _.primitiveIs( o.element ) || _.regexpIs( o.element )
     || ( _.mapIs( o.element ) /*&& _.lengthOf( o.element ) === 0*/ )
     || ( _.arrayIs( o.element ) && _.lengthOf( o.element ) === 0 )
     , () => `Cant export ${o.name} is ${_.strType( o.element )}`
@@ -1559,8 +1560,8 @@ function _elementExportString( o )
         writingAs : 'field',
       });
       // debugger;
-      result += o.dstContainerPath + '.' + o.name + ' = ' +
-      `
+      result += o.dstContainerPath + '.' + o.name + ' = '
+      + `
 (function()
 {
   // debugger;
@@ -1695,10 +1696,10 @@ function elementExportString( srcContainer, dstContainerPath, name )
 
   return _.introspector._elementExportString
   ({
-    srcContainer : srcContainer,
-    dstContainerPath : dstContainerPath,
-    element : element,
-    name : name,
+    srcContainer,
+    dstContainerPath,
+    element,
+    name,
     writingAs : 'field',
   })
 

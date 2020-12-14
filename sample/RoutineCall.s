@@ -7,7 +7,7 @@ var context =
 {
   b : 10
 }
-var routine = function( a )
+function routine( a )
 {
   return a + this.b;
 }
@@ -17,11 +17,11 @@ console.log( result ); //11
 
 /* call routine with passing only known options */
 
-var routine = function( o )
+function routine2 ( o )
 {
   return o;
 }
-routine.defaults =
+routine2.defaults =
 {
   a : null
 }
@@ -31,10 +31,5 @@ var options =
   b : 2,
   c : 3
 };
-var result = _.routineTolerantCall( this, routine, options );
+var result = _.routineTolerantCall( this, routine2, options );
 console.log( result );// { a : 1 }
-
-
-
-
-
