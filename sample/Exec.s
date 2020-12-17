@@ -12,7 +12,7 @@ var context =
 var result = _.exec
 ({
   code : src,
-  context : context
+  context
 });
 console.log( result ); //3
 
@@ -27,6 +27,6 @@ var externals =
 var result = _.exec
 ({
   code : src,
-  externals : externals
+  externals
 });
 console.log( result ); //3

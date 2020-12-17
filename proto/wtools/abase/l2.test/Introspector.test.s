@@ -1,4 +1,5 @@
-( function _Introspector_test_s( ) {
+( function _Introspector_test_s( )
+{
 
 'use strict';
 
@@ -132,7 +133,7 @@ function routineTolerantCall( test )
 {
   let self = this;
 
-  let routine = function( o )
+  function routine( o )
   {
     return o.a + o.b * this.k;
   }
@@ -143,7 +144,7 @@ function routineTolerantCall( test )
     b : null
   }
 
-  let routine2 = function( o )
+  function routine2( o )
   {
     return o;
   }
@@ -157,7 +158,7 @@ function routineTolerantCall( test )
   /* */
 
   test.case = 'routine with context and options';
-  var context = { k : .5 };
+  var context = { k : 0.5 };
   var got = _.routineTolerantCall( context, routine, { a : 1, b : 2 } );
   test.identical( got, 2 );
 
@@ -208,7 +209,7 @@ function routinesCall( test )
     return value3;
   }
 
-  function function5(x, y)
+  function function5( x, y )
   {
     return x + y * this.k;
   }
@@ -216,22 +217,22 @@ function routinesCall( test )
   var function4 = testFunction3
   var function6 = testFunction4;
 
-  var expected1 = [ value1 ],
-    expected2 = [ value2 + value3 + context3.k ],
-    expected3 = [ value1, value2, value3 ],
-    expected4 =
-    [
-      value2 + value3 + context3.k,
-      value2 + value3 * context3.k,
-      context3
-    ];
+  var expected1 = [ value1 ];
+  var expected2 = [ value2 + value3 + context3.k ];
+  var expected3 = [ value1, value2, value3 ];
+  var expected4 =
+  [
+    value2 + value3 + context3.k,
+    value2 + value3 * context3.k,
+    context3
+  ];
 
   test.case = 'call single function without arguments and context';
   var got = _.routinesCall( function1 );
   test.identical( got, expected1 );
 
   test.case = 'call single function with context and arguments';
-  var got = _.routinesCall( context3, testFunction3, [value2, value3] );
+  var got = _.routinesCall( context3, testFunction3, [ value2, value3 ] );
   test.identical( got, expected2 );
 
   test.case = 'call functions without context and arguments';
@@ -239,7 +240,7 @@ function routinesCall( test )
   test.identical( got, expected3 );
 
   test.case = 'call functions with context and arguments';
-  var got = _.routinesCall( context3, [ function4, function5, function6 ], [value2, value3] );
+  var got = _.routinesCall( context3, [ function4, function5, function6 ], [ value2, value3 ] );
   test.identical( got, expected4 );
 
   if( !Config.debug )
@@ -258,7 +259,7 @@ function routinesCall( test )
       context3,
       [ function1, function2, function3 ],
       [ function4, function5, function6 ],
-      [value2, value3]
+      [ value2, value3 ]
     );
   });
 
@@ -271,7 +272,7 @@ function routinesCall( test )
   test.case = 'passed arguments as primitive value (no wrapped into array)';
   test.shouldThrowErrorOfAnyKind( function()
   {
-     _.routinesCall( context3, testFunction3, value2 )
+    _.routinesCall( context3, testFunction3, value2 )
   });
 
 }
