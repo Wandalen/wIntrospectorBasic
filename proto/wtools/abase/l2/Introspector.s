@@ -1572,9 +1572,18 @@ function _elementExportString( o )
     }
     else if( o.element.head || o.element.body )
     {
-      _.assert( _.routineIs( o.element.head ) && _.routineIs( o.element.body ) );
-      result += routineUniteToString( o.element )
-      // return result;
+
+      if( !o.element.body )
+      {
+        result += o.dstContainerPath + '.' + o.name + ' = ' + o.element.toString();
+        result += `\n${routinePropertiesNoDefaults( `${o.dstContainerPath}.${o.name}`, o.element )}`
+      }
+      else
+      {
+        _.assert( _.routineIs( o.element.head ) && _.routineIs( o.element.body ) );
+        result += routineUniteToString( o.element )
+        // return result;
+      }
     }
     else if( o.element.functor )
     {
@@ -1632,6 +1641,20 @@ function _elementExportString( o )
     let r = ''
     for( var k in routine )
     r += `${dstContainerPath}.${k} = ` + _.toJs( routine[ k ] ) + '\n'
+    if( r )
+    r = _.strLinesIndentation( r, '  ' );
+    return r;
+  }
+
+  function routinePropertiesNoDefaults( dstContainerPath, routine )
+  {
+    let r = ''
+    for( var k in routine )
+    {
+      if( k === 'defaults' && _.objectIs( routine[ k ] ) )
+      continue;
+      r += `${dstContainerPath}.${k} = ` + _.toJs( routine[ k ] ) + '\n'
+    }
     if( r )
     r = _.strLinesIndentation( r, '  ' );
     return r;
