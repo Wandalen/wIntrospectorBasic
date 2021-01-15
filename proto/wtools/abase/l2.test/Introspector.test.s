@@ -388,6 +388,48 @@ function writeBasic( test )
   function testApp(){}
 }
 
+//
+
+function exportUnitedRoutine( test )
+{
+
+  function testRoutine_head( routine, args )
+  {
+    let o = args[ 0 ];
+    _.routineOptions( routine, o );
+    return o;
+  }
+
+  function testRoutine_body( o )
+  {
+    return o.src;
+  }
+
+  testRoutine_body.defaults =
+  {
+    src : null
+  }
+
+  let testRoutine = _.routineUnite( testRoutine_head, testRoutine_body );
+
+  let code = _.introspector.elementExportString( { testRoutine }, '_', 'testRoutine' );
+
+  code =
+  `
+  let _ = require( 'wTools' );
+  ${code}
+  testRoutine({ src : 123 });
+  `
+
+  var result = eval( code );
+  test.identical( result, 123 );
+}
+
+exportUnitedRoutine.description =
+`
+  Exports united routine and executes it.
+`
+
 // --
 // declare
 // --
@@ -418,6 +460,8 @@ let Self =
     exec,
 
     writeBasic,
+
+    exportUnitedRoutine
 
   },
 
