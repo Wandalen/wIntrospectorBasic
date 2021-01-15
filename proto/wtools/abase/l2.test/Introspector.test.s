@@ -390,6 +390,33 @@ function writeBasic( test )
 
 //
 
+function exportRoutine( test )
+{
+
+  function testRoutine( src )
+  {
+    return src;
+  }
+
+  let code = _.introspector.elementExportString( { testRoutine }, 'space', 'testRoutine' );
+
+  code =
+  `
+  let space = Object.create( null );
+  ${code}
+  space.testRoutine( 123 );
+  `
+  var result = eval( code );
+  test.identical( result, 123 );
+}
+
+exportRoutine.description =
+`
+  Exports regular routine and executes it.
+`
+
+//
+
 function exportUnitedRoutine( test )
 {
 
@@ -412,13 +439,13 @@ function exportUnitedRoutine( test )
 
   let testRoutine = _.routineUnite( testRoutine_head, testRoutine_body );
 
-  let code = _.introspector.elementExportString( { testRoutine }, '_', 'testRoutine' );
+  let code = _.introspector.elementExportString( { testRoutine }, 'space', 'testRoutine' );
 
   code =
   `
-  let _ = require( 'wTools' );
+  let space = Object.create( null );
   ${code}
-  testRoutine({ src : 123 });
+  space.testRoutine({ src : 123 });
   `
 
   var result = eval( code );
@@ -461,6 +488,7 @@ let Self =
 
     writeBasic,
 
+    exportRoutine,
     exportUnitedRoutine
 
   },
