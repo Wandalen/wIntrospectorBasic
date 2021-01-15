@@ -457,6 +457,78 @@ exportUnitedRoutine.description =
   Exports united routine and executes it.
 `
 
+//
+
+function exportRoutineWithHeadOnly( test )
+{
+  function testRoutineHead( routine, args )
+  {
+    let o = args[ 0 ];
+    _.routineOptions( routine, o );
+    return o;
+  }
+
+  function testRoutine()
+  {
+    let o = testRoutine.head( testRoutine, arguments );
+    return o.src;
+  }
+
+  testRoutine.head = testRoutineHead;
+  testRoutine.defaults =
+  {
+    src : null
+  }
+
+  let code = _.introspector.elementExportString( { testRoutine }, 'space', 'testRoutine' );
+
+  code =
+  `
+  let space = Object.create( null );
+  ${code}
+  space.testRoutine({ src : 123 });
+  `
+
+  var result = eval( code );
+  test.identical( result, 123 );
+}
+
+//
+
+//
+
+function exportRoutineWithBodyOnly( test )
+{
+  function testRoutineBody( o )
+  {
+    return o.src;
+  }
+  function testRoutine( ... args )
+  {
+    let o = args[ 0 ];
+    _.routineOptions( testRoutine, o );
+    return testRoutine.body( o );
+  }
+
+  testRoutine.body = testRoutineBody;
+  testRoutine.defaults =
+  {
+    src : null
+  }
+
+  let code = _.introspector.elementExportString( { testRoutine }, 'space', 'testRoutine' );
+
+  code =
+  `
+  let space = Object.create( null );
+  ${code}
+  space.testRoutine({ src : 123 });
+  `
+
+  var result = eval( code );
+  test.identical( result, 123 );
+}
+
 // --
 // declare
 // --
@@ -489,7 +561,9 @@ let Self =
     writeBasic,
 
     exportRoutine,
-    exportUnitedRoutine
+    exportUnitedRoutine,
+    exportRoutineWithHeadOnly,
+    exportRoutineWithBodyOnly
 
   },
 
