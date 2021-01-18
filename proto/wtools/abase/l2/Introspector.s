@@ -1570,11 +1570,18 @@ function _elementExportString( o )
       `
       // debugger;
     }
-    else if( o.element.head || o.element.body )
+    else if( o.element.head && o.element.body )
     {
-      _.assert( _.routineIs( o.element.head ) && _.routineIs( o.element.body ) );
       result += routineUniteToString( o.element )
       // return result;
+    }
+    else if( o.element.head )
+    {
+      result += routineWithHeadToString( o.element )
+    }
+    else if( o.element.body )
+    {
+      result += routineWithBodyToString( o.element )
     }
     else if( o.element.functor )
     {
@@ -1648,6 +1655,8 @@ function _elementExportString( o )
 
   function routineUniteToString( element )
   {
+    _.assert( _.routineIs( element.head ) && _.routineIs( element.body ) );
+
     let str =
 `
   var _${element.name}_head = ${routineToString( element.head )}
@@ -1666,6 +1675,42 @@ ${routineProperties( `_${element.name}_body`, element.body )};`
     {
       str += `\n${o.dstContainerPath}.${o.name} = _.routineUnite( _${element.name}_head, _${element.name}_body );`
     }
+
+    return str;
+  }
+
+  /* */
+
+  function routineWithHeadToString( element )
+  {
+    _.assert( _.routineIs( element.head ) );
+    _.assert( _.strDefined( element.head.name ) );
+
+    let str =
+  `
+${routineToString( element.head )}
+${routineProperties( `${element.head.name}`, element.head )}`
+
+    str += `\n${o.dstContainerPath}.${o.name} = ` + o.element.toString();
+    str += `\n${o.dstContainerPath}.${o.name}.head = ` + `${element.head.name};`
+
+    return str;
+  }
+
+  /* */
+
+  function routineWithBodyToString( element )
+  {
+    _.assert( _.routineIs( element.body ) );
+    _.assert( _.strDefined( element.body.name ) );
+
+    let str =
+  `
+${routineToString( element.body )}
+${routineProperties( `${element.body.name}`, element.body )}`
+
+    str += `\n${o.dstContainerPath}.${o.name} = ` + o.element.toString();
+    str += `\n${o.dstContainerPath}.${o.name}.body = ` + `${element.body.name};`
 
     return str;
   }

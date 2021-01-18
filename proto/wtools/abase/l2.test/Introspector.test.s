@@ -388,6 +388,151 @@ function writeBasic( test )
   function testApp(){}
 }
 
+//
+
+function exportRoutine( test )
+{
+
+  function testRoutine( src )
+  {
+    return src;
+  }
+
+  let code = _.introspector.elementExportString( { testRoutine }, 'space', 'testRoutine' );
+
+  code =
+  `
+  let space = Object.create( null );
+  ${code}
+  return space.testRoutine( 123 );
+  `
+
+  var got = _.routineExec( code );
+  test.identical( got.result, 123 );
+}
+
+exportRoutine.description =
+`
+  Exports regular routine and executes it.
+`
+
+//
+
+function exportUnitedRoutine( test )
+{
+
+  function testRoutine_head( routine, args )
+  {
+    let o = args[ 0 ];
+    _.routineOptions( routine, o );
+    return o;
+  }
+
+  function testRoutine_body( o )
+  {
+    return o.src;
+  }
+
+  testRoutine_body.defaults =
+  {
+    src : null
+  }
+
+  let testRoutine = _.routineUnite( testRoutine_head, testRoutine_body );
+
+  let code = _.introspector.elementExportString( { testRoutine }, 'space', 'testRoutine' );
+
+  code =
+  `
+  let _ = wTools;
+  let space = Object.create( null );
+  ${code}
+  return space.testRoutine({ src : 123 });
+  `
+
+  var got = _.routineExec( code );
+  test.identical( got.result, 123 );
+}
+
+exportUnitedRoutine.description =
+`
+  Exports united routine and executes it.
+`
+
+//
+
+function exportRoutineWithHeadOnly( test )
+{
+  function testRoutineHead( routine, args )
+  {
+    let o = args[ 0 ];
+    _.routineOptions( routine, o );
+    return o;
+  }
+
+  function testRoutine()
+  {
+    let o = testRoutine.head( testRoutine, arguments );
+    return o.src;
+  }
+
+  testRoutine.head = testRoutineHead;
+  testRoutine.defaults =
+  {
+    src : null
+  }
+
+  let code = _.introspector.elementExportString( { testRoutine }, 'space', 'testRoutine' );
+
+  code =
+  `
+  let _ = wTools;
+  let space = Object.create( null );
+  ${code}
+  return space.testRoutine({ src : 123 });
+  `
+
+  var got = _.routineExec( code );
+  test.identical( got.result, 123 );
+}
+
+//
+
+//
+
+function exportRoutineWithBodyOnly( test )
+{
+  function testRoutineBody( o )
+  {
+    return o.src;
+  }
+  function testRoutine( ... args )
+  {
+    let o = args[ 0 ];
+    _.routineOptions( testRoutine, o );
+    return testRoutine.body( o );
+  }
+
+  testRoutine.body = testRoutineBody;
+  testRoutine.defaults =
+  {
+    src : null
+  }
+
+  let code = _.introspector.elementExportString( { testRoutine }, 'space', 'testRoutine' );
+
+  code =
+  `
+  let _ = wTools;
+  let space = Object.create( null );
+  ${code}
+  return space.testRoutine({ src : 123 });
+  `
+
+  var got = _.routineExec( code );
+  test.identical( got.result, 123 );
+}
+
 // --
 // declare
 // --
@@ -418,6 +563,11 @@ let Self =
     exec,
 
     writeBasic,
+
+    exportRoutine,
+    exportUnitedRoutine,
+    exportRoutineWithHeadOnly,
+    exportRoutineWithBodyOnly
 
   },
 
