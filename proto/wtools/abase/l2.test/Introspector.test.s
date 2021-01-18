@@ -404,10 +404,11 @@ function exportRoutine( test )
   `
   let space = Object.create( null );
   ${code}
-  space.testRoutine( 123 );
+  return space.testRoutine( 123 );
   `
-  var result = eval( code );
-  test.identical( result, 123 );
+
+  var got = _.routineExec( code );
+  test.identical( got.result, 123 );
 }
 
 exportRoutine.description =
@@ -443,13 +444,14 @@ function exportUnitedRoutine( test )
 
   code =
   `
+  let _ = wTools;
   let space = Object.create( null );
   ${code}
-  space.testRoutine({ src : 123 });
+  return space.testRoutine({ src : 123 });
   `
 
-  var result = eval( code );
-  test.identical( result, 123 );
+  var got = _.routineExec( code );
+  test.identical( got.result, 123 );
 }
 
 exportUnitedRoutine.description =
@@ -484,13 +486,14 @@ function exportRoutineWithHeadOnly( test )
 
   code =
   `
+  let _ = wTools;
   let space = Object.create( null );
   ${code}
-  space.testRoutine({ src : 123 });
+  return space.testRoutine({ src : 123 });
   `
 
-  var result = eval( code );
-  test.identical( result, 123 );
+  var got = _.routineExec( code );
+  test.identical( got.result, 123 );
 }
 
 //
@@ -520,13 +523,14 @@ function exportRoutineWithBodyOnly( test )
 
   code =
   `
+  let _ = wTools;
   let space = Object.create( null );
   ${code}
-  space.testRoutine({ src : 123 });
+  return space.testRoutine({ src : 123 });
   `
 
-  var result = eval( code );
-  test.identical( result, 123 );
+  var got = _.routineExec( code );
+  test.identical( got.result, 123 );
 }
 
 // --
