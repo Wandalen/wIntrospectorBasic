@@ -8,7 +8,7 @@ Collection of cross-platform routines to generate functions, manage execution of
 git clone https://github.com/Wandalen/wIntrospectorBasic
 cd wIntrospectorBasic
 npm install
-node sample/Sample.s
+node sample/trivial/Sample.s
 ```
 
 ## To add to your project
