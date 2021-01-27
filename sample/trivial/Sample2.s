@@ -7,7 +7,7 @@ var result = _.program.preform
 ({
   name : 'sum',
   routine : sum,
-  // locals : { a : 1, b : 2 }
+  locals : { a : 1, b : 2 }
 });
 
 console.log( result.sourceCode );
