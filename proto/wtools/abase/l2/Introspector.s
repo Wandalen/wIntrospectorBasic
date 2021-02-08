@@ -160,7 +160,7 @@ function routinesJoin()
     if( _.routineIs( routines ) )
     routines = [ routines ];
 
-    result = _.entity.shallowClone( routines );
+    result = _.entity.cloneShallow( routines );
 
   }
 
@@ -324,7 +324,7 @@ function _routinesCall( o )
     if( _.routineIs( routines ) )
     routines = [ routines ];
 
-    result = _.entity.shallowClone( routines );
+    result = _.entity.cloneShallow( routines );
 
   }
 
