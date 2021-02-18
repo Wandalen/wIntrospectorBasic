@@ -148,7 +148,7 @@ function routinesJoin()
   let result, routines, index;
   let args = _.longSlice( arguments );
 
-  _.assert( arguments.length >= 1 && arguments.length <= 3  );
+  _.assert( arguments.length >= 1 && arguments.length <= 3 );
 
   /* */
 
