@@ -28,7 +28,7 @@ let path = fileProvider.path;
 function onSuiteBegin()
 {
   let self = this;
-  self.suiteTempPath = path.tempOpen( path.join( __dirname, '../..'  ), 'Routine' );
+  self.suiteTempPath = path.tempOpen( path.join( __dirname, '../..' ), 'Routine' );
 
 }
 
@@ -533,6 +533,26 @@ function exportRoutineWithBodyOnly( test )
   test.identical( got.result, 123 );
 }
 
+//
+
+function exportSet( test )
+{
+  let set = _.setFrom([ 1, 2, 3 ])
+
+  let code = _.introspector.elementExportString( { set }, 'space', 'set' );
+
+  code =
+  `
+  let _ = wTools;
+  let space = Object.create( null );
+  ${code}
+  return space.set.has( 3 );
+  `
+
+  var got = _.routineExec( code );
+  test.identical( got.result, true );
+}
+
 // --
 // declare
 // --
@@ -567,7 +587,8 @@ let Self =
     exportRoutine,
     exportUnitedRoutine,
     exportRoutineWithHeadOnly,
-    exportRoutineWithBodyOnly
+    exportRoutineWithBodyOnly,
+    exportSet,
 
   },
 

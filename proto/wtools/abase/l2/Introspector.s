@@ -19,6 +19,7 @@ if( typeof module !== 'undefined' )
 {
 
   let _ = require( '../../../wtools/Tools.s' );
+  _.include( 'wStringer' )
 
 }
 
@@ -147,7 +148,7 @@ function routinesJoin()
   let result, routines, index;
   let args = _.longSlice( arguments );
 
-  _.assert( arguments.length >= 1 && arguments.length <= 3  );
+  _.assert( arguments.length >= 1 && arguments.length <= 3 );
 
   /* */
 
@@ -159,7 +160,7 @@ function routinesJoin()
     if( _.routineIs( routines ) )
     routines = [ routines ];
 
-    result = _.entityMakeConstructing( routines );
+    result = _.entity.cloneShallow( routines );
 
   }
 
@@ -317,13 +318,13 @@ function _routinesCall( o )
     _.assert
     (
       _.objectIs( routines ) || _.arrayIs( routines ) || _.routineIs( routines ),
-      'Expects object, array or routine (-routines-), but got', _.strType( routines )
+      'Expects object, array or routine (-routines-), but got', _.entity.strType( routines )
     );
 
     if( _.routineIs( routines ) )
     routines = [ routines ];
 
-    result = _.entityMakeConstructing( routines );
+    result = _.entity.cloneShallow( routines );
 
   }
 
@@ -498,7 +499,7 @@ function routineSourceGet( o )
     for( let i in o.routine.inlines )
     {
       let inline = o.routine.inlines[ i ];
-      prefix += '  let ' + i + ' = ' + _.toJs( inline, o.toJsOptions || Object.create( null ) ) + ';\n';
+      prefix += '  let ' + i + ' = ' + _.entity.exportJs( inline, o.toJsOptions || Object.create( null ) ) + ';\n';
     }
     // debugger;
     let splits = unwrap( result );
@@ -963,7 +964,7 @@ function _routineInfo( o )
 
   result += o.routine.name || 'noname';
   result += '\n';
-  result += _.toStr( assets, { levels : 2, tab : o.tab, prependTab : 1, wrap : 0 });
+  result += _.entity.exportString( assets, { levels : 2, tab : o.tab, prependTab : 1, wrap : 0 });
   result += '\n----------------\n';
 
   o.tab += '  ';
@@ -1091,7 +1092,7 @@ function routineIsolate( o )
   if( o.constant )
   for( let s in o.constant )
   {
-    sconstant += 'const ' + s + ' = ' + _.toStr( o.constant[ s ], { levels : 99, escaping : 1 } ) + ';\n';
+    sconstant += 'const ' + s + ' = ' + _.entity.exportString( o.constant[ s ], { levels : 99, escaping : 1 } ) + ';\n';
   }
 
   //
@@ -1529,14 +1530,14 @@ function _elementExportString( o )
   _.assert
   (
     _.strDefined( o.name ),
-    () => `Cant export, expects defined {-o.name-}, but got ${_.strType( o.name )}`
+    () => `Cant export, expects defined {-o.name-}, but got ${_.entity.strType( o.name )}`
   );
   _.assert
   (
-    _.routineIs( o.element ) || _.primitiveIs( o.element ) || _.regexpIs( o.element )
+    _.routineIs( o.element ) || _.primitiveIs( o.element ) || _.regexpIs( o.element ) || _.setIs( o.element )
     || ( _.mapIs( o.element ) /*&& _.lengthOf( o.element ) === 0*/ )
     || ( _.arrayIs( o.element ) && _.lengthOf( o.element ) === 0 )
-    , () => `Cant export ${o.name} is ${_.strType( o.element )}`
+    , () => `Cant export ${o.name} is ${_.entity.strType( o.element )}`
   );
   _.assert( !_.longHas( o.visited, o.element ) );
 
@@ -1597,13 +1598,13 @@ function _elementExportString( o )
     {
       // debugger;
       result += routineDefaults( `${o.dstContainerPath}.${o.name}`, o.element );
-      // result += `\n${o.dstContainerPath}.${o.name}.defaults =\n` + _.toJs( o.element.defaults )
+      // result += `\n${o.dstContainerPath}.${o.name}.defaults =\n` + _.entity.exportJs( o.element.defaults )
     }
 
   }
   else
   {
-    result += o.dstContainerPath + '.' + o.name + ' = ' + _.toJs( o.element );
+    result += o.dstContainerPath + '.' + o.name + ' = ' + _.entity.exportJs( o.element );
   }
 
   /* */
@@ -1628,7 +1629,7 @@ function _elementExportString( o )
   {
     let r = '';
     let defaults = _.property._ofAct({ srcMap : routine.defaults, onlyEnumerable : 1, onlyOwn : 0 });
-    r += `\n${dstContainerPath}.defaults =\n` + _.toJs( defaults );
+    r += `\n${dstContainerPath}.defaults =\n` + _.entity.exportJs( defaults );
     return r;
   }
 
@@ -1638,7 +1639,7 @@ function _elementExportString( o )
   {
     let r = ''
     for( var k in routine )
-    r += `${dstContainerPath}.${k} = ` + _.toJs( routine[ k ] ) + '\n'
+    r += `${dstContainerPath}.${k} = ` + _.entity.exportJs( routine[ k ] ) + '\n'
     if( r )
     r = _.strLinesIndentation( r, '  ' );
     return r;
@@ -1884,7 +1885,7 @@ function preform_body( o )
 
     for( let g in o.locals )
     {
-      o.sourceCode += `var ${g} = ${_.toJs( o.locals[ g ] )};\n`
+      o.sourceCode += `var ${g} = ${_.entity.exportJs( o.locals[ g ] )};\n`
     }
 
     o.sourceCode +=
