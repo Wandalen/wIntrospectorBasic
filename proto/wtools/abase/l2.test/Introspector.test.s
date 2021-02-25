@@ -553,6 +553,175 @@ function exportSet( test )
   test.identical( got.result, true );
 }
 
+//
+
+function elementExportString( test )
+{
+  test.case = 'simple routine';
+  function testRoutine1( src )
+  {
+    return src;
+  }
+  var got = _.introspector.elementExportString( { testRoutine : testRoutine1 }, 'space', 'testRoutine' );
+  var exp =
+`space.testRoutine = function testRoutine1( src )
+    {
+      return src;
+    };
+
+//
+`;
+  test.identical( got, exp );
+
+  /* */
+
+  test.case = 'united routine';
+  function testRoutine2_head( routine, args )
+  {
+    let o = args[ 0 ];
+    _.routineOptions( routine, o );
+    return o;
+  }
+  function testRoutine2_body( o )
+  {
+    return o.src;
+  }
+  testRoutine2_body.defaults =
+  {
+    src : null
+  };
+  var testRoutine2 = _.routineUnite( testRoutine2_head, testRoutine2_body );
+  var got = _.introspector.elementExportString( { testRoutine : testRoutine2 }, 'space', 'testRoutine' );
+  var exp =
+`
+    var _testRoutine2_head = function testRoutine2_head( routine, args )
+      {
+        let o = args[ 0 ];
+        _.routineOptions( routine, o );
+        return o;
+      }
+
+    //
+
+
+    var _testRoutine2_body = function testRoutine2_body( o )
+      {
+        return o.src;
+      }
+
+    //
+
+  _testRoutine2_body.defaults = { "src" : null }
+    ;
+  space.testRoutine = _.routineUnite( _testRoutine2_head, _testRoutine2_body );
+  space.testRoutine.defaults =
+  { "src" : null };
+
+//
+`;
+  test.equivalent( got, exp );
+
+  /* - */
+
+  test.case = 'routine with only head';
+  function testRoutine3_head( routine, args )
+  {
+    let o = args[ 0 ];
+    _.routineOptions( routine, o );
+    return o;
+  }
+  function testRoutine3()
+  {
+    let o = testRoutine3.head( testRoutine3, arguments );
+    return o.src;
+  }
+  testRoutine3.head = testRoutine3_head;
+  testRoutine3.defaults =
+  {
+    src : null,
+  };
+  var got = _.introspector.elementExportString( { testRoutine : testRoutine3 }, 'space', 'testRoutine' );
+  var exp =
+`
+  function testRoutine3_head( routine, args )
+      {
+        let o = args[ 0 ];
+        _.routineOptions( routine, o );
+        return o;
+      }
+
+    //
+
+
+  space.testRoutine = function testRoutine3()
+    {
+      let o = testRoutine3.head( testRoutine3, arguments );
+      return o.src;
+    }
+  space.testRoutine.head = testRoutine3_head;
+  space.testRoutine.defaults =
+  { "src" : null };
+
+//
+`;
+  test.equivalent( got, exp );
+
+  /* - */
+
+  test.case = 'routine with only body';
+  function testRoutine4_body( o )
+  {
+    return o.src;
+  }
+  function testRoutine4( ... args )
+  {
+    let o = args[ 0 ];
+    _.routineOptions( testRoutine4, o );
+    return testRoutine4.body( o );
+  }
+  testRoutine4.body = testRoutine4_body;
+  testRoutine4.defaults =
+  {
+    src : null
+  };
+  var got = _.introspector.elementExportString( { testRoutine : testRoutine4 }, 'space', 'testRoutine' );
+  var exp =
+`
+  function testRoutine4_body( o )
+      {
+        return o.src;
+      }
+
+    //
+
+
+  space.testRoutine = function testRoutine4( ... args )
+    {
+      let o = args[ 0 ];
+      _.routineOptions( testRoutine4, o );
+      return testRoutine4.body( o );
+    }
+  space.testRoutine.body = testRoutine4_body;
+  space.testRoutine.defaults =
+  { "src" : null };
+
+//
+`;
+  test.equivalent( got, exp );
+
+  /* - */
+
+  test.case = 'set to export';
+  var set = _.setFrom([ 1, 2, 3 ])
+  var got = _.introspector.elementExportString( { set }, 'space', 'set' );
+  var exp =
+`space.set = new Set([ 1, 2, 3 ]);
+
+//
+`;
+  test.identical( got, exp );
+}
+
 // --
 // declare
 // --
@@ -589,6 +758,8 @@ let Self =
     exportRoutineWithHeadOnly,
     exportRoutineWithBodyOnly,
     exportSet,
+
+    elementExportString,
 
   },
 
