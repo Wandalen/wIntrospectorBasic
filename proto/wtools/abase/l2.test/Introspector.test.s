@@ -1,4 +1,4 @@
-( function _Introspector_test_s( )
+( function _Introspector_test_s()
 {
 
 'use strict';

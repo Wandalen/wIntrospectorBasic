@@ -1,4 +1,4 @@
-(function _Introspector_s_()
+( function _Introspector_s_()
 {
 
 'use strict';
@@ -1609,8 +1609,8 @@ function _elementExportString( o )
 
   /* */
 
-  if( _.routineIs( o.element ) )
-  result += `;\nvar ${o.name} = ${o.dstContainerPath + '.' + o.name}`
+  // if( _.routineIs( o.element ) )
+  // result += `;\nvar ${o.name} = ${o.dstContainerPath + '.' + o.name}`; /* qqq for Dmytro : temporary fix, needs clarification */
 
   // let r = o.dstContainerPath + '.' + o.name + ' = ' + _.strLinesIndentation( result, '  ' ) + ';\n\n//\n';
   result = _.strLinesIndentation( result, '  ' ) + ';\n\n//\n';
