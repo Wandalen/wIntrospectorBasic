@@ -1674,7 +1674,7 @@ ${routineProperties( `_${element.name}_body`, element.body )};`
     }
     else
     {
-      str += `\n${o.dstContainerPath}.${o.name} = _.routineUnite( _${element.name}_head, _${element.name}_body );`
+      str += `\n${o.dstContainerPath}.${o.name} = _.routine.uniteCloning_( _${element.name}_head, _${element.name}_body );`
     }
 
     return str;
@@ -1906,7 +1906,7 @@ preform_body.defaults =
   locals : null,
 }
 
-let preform = _.routineUnite( preform_head, preform_body );
+let preform = _.routine.uniteCloning_( preform_head, preform_body );
 
 //
 
@@ -1942,7 +1942,7 @@ write_body.defaults =
   programPath : null,
 }
 
-let write = _.routineUnite( preform_head, write_body );
+let write = _.routine.uniteCloning_( preform_head, write_body );
 
 // --
 // declare

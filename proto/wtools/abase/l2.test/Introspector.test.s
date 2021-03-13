@@ -438,7 +438,7 @@ function exportUnitedRoutine( test )
     src : null
   }
 
-  let testRoutine = _.routineUnite( testRoutine_head, testRoutine_body );
+  let testRoutine = _.routine.uniteCloning_( testRoutine_head, testRoutine_body );
 
   let code = _.introspector.elementExportString( { testRoutine }, 'space', 'testRoutine' );
 
@@ -590,7 +590,7 @@ function elementExportString( test )
   {
     src : null
   };
-  var testRoutine2 = _.routineUnite( testRoutine2_head, testRoutine2_body );
+  var testRoutine2 = _.routine.uniteCloning_( testRoutine2_head, testRoutine2_body );
   var got = _.introspector.elementExportString( { testRoutine : testRoutine2 }, 'space', 'testRoutine' );
   var exp =
 `
@@ -613,7 +613,7 @@ function elementExportString( test )
 
   _testRoutine2_body.defaults = { "src" : null }
     ;
-  space.testRoutine = _.routineUnite( _testRoutine2_head, _testRoutine2_body );
+  space.testRoutine = _.routine.uniteCloning_( _testRoutine2_head, _testRoutine2_body );
   space.testRoutine.defaults =
   { "src" : null };
 
