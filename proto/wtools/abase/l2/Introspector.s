@@ -1657,7 +1657,6 @@ function _elementExportString( o )
   function routineUniteToString( element )
   {
     _.assert( _.routineIs( element.head ) && _.routineIs( element.body ) );
-
     let str =
 `
   var _${element.name}_head = ${routineToString( element.head )}
@@ -1665,7 +1664,7 @@ ${routineProperties( `_${element.name}_head`, element.head )}
   var _${element.name}_body = ${routineToString( element.body )}
 ${routineProperties( `_${element.name}_body`, element.body )};`
 
-    if( o.name === 'routineUnite' )
+    if( o.name === 'routine.unite' )
     {
       str += `\n${o.dstContainerPath}.${o.name} = ` + _.strLinesIndentation( element.toString(), '  ' );
       str += `\n${o.dstContainerPath}.${o.name}.head = ` + `_${element.name}_head;`
