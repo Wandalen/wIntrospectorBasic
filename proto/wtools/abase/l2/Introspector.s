@@ -673,7 +673,7 @@ function routineMake( o )
 
   function handleErrorWithEsprima( err )
   {
-    debugger;
+    // debugger;
 
     if( !Esprima && !_global.esprima )
     try
@@ -693,7 +693,7 @@ function routineMake( o )
       }
       catch( err2 )
       {
-        debugger;
+        // debugger;
         if( err2.lineNumber !== undefined )
         code = _.strLinesSelect
         ({
@@ -729,7 +729,7 @@ function routineMake( o )
     }
     catch( err )
     {
-      debugger;
+      // debugger;
       throw _.err( err );
     }
   }
@@ -810,7 +810,7 @@ function routineExec( o )
   }
   catch( err )
   {
-    debugger;
+    // debugger;
     throw _._err
     ({
       args : [ err ],
@@ -1000,8 +1000,8 @@ function _routineCollectAssets( dst, routine, visited )
   _.assert( visited.indexOf( routine ) === -1 );
   visited.push( routine );
 
-  if( routine.debugCollect )
-  debugger;
+  // if( routine.debugCollect )
+  // debugger;
 
   for( let a in _routineAssets )
   {
@@ -1011,7 +1011,7 @@ function _routineCollectAssets( dst, routine, visited )
 
     dst[ a ] = dst[ a ] || Object.create( null );
     _.assertMapHasNone( dst[ a ], routine[ a ] );
-    debugger;
+    // debugger;
     dst[ a ] = _.mapsFlatten
     ({
       src : [ dst[ a ], routine[ a ] ],
@@ -1070,8 +1070,8 @@ function routineIsolate( o )
 
   //
 
-  if( o.routine.debugIsolate )
-  debugger;
+  // if( o.routine.debugIsolate )
+  // debugger;
 
   /*
     if( parsed.source.indexOf( 'doesAcceptZero' ) !== -1 )
@@ -1193,9 +1193,9 @@ function routineInline( o )
   if( !inlines() )
   return _.routineParse( o.routine );
 
-  debugger;
+  // debugger;
   while( inlines() );
-  debugger;
+  // debugger;
 
   return _.routineParse( o.routine );
   // return parse();
@@ -1272,7 +1272,7 @@ function routineInline( o )
 
       body = body.replace( rreturn, function()
       {
-        debugger;
+        // debugger;
         throw _.err( 'not tested' );
 
         let rep = '{ ';
@@ -1295,7 +1295,7 @@ function routineInline( o )
       if( Config.debug )
       if( r.indexOf( 'return' ) !== -1 )
       {
-        debugger;
+        // debugger;
         throw _.err( 'not expected' );
       }
 
@@ -1426,8 +1426,8 @@ function routineParse( o )
   _.assert( arguments.length === 1 );
   _.routineOptions( routineParse, o );
 
-  if( o.routine.debugParse )
-  debugger;
+  // if( o.routine.debugParse )
+  // debugger;
 
   let source = o.routine.toString();
   let result = Object.create( null );
