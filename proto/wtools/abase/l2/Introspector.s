@@ -1664,7 +1664,7 @@ ${routineProperties( `_${element.name}_head`, element.head )}
   var _${element.name}_body = ${routineToString( element.body )}
 ${routineProperties( `_${element.name}_body`, element.body )};`
 
-    if( o.name === 'routine.unite' )
+    if( _.longHasAny( [ 'routine.unite', 'routine.uniteCloning_' ], o.name ) )
     {
       str += `\n${o.dstContainerPath}.${o.name} = ` + _.strLinesIndentation( element.toString(), '  ' );
       str += `\n${o.dstContainerPath}.${o.name}.head = ` + `_${element.name}_head;`
@@ -1733,7 +1733,8 @@ _elementExportString.defaults =
 
 function elementExportString( srcContainer, dstContainerPath, name )
 {
-  let element = srcContainer[ name ];
+  // let element = srcContainer[ name ];
+  let element = _.select({ src : srcContainer, selector : name, upToken : '.' });
 
   // _.introspector._elementExportString( element, dstContainerPath, name );
 
