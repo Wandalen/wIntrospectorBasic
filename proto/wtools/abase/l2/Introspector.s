@@ -1657,14 +1657,16 @@ function _elementExportString( o )
   function routineUniteToString( element )
   {
     _.assert( _.routineIs( element.head ) && _.routineIs( element.body ) );
+    let elementBodyRoutine = element.body.originalRoutine ? element.body.originalRoutine : element.body;
+    _.assert( _.routineIs( elementBodyRoutine ) );
     let str =
 `
   var _${element.name}_head = ${routineToString( element.head )}
 ${routineProperties( `_${element.name}_head`, element.head )}
-  var _${element.name}_body = ${routineToString( element.body )}
-${routineProperties( `_${element.name}_body`, element.body )};`
+  var _${element.name}_body = ${routineToString( elementBodyRoutine )}
+${routineProperties( `_${element.name}_body`, elementBodyRoutine )};`
 
-    if( _.longHasAny( [ 'routine.unite', 'routine.uniteCloning_' ], o.name ) )
+    if( _.longHas( [ 'routine.unite', 'routine.uniteCloning_' ], o.name ) )
     {
       str += `\n${o.dstContainerPath}.${o.name} = ` + _.strLinesIndentation( element.toString(), '  ' );
       str += `\n${o.dstContainerPath}.${o.name}.head = ` + `_${element.name}_head;`
