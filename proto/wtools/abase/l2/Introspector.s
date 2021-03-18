@@ -1000,9 +1000,6 @@ function _routineCollectAssets( dst, routine, visited )
   _.assert( visited.indexOf( routine ) === -1 );
   visited.push( routine );
 
-  // if( routine.debugCollect )
-  // debugger;
-
   for( let a in _routineAssets )
   {
 
@@ -1011,7 +1008,6 @@ function _routineCollectAssets( dst, routine, visited )
 
     dst[ a ] = dst[ a ] || Object.create( null );
     _.assertMapHasNone( dst[ a ], routine[ a ] );
-    // debugger;
     dst[ a ] = _.mapsFlatten
     ({
       src : [ dst[ a ], routine[ a ] ],
@@ -1047,7 +1043,7 @@ function routineIsolate( o )
 
   _.routineCollectAssets( o, o.routine );
 
-  //
+  /* */
 
   let parsed;
 
@@ -1068,25 +1064,7 @@ function routineIsolate( o )
 
   }
 
-  //
-
-  // if( o.routine.debugIsolate )
-  // debugger;
-
-  /*
-    if( parsed.source.indexOf( 'doesAcceptZero' ) !== -1 )
-    debugger;
-
-    if( parsed.source.indexOf( 'doesAcceptZero' ) !== -1 )
-    console.log( _.routineInfo( o.routine ) );
-
-    if( parsed.source.indexOf( 'doesAcceptZero' ) !== -1 )
-    _.routineCollectAssets( o,o.routine );
-
-    if( parsed.source.indexOf( 'doesAcceptZero' ) !== -1 )
-    debugger;
-  */
-  //
+  /* */
 
   let sconstant = '';
   if( o.constant )
@@ -1095,7 +1073,7 @@ function routineIsolate( o )
     sconstant += 'const ' + s + ' = ' + _.entity.exportString( o.constant[ s ], { levels : 99, escaping : 1 } ) + ';\n';
   }
 
-  //
+  /* */
 
   let sexternal = '';
   if( o.external )
@@ -1112,15 +1090,13 @@ function routineIsolate( o )
 
   }
 
-  //
+  /* */
 
   let source =
   sconstant + '\n'
   + sexternal + '\n'
   + ( o.debug ? 'debugger;\n' : '' )
   + 'return ( ' + parsed.source + ' );';
-
-  //debugger;
 
   let result = new Function
   (
@@ -1426,9 +1402,6 @@ function routineParse( o )
   _.assert( arguments.length === 1 );
   _.routineOptions( routineParse, o );
 
-  // if( o.routine.debugParse )
-  // debugger;
-
   let source = o.routine.toString();
   let result = Object.create( null );
   result.source = source;
@@ -1513,7 +1486,6 @@ _elementsExportString.defaults =
 
 //
 
-// function _elementExportString( element, dstContainerPath, name )
 function _elementExportString( o )
 {
   let result = '';
@@ -1535,7 +1507,7 @@ function _elementExportString( o )
   _.assert
   (
     _.routineIs( o.element ) || _.primitiveIs( o.element ) || _.regexpIs( o.element ) || _.setIs( o.element )
-    || ( _.mapIs( o.element ) /*&& _.lengthOf( o.element ) === 0*/ )
+    || _.mapIs( o.element )
     || ( _.arrayIs( o.element ) && _.lengthOf( o.element ) === 0 )
     , () => `Cant export ${o.name} is ${_.entity.strType( o.element )}`
   );
@@ -1546,19 +1518,14 @@ function _elementExportString( o )
   if( _.routineIs( o.element ) )
   {
 
-    // if( o.name === 'globShortSplitsToRegexps' )
-    // debugger;
-
     if( o.element.vectorized )
     {
-      // debugger;
       let toVectorize = _.introspector._elementsExportString
       ({
         srcContainer : o.element.vectorized,
         dstContainerPath : 'toVectorize',
         writingAs : 'field',
       });
-      // debugger;
       result += o.dstContainerPath + '.' + o.name + ' = '
       + `
 (function()
@@ -1569,12 +1536,10 @@ function _elementExportString( o )
   return _.vectorize( toVectorize );
 })();
       `
-      // debugger;
     }
     else if( o.element.head && o.element.body )
     {
       result += routineUniteToString( o.element )
-      // return result;
     }
     else if( o.element.head )
     {
@@ -1593,12 +1558,9 @@ function _elementExportString( o )
       result += o.dstContainerPath + '.' + o.name + ' = ' + o.element.toString();
     }
 
-    // if( o.name === 'globShortFilterKeys' )
     if( o.element.defaults )
     {
-      // debugger;
       result += routineDefaults( `${o.dstContainerPath}.${o.name}`, o.element );
-      // result += `\n${o.dstContainerPath}.${o.name}.defaults =\n` + _.entity.exportJs( o.element.defaults )
     }
 
   }
@@ -1787,14 +1749,12 @@ function fields( namespace )
 {
   let result = [];
   _.assert( _.objectIs( _[ namespace ] ) );
-  // debugger;
   for( let f in _[ namespace ] )
   {
     let e = _[ namespace ][ f ];
     if( _.strIs( e ) || _.regexpIs( e ) )
     result.push( rou( namespace, f ) );
   }
-  // debugger;
   return result.join( '  ' );
 }
 
@@ -1840,6 +1800,29 @@ function clr( cls, method )
 // program
 // --
 
+function preformLocals_body( o )
+{
+
+  _.assertMapHasAll( o, preformLocals_body.defaults );
+
+  if( o.locals === null )
+  {
+    o.locals = Object.create( null );
+    o.locals.toolsPath = _.path.nativize( _.module.toolsPathGet() );
+  }
+
+  return o.locals;
+}
+
+preformLocals_body.defaults =
+{
+  locals : null,
+}
+
+let preformLocals = _.routine.unite( null, preformLocals_body );
+
+//
+
 function preform_head( routine, args )
 {
 
@@ -1849,12 +1832,7 @@ function preform_head( routine, args )
   _.routineOptions( routine, o );
   _.assert( args.length === 1 );
   _.assert( arguments.length === 2 );
-
-  if( !o.name )
-  o.name = o.routine.name;
-
   _.assert( _.routineIs( o.routine ) || _.strIs( o.routine ) );
-  _.assert( _.strDefined( o.name ), 'Program should have name' );
 
   return o;
 }
@@ -1864,16 +1842,19 @@ function preform_head( routine, args )
 function preform_body( o )
 {
 
-  _.assertRoutineOptions( preform_body, o );
-  _.assert( _.routineIs( o.routine ) || _.strIs( o.routine ) );
+  if( !o.name )
+  o.name = o.routine.name;
+
+  _.assertMapHasAll( o, preform_body.defaults );
+  _.assert( !o.routine.name || o.name === o.routine.name );
   _.assert( _.strDefined( o.name ), 'Program should have name' );
 
   if( o.locals === null )
-  {
-    o.locals = Object.create( null );
-    o.locals.toolsPath = _.path.nativize( _.module.toolsPathGet() );
-    // o.locals.toolsPath = _.path.nativize( _.path.join( __dirname, '../../../wtools/Tools.s' ) ); /* xxx : rename the variable */
-  }
+  _.program.preformLocals.body.call( _.program, o );
+  // {
+  //   o.locals = Object.create( null );
+  //   o.locals.toolsPath = _.path.nativize( _.module.toolsPathGet() );
+  // }
 
   if( o.sourceCode === null )
   {
@@ -1908,7 +1889,7 @@ preform_body.defaults =
   locals : null,
 }
 
-let preform = _.routine.uniteCloning_( preform_head, preform_body );
+let preform = _.routine.unite( preform_head, preform_body );
 
 //
 
@@ -1917,7 +1898,7 @@ function write_body( o )
 
   _.assertRoutineOptions( write_body, o );
 
-  let o2 = this.preform.body.call( this, _.mapOnly( o, this.preform.body.defaults ) );
+  let o2 = this.preform.body.call( this, _.mapOnly( o, this.preform.body.defaults ) ); /* xxx : remove mapOnly */
   _.mapExtend( o, o2 );
 
   if( o.programPath === null )
@@ -2015,6 +1996,7 @@ let IntrospectorExtension =
 
 let ProgramExtension =
 {
+  preformLocals,
   preform,
   write,
 }
