@@ -16,9 +16,10 @@ if( typeof module !== 'undefined' )
 
 }
 
-let _global = _global_;
-let _ = _global_.wTools;
-let fileProvider = _globals_.testing.wTools.fileProvider;
+const _global = _global_;
+const _ = _global_.wTools;
+const __ = _globals_.testing.wTools;
+let fileProvider = __.fileProvider;
 let path = fileProvider.path;
 
 // --
@@ -390,6 +391,201 @@ function writeBasic( test )
 
 //
 
+function writeOptionWithSubmodulesAndModuleIsIncluded( test )
+{
+  let context = this;
+  let a = test.assetFor( false );
+  let ready = _.take( null );
+
+  let start = __.process.starter
+  ({
+    outputCollecting : 1,
+    outputPiping : 1,
+    inputMirroring : 1,
+    throwingExitCode : 0,
+    mode : 'fork',
+  });
+
+  test.true( _.module.isIncluded( 'wTesting' ) );
+  test.true( !_.module.isIncluded( 'abcdef123' ) );
+
+  act({ routine : _programWithRequire });
+  act({ routine : _programWithIncludeLower });
+  act({ routine : _programWithIncludeUpper });
+
+  /* */
+
+  function act( env )
+  {
+
+    ready.then( () =>
+    {
+      test.case = `basic, ${__.entity.exportStringSolo( env, { level : 1 } )}`;
+
+      let program = _.program.write
+      ({
+        routine : env.routine,
+        withSubmodules : 1,
+        tempPath : a.abs( '.' ),
+      });
+
+      console.log( _.strLinesNumber( program.sourceCode ) );
+
+      return start
+      ({
+        execPath : program.programPath,
+        currentPath : _.path.dir( program.programPath ),
+      })
+    })
+    .then( ( op ) =>
+    {
+      var exp =
+  `
+  isIncluded( wLooker ) false
+  isIncluded( wlooker ) false
+  isIncluded( wLooker ) true
+  isIncluded( wlooker ) true
+  `
+      test.identical( op.exitCode, 0 );
+      test.equivalent( op.output, exp );
+      return op;
+    });
+
+  }
+
+  /* */
+
+  return ready;
+
+  /* - */
+
+  function _programWithRequire()
+  {
+    let _ = require( toolsPath );
+    // let ModuleFileNative = require( 'module' );
+    // console.log( `program1.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
+    // console.log( `program1.paths\n  ${module.paths.join( '\n  ' )}` );
+    console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
+    console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
+    _global_.debugger = true;
+    require( 'wlooker' );
+    console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
+    console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
+  }
+
+  /* - */
+
+  function _programWithIncludeLower()
+  {
+    let _ = require( toolsPath );
+    console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
+    console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
+    _.include( 'wlooker' );
+    console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
+    console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
+  }
+
+  /* - */
+
+  function _programWithIncludeUpper()
+  {
+    let _ = require( toolsPath );
+    console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
+    console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
+    _.include( 'wlooker' );
+    console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
+    console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
+  }
+
+  /* - */
+
+}
+
+//
+
+function dependancyAssumption( test )
+{
+  let context = this;
+  let a = test.assetFor( false );
+
+  programWrite( program1 );
+  programWrite( program2 );
+  programWrite( program3 );
+
+  return a.fork({ execPath : a.abs( 'program1' ) })
+  .then( ( op ) =>
+  {
+    var exp =
+`
+xxx
+`
+    test.equivalent( op.output, exp );
+    test.identical( op.exitCode, 0 );
+    return op;
+  });
+
+  /* */
+
+  function programWrite( program )
+  {
+    var postfix =
+    `
+    ${program.name}();
+    `
+    __.fileProvider.fileWrite( a.abs( program.name ), program.toString() + postfix );
+  }
+
+  /* */
+
+  function program1()
+  {
+    let ModuleFileNative = require( 'module' );
+    ModuleFileNative.globalPaths.push( '/program1/global' );
+    module.paths.push( '/program1/local' ); debugger;
+    console.log( `program1.before.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
+    console.log( `program1.before.paths\n  ${module.paths.join( '\n  ' )}` );
+
+    require( './program2' );
+
+    console.log( `program1.after.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
+    console.log( `program1.after.paths\n  ${module.paths.join( '\n  ' )}` );
+  }
+
+  /* */
+
+  function program2()
+  {
+    let ModuleFileNative = require( 'module' );
+    ModuleFileNative.globalPaths.push( '/program2/global' );
+    module.paths.push( '/program2/local' );
+    console.log( `program2.before.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
+    console.log( `program2.before.paths\n  ${module.paths.join( '\n  ' )}` );
+
+    require( './program3' );
+
+    console.log( `program2.after.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
+    console.log( `program2.after.paths\n  ${module.paths.join( '\n  ' )}` );
+  }
+
+  /* */
+
+  function program3()
+  {
+    let ModuleFileNative = require( 'module' );
+    ModuleFileNative.globalPaths.push( '/program3/global' );
+    module.paths.push( '/program3/local' );
+    console.log( `program3.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
+    console.log( `program3.paths\n  ${module.paths.join( '\n  ' )}` );
+  }
+
+  /* */
+
+}
+
+dependancyAssumption.experimental = 1;
+
+//
+
 function exportRoutine( test )
 {
 
@@ -726,7 +922,7 @@ function elementExportString( test )
 // declare
 // --
 
-let Self =
+const Proto =
 {
 
   name : 'Tools.l3.IntrospectorBasic',
@@ -752,13 +948,14 @@ let Self =
     exec,
 
     writeBasic,
+    writeOptionWithSubmodulesAndModuleIsIncluded,
+    dependancyAssumption,
 
     exportRoutine,
     exportUnitedRoutine,
     exportRoutineWithHeadOnly,
     exportRoutineWithBodyOnly,
     exportSet,
-
     elementExportString,
 
   },
@@ -767,7 +964,7 @@ let Self =
 
 //
 
-Self = wTestSuite( Self );
+const Self = wTestSuite( Proto );
 if( typeof module !== 'undefined' && !module.parent )
 wTester.test( Self )
 

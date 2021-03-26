@@ -24,15 +24,15 @@ if( typeof module !== 'undefined' )
 }
 
 let Esprima;
-let Self = _global_.wTools;
-let _global = _global_;
-let _ = _global_.wTools;
+const Self = _global_.wTools;
+const _global = _global_;
+const _ = _global_.wTools;
 _.program = _.program || Object.create( null );
 
-let _ArraySlice = Array.prototype.slice;
-let _FunctionBind = Function.prototype.bind;
-let _ObjectToString = Object.prototype.toString;
-let _ObjectHasOwnProperty = Object.hasOwnProperty;
+const _ArraySlice = Array.prototype.slice;
+const _FunctionBind = Function.prototype.bind;
+const _ObjectToString = Object.prototype.toString;
+const _ObjectHasOwnProperty = Object.hasOwnProperty;
 let _arraySlice = _.longSlice;
 
 // --
@@ -135,7 +135,7 @@ function routineTolerantCall( context, routine, options )
   _.assert( _.objectIs( routine.defaults ) );
   _.assert( _.objectIs( options ) );
 
-  options = _.mapOnly( options, routine.defaults );
+  options = _.mapOnly_( null, options, routine.defaults );
   let result = routine.call( context, options );
 
   return result;
@@ -960,7 +960,7 @@ function routineInfo( routine )
 function _routineInfo( o )
 {
   let result = '';
-  let assets = _.mapOnly( o.routine, _routineAssets );
+  let assets = _.mapOnly_( null, o.routine, _routineAssets );
 
   result += o.routine.name || 'noname';
   result += '\n';
@@ -1007,7 +1007,7 @@ function _routineCollectAssets( dst, routine, visited )
     continue;
 
     dst[ a ] = dst[ a ] || Object.create( null );
-    _.assertMapHasNone( dst[ a ], routine[ a ] );
+    _.map.assertHasNone( dst[ a ], routine[ a ] );
     dst[ a ] = _.mapsFlatten
     ({
       src : [ dst[ a ], routine[ a ] ],
@@ -1036,7 +1036,7 @@ function routineIsolate( o )
   if( _.routineIs( o ) )
   o = { routine : o };
   _.assert( o.routine );
-  _.assertMapHasOnly( o, routineIsolate.defaults );
+  _.map.assertHasOnly( o, routineIsolate.defaults );
 
   let name = o.name || o.routine.name;
   _.assert( _.strIs( name ) && name.length );
@@ -1148,7 +1148,7 @@ function routineInline( o )
   if( o.routine.inline )
   {
     o.inline = o.inline || Object.create( null );
-    _.assertMapHasNone( o.inline, o.routine.inline );
+    _.map.assertHasNone( o.inline, o.routine.inline );
     o.inline = _.mapsFlatten
     ({
       src : [ o.inline, o.routine.inline ],
@@ -1777,7 +1777,7 @@ function cls( namesapce, name )
 (function()
 {
 
-let Self = ${r}
+const Self = ${r}
 
 })();
 `
@@ -1800,10 +1800,21 @@ function clr( cls, method )
 // program
 // --
 
+/* xxx : work on _.program.* to
+  - implement er
+  - make possible to make single call,
+  - expose start method
+
+var programPath = a.program({ routine : mainSingleBefore, locals : _.mapExtend( null, env ) });
+a.program({ routine : single1, locals : _.mapExtend( null, env ) });
+a.program({ routine : single2, locals : _.mapExtend( null, env ) });
+
+*/
+
 function preformLocals_body( o )
 {
 
-  _.assertMapHasAll( o, preformLocals_body.defaults );
+  _.map.assertHasAll( o, preformLocals_body.defaults );
 
   if( o.locals === null )
   {
@@ -1820,6 +1831,30 @@ preformLocals_body.defaults =
 }
 
 let preformLocals = _.routine.unite( null, preformLocals_body );
+
+// //
+//
+// function preformAmendPath_body( o )
+// {
+//
+//   _.map.assertHasAll( o, preformAmendPath_body.defaults );
+//
+//   if( o.amendPath === null )
+//   {
+//     // debugger;
+//     // o.amendPath = _.module.filePathGet();
+//     // debugger;
+//   }
+//
+//   return o.locals;
+// }
+//
+// preformAmendPath_body.defaults =
+// {
+//   amendPath : null,
+// }
+//
+// let preformAmendPath = _.routine.unite( null, preformAmendPath_body );
 
 //
 
@@ -1845,16 +1880,15 @@ function preform_body( o )
   if( !o.name )
   o.name = o.routine.name;
 
-  _.assertMapHasAll( o, preform_body.defaults );
+  _.map.assertHasAll( o, preform_body.defaults );
   _.assert( !o.routine.name || o.name === o.routine.name );
   _.assert( _.strDefined( o.name ), 'Program should have name' );
 
   if( o.locals === null )
   _.program.preformLocals.body.call( _.program, o );
-  // {
-  //   o.locals = Object.create( null );
-  //   o.locals.toolsPath = _.path.nativize( _.module.toolsPathGet() );
-  // }
+
+  // if( o.amendPath === null )
+  // _.program.preformAmendPath.body.call( _.program, o );
 
   if( o.sourceCode === null )
   {
@@ -1866,12 +1900,43 @@ function preform_body( o )
 
     o.sourceCode += '\n\n';
 
+  }
+
+  if( o.postfixCode === null )
+  {
+    o.postfixCode = '';
+
     for( let g in o.locals )
     {
-      o.sourceCode += `var ${g} = ${_.entity.exportJs( o.locals[ g ] )};\n`
+      o.postfixCode += `var ${g} = ${_.entity.exportJs( o.locals[ g ] )};\n`
     }
 
-    o.sourceCode +=
+    if( o.withSubmodules )
+    {
+      let paths = _.module.filePathGet
+      ({
+        locally : 1,
+        globally : 0,
+        moduleFile : o.moduleFile,
+      });
+      _.assert( paths.length > 0 );
+      o.postfixCode += '\n' + _.module.filePathAmend.body.toString() + '\n';
+      o.postfixCode +=
+`
+pathAmend_body
+({
+  moduleFile : module,
+  paths : [ '${paths.join( '\', \'' )}' ],
+  permanent : 0,
+  globally : 0,
+  locally : 1,
+  recursive : 2,
+  amending : 'prepend',
+});
+`;
+    }
+
+    o.postfixCode +=
 `
 ${o.name}();
 `
@@ -1885,8 +1950,12 @@ preform_body.defaults =
 {
   routine : null,
   name : null,
+  prefixCode : null,
   sourceCode : null,
+  postfixCode : null,
   locals : null,
+  withSubmodules : 0,
+  moduleFile : null,
 }
 
 let preform = _.routine.unite( preform_head, preform_body );
@@ -1898,21 +1967,31 @@ function write_body( o )
 
   _.assertRoutineOptions( write_body, o );
 
-  let o2 = this.preform.body.call( this, _.mapOnly( o, this.preform.body.defaults ) ); /* xxx : remove mapOnly */
+  let o2 = this.preform.body.call( this, _.mapOnly_( null, o, this.preform.body.defaults ) ); /* xxx : remove mapOnly */
   _.mapExtend( o, o2 );
 
   if( o.programPath === null )
   {
     _.assert( _.strIs( o.tempPath ), 'Expects temp path {- o.tempPath -}' );
     _.assert( _.strIs( o.dirPath ), 'Expects dir path {- o.dirPath -}' );
-    o.programPath = _.path.join( o.tempPath, o.dirPath, o.name + '.js' );
+    o.programPath = _.path.join( o.tempPath, o.dirPath, o.name + o.namePostfix );
+    // o.programPath = _.path.join( o.tempPath, o.dirPath, o.name + '.js' );
   }
 
-  // logger.log( _.strLinesNumber( o.sourceCode ) );
-
+  if( !o.rewriting )
   _.sure( !_.fileProvider.fileExists( o.programPath ) );
 
-  _.fileProvider.fileWrite( o.programPath, o.sourceCode );
+  let code = ( o.prefixCode ? o.prefixCode : '' ) + o.sourceCode + ( o.postfixCode ? o.postfixCode : '' );
+
+  if( o.verbosity )
+  {
+    o.logger = o.logger || logger;
+    o.logger.log( o.programPath );
+    if( o.verbosity >= 2 )
+    o.logger.log( _.strLinesNumber( o.sourceCode ) );
+  }
+
+  _.fileProvider.fileWrite( o.programPath, code );
 
   return o;
 }
@@ -1922,7 +2001,11 @@ write_body.defaults =
   ... preform_body.defaults,
   tempPath : null,
   dirPath : '.',
+  namePostfix : '',
   programPath : null,
+  rewriting : 0,
+  verbosity : 0,
+  logger : null,
 }
 
 let write = _.routine.uniteCloning_( preform_head, write_body );
@@ -1996,6 +2079,7 @@ let IntrospectorExtension =
 
 let ProgramExtension =
 {
+  // preformAmendPath,
   preformLocals,
   preform,
   write,
