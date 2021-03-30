@@ -33,7 +33,7 @@ const _ArraySlice = Array.prototype.slice;
 const _FunctionBind = Function.prototype.bind;
 const _ObjectToString = Object.prototype.toString;
 const _ObjectHasOwnProperty = Object.hasOwnProperty;
-let _arraySlice = _.longSlice;
+const _longSlice = _.longSlice;
 
 // --
 // routine
