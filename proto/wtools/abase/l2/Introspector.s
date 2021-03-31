@@ -1911,6 +1911,7 @@ function preform_body( o )
       o.postfixCode += `var ${g} = ${_.entity.exportJs( o.locals[ g ] )};\n`
     }
 
+    debugger;
     if( o.withSubmodules )
     {
       let paths = _.module.filePathGet
@@ -1918,7 +1919,7 @@ function preform_body( o )
         locally : 1,
         globally : 0,
         moduleFile : o.moduleFile,
-      });
+      }).local;
       _.assert( paths.length > 0 );
       o.postfixCode += '\n' + _.module.filePathAmend.body.toString() + '\n';
       o.postfixCode +=
@@ -1954,7 +1955,7 @@ preform_body.defaults =
   sourceCode : null,
   postfixCode : null,
   locals : null,
-  withSubmodules : 0,
+  withSubmodules : 1,
   moduleFile : null,
 }
 
