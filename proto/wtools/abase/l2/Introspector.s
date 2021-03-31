@@ -494,16 +494,13 @@ function routineSourceGet( o )
 
   if( o.usingInline && o.routine.inlines )
   {
-    // debugger;
     let prefix = '\n';
     for( let i in o.routine.inlines )
     {
       let inline = o.routine.inlines[ i ];
       prefix += '  let ' + i + ' = ' + _.entity.exportJs( inline, o.toJsOptions || Object.create( null ) ) + ';\n';
     }
-    // debugger;
     let splits = unwrap( result );
-    // debugger;
     splits[ 1 ] = prefix + '\n' + splits[ 1 ];
     result = splits.join( '' );
   }
@@ -673,7 +670,6 @@ function routineMake( o )
 
   function handleErrorWithEsprima( err )
   {
-    // debugger;
 
     if( !Esprima && !_global.esprima )
     try
@@ -693,7 +689,6 @@ function routineMake( o )
       }
       catch( err2 )
       {
-        // debugger;
         if( err2.lineNumber !== undefined )
         code = _.strLinesSelect
         ({
@@ -729,7 +724,6 @@ function routineMake( o )
     }
     catch( err )
     {
-      // debugger;
       throw _.err( err );
     }
   }
@@ -810,7 +804,6 @@ function routineExec( o )
   }
   catch( err )
   {
-    // debugger;
     throw _._err
     ({
       args : [ err ],
@@ -1169,9 +1162,7 @@ function routineInline( o )
   if( !inlines() )
   return _.routineParse( o.routine );
 
-  // debugger;
   while( inlines() );
-  // debugger;
 
   return _.routineParse( o.routine );
   // return parse();
@@ -1231,7 +1222,6 @@ function routineInline( o )
 
       _.assert( args.length - 1 === sub.args.length );
 
-      //debugger;
       let renamedArgs = _.strJoin([ '_' + sub.name + '_', sub.args, '_' ]);
       /*let renamedArgs = _.strStick( sub.args.slice(),'_' + sub.name + '_', '_' );*/
       body = _.strReplaceWords( body, sub.args, renamedArgs );
@@ -1248,7 +1238,6 @@ function routineInline( o )
 
       body = body.replace( rreturn, function()
       {
-        // debugger;
         throw _.err( 'not tested' );
 
         let rep = '{ ';
@@ -1271,7 +1260,6 @@ function routineInline( o )
       if( Config.debug )
       if( r.indexOf( 'return' ) !== -1 )
       {
-        // debugger;
         throw _.err( 'not expected' );
       }
 
@@ -1530,7 +1518,6 @@ function _elementExportString( o )
       + `
 (function()
 {
-  // debugger;
   let toVectorize = Object.create( null );
   ${toVectorize}
   return _.vectorize( toVectorize );
@@ -1832,35 +1819,10 @@ preformLocals_body.defaults =
 
 let preformLocals = _.routine.unite( null, preformLocals_body );
 
-// //
-//
-// function preformAmendPath_body( o )
-// {
-//
-//   _.map.assertHasAll( o, preformAmendPath_body.defaults );
-//
-//   if( o.amendPath === null )
-//   {
-//     // debugger;
-//     // o.amendPath = _.module.filePathGet();
-//     // debugger;
-//   }
-//
-//   return o.locals;
-// }
-//
-// preformAmendPath_body.defaults =
-// {
-//   amendPath : null,
-// }
-//
-// let preformAmendPath = _.routine.unite( null, preformAmendPath_body );
-
 //
 
 function preform_head( routine, args )
 {
-
   let o = args[ 0 ];
   if( !_.mapIs( o ) )
   o = { routine : o }
@@ -1868,6 +1830,12 @@ function preform_head( routine, args )
   _.assert( args.length === 1 );
   _.assert( arguments.length === 2 );
   _.assert( _.routineIs( o.routine ) || _.strIs( o.routine ) );
+
+  if( o.moduleFile === null )
+  {
+    global.wTools.module.nativeFilesMap
+    o.moduleFile = _.module.fileNativeWith( 2 );
+  }
 
   return o;
 }
@@ -1911,7 +1879,6 @@ function preform_body( o )
       o.postfixCode += `var ${g} = ${_.entity.exportJs( o.locals[ g ] )};\n`
     }
 
-    debugger;
     if( o.withSubmodules )
     {
       let paths = _.module.filePathGet
