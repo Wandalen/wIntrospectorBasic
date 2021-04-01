@@ -1829,7 +1829,8 @@ function preform_head( routine, args )
   _.routineOptions( routine, o );
   _.assert( args.length === 1 );
   _.assert( arguments.length === 2 );
-  _.assert( _.routineIs( o.routine ) || _.strIs( o.routine ) );
+  _.assert( _.routineIs( o.routine ) || _.strIs( o.sourceCode ) );
+  // _.assert( _.routineIs( o.routine ) || _.strIs( o.routine ) );
 
   if( o.moduleFile === null )
   {
@@ -1849,7 +1850,7 @@ function preform_body( o )
   o.name = o.routine.name;
 
   _.map.assertHasAll( o, preform_body.defaults );
-  _.assert( !o.routine.name || o.name === o.routine.name );
+  _.assert( !o.routine || !o.routine.name || o.name === o.routine.name );
   _.assert( _.strDefined( o.name ), 'Program should have name' );
 
   if( o.locals === null )
