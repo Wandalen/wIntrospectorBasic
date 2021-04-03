@@ -2,15 +2,12 @@ format: outwillfile-2.0
 root:
   - wIntrospectorBasic.out
 consistency:
-  wIntrospectorBasic.out.will.yml: &ref_0
-    hash: b32dab2e39908817cb9d94a43568c067
-    size: 38350
-  ../.ex.will.yml: &ref_1
+  ../.ex.will.yml: &ref_0
     hash: 061147e73d82dadabd82783c901da6f0
     size: 1809
-  ../.im.will.yml: &ref_2
-    hash: a9a7d2b90d60b80786da8fde429870e7
-    size: 5058
+  ../.im.will.yml: &ref_1
+    hash: 40314d248fdb12c23dc34c70c99cd09e
+    size: 5062
 module:
   wIntrospectorBasic.out:
     about:
@@ -21,18 +18,18 @@ module:
         execution of such and analyze them.
       enabled: 1
       version: 0.4.0
-      interpreters:
+      interpreters: &ref_2
         - njs >= 10.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords:
+      keywords: &ref_3
         - wTools
       license: MIT
       author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors:
+      contributors: &ref_4
         - Kostiantyn Wandalen <wanalen@01.school>
       npm.name: wintrospectorbasic
-      npm.scripts:
+      npm.scripts: &ref_5
         test: wtest .run proto/**
         docgen: wdocgen .build proto
     path:
@@ -63,7 +60,7 @@ module:
       download:
         criterion:
           predefined: 1
-        path: ../
+        path: ..
       repository:
         path: 'git+https:///github.com/Wandalen/wIntrospectorBasic.git'
       origins:
@@ -144,6 +141,10 @@ module:
           raw: compiled
           content: prime
         path: '{path::out.*=}/source/Index.s'
+      npm.proto.entry:
+        path:
+          - ../proto/wtools/abase/l2/Introspector.s
+          - ../proto/node_modules/wintrospectorbasic
       exported.dir.proto.export:
         criterion:
           generated: 1
@@ -699,24 +700,6 @@ module:
           content: prime
         inherit:
           - files.transpile
-      exported.proto.export:
-        opts:
-          filePath: 'reflector::exported.proto.export'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
-      exported.files.proto.export:
-        opts:
-          filePath: 'reflector::exported.files.proto.export'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
     build:
       proto.export:
         steps:
@@ -805,9 +788,8 @@ module:
           content: proto
           export: 1
     consistency:
-      wIntrospectorBasic.out.will.yml: *ref_0
-      ../.ex.will.yml: *ref_1
-      ../.im.will.yml: *ref_2
+      ../.ex.will.yml: *ref_0
+      ../.im.will.yml: *ref_1
   ../:
     about:
       name: wIntrospectorBasic
@@ -817,20 +799,13 @@ module:
         execution of such and analyze them.
       enabled: 1
       version: 0.4.0
-      interpreters:
-        - njs >= 10.0.0
-        - chrome >= 60.0.0
-        - firefox >= 60.0.0
-      keywords:
-        - wTools
+      interpreters: *ref_2
+      keywords: *ref_3
       license: MIT
       author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors:
-        - Kostiantyn Wandalen <wanalen@01.school>
+      contributors: *ref_4
       npm.name: wintrospectorbasic
-      npm.scripts:
-        test: wtest .run proto/**
-        docgen: wdocgen .build proto
+      npm.scripts: *ref_5
     path:
       module.willfiles:
         criterion:
@@ -859,7 +834,7 @@ module:
       download:
         criterion:
           predefined: 1
-        path: ./
+        path: .
       repository:
         path: 'git+https:///github.com/Wandalen/wIntrospectorBasic.git'
       origins:
@@ -940,6 +915,10 @@ module:
           raw: compiled
           content: prime
         path: '{path::out.*=}/source/Index.s'
+      npm.proto.entry:
+        path:
+          - proto/wtools/abase/l2/Introspector.s
+          - proto/node_modules/wintrospectorbasic
     submodule:
       wTools:
         path: 'npm:///wTools'
@@ -1498,6 +1477,5 @@ module:
         hash: 061147e73d82dadabd82783c901da6f0
         size: 1809
       ../.im.will.yml:
-        hash: a9a7d2b90d60b80786da8fde429870e7
-        size: 5058
-      wIntrospectorBasic.out.will.yml: *ref_0
+        hash: 40314d248fdb12c23dc34c70c99cd09e
+        size: 5062
