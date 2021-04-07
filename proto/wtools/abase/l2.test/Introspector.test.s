@@ -6,7 +6,7 @@
 if( typeof module !== 'undefined' )
 {
 
-  let _ = require( '../../../node_modules/Tools' );
+  const _ = require( '../../../node_modules/Tools' );
 
   require( '../l2/Introspector.s' );
 
@@ -461,7 +461,7 @@ function writeOptionWithSubmodulesAndModuleIsIncluded( test )
 
   function _programWithRequire()
   {
-    let _ = require( toolsPath );
+    const _ = require( toolsPath );
     // let ModuleFileNative = require( 'module' );
     // console.log( `program1.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
     // console.log( `program1.paths\n  ${module.paths.join( '\n  ' )}` );
@@ -477,7 +477,7 @@ function writeOptionWithSubmodulesAndModuleIsIncluded( test )
 
   function _programWithIncludeLower()
   {
-    let _ = require( toolsPath );
+    const _ = require( toolsPath );
     console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
     console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
     _.include( 'wlooker' );
@@ -489,7 +489,7 @@ function writeOptionWithSubmodulesAndModuleIsIncluded( test )
 
   function _programWithIncludeUpper()
   {
-    let _ = require( toolsPath );
+    const _ = require( toolsPath );
     console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
     console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
     _.include( 'wlooker' );
@@ -640,7 +640,7 @@ function exportUnitedRoutine( test )
 
   code =
   `
-  let _ = wTools;
+  const _ = _global_.wTools;
   let space = Object.create( null );
   ${code}
   return space.testRoutine({ src : 123 });
@@ -682,7 +682,7 @@ function exportRoutineWithHeadOnly( test )
 
   code =
   `
-  let _ = wTools;
+  const _ = _global_.wTools;
   let space = Object.create( null );
   ${code}
   return space.testRoutine({ src : 123 });
@@ -719,7 +719,7 @@ function exportRoutineWithBodyOnly( test )
 
   code =
   `
-  let _ = wTools;
+  const _ = _global_.wTools;
   let space = Object.create( null );
   ${code}
   return space.testRoutine({ src : 123 });
@@ -739,7 +739,7 @@ function exportSet( test )
 
   code =
   `
-  let _ = wTools;
+  const _ = _global_.wTools;
   let space = Object.create( null );
   ${code}
   return space.set.has( 3 );

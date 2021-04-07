@@ -158,7 +158,7 @@ module:
           - ../proto
           - ../proto/Integration.test.ss
           - ../proto/wtools
-          - ../proto/wtools/Tools.s
+          - ../proto/node_modules/Tools
           - ../proto/wtools/abase
           - ../proto/wtools/abase/l2
           - ../proto/wtools/abase/l2/Introspector.s
