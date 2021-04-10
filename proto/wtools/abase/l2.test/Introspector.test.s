@@ -420,7 +420,7 @@ function writeOptionWithSubmodulesAndModuleIsIncluded( test )
 
     ready.then( () =>
     {
-      test.case = `basic, ${__.entity.exportStringSolo( env, { level : 1 } )}`;
+      test.case = `basic, ${__.entity.exportStringSolo( env )}`;
 
       let program = _.program.write
       ({
