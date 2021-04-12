@@ -1892,7 +1892,7 @@ function preform_body( o )
 pathAmend_body
 ({
   moduleFile : module,
-  paths : '${_.entity.exportToString( paths )}',
+  paths : ${_.entity.exportString( paths )},
   permanent : 0,
   globally : 0,
   locally : 1,
