@@ -1792,9 +1792,9 @@ function clr( cls, method )
   - make possible to make single call,
   - expose start method
 
-var programPath = a.program({ routine : mainSingleBefore, locals : _.mapExtend( null, env ) });
-a.program({ routine : single1, locals : _.mapExtend( null, env ) });
-a.program({ routine : single2, locals : _.mapExtend( null, env ) });
+var programPath = a.program({ routine : mainSingleBefore, locals : env });
+a.program({ routine : single1, locals : env });
+a.program({ routine : single2, locals : env });
 
 */
 
@@ -1829,13 +1829,13 @@ function preform_head( routine, args )
   _.routineOptions( routine, o );
   _.assert( args.length === 1 );
   _.assert( arguments.length === 2 );
-  _.assert( _.routineIs( o.routine ) || _.strIs( o.sourceCode ) );
-  // _.assert( _.routineIs( o.routine ) || _.strIs( o.routine ) );
+  _.assert( _.routineIs( o.routine ) || _.strIs( o.sourceCode ), 'Expects either option::routine or option:sourceCode' );
 
   if( o.moduleFile === null )
   {
-    global.wTools.module.nativeFilesMap
-    o.moduleFile = _.module.fileNativeWith( 2 );
+    let moduleFile = _.module.fileNativeWith( 2 );
+    if( moduleFile )
+    o.moduleFile = moduleFile;
   }
 
   return o;
@@ -1853,11 +1853,7 @@ function preform_body( o )
   _.assert( !o.routine || !o.routine.name || o.name === o.routine.name );
   _.assert( _.strDefined( o.name ), 'Program should have name' );
 
-  if( o.locals === null )
   _.program.preformLocals.body.call( _.program, o );
-
-  // if( o.amendPath === null )
-  // _.program.preformAmendPath.body.call( _.program, o );
 
   if( o.sourceCode === null )
   {
