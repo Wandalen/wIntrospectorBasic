@@ -1885,13 +1885,14 @@ function preform_body( o )
         moduleFile : o.moduleFile,
       }).local;
       _.assert( paths.length > 0 );
+      _.assert( _.arrayIs( paths ) );
       o.postfixCode += '\n' + _.module.filePathAmend.body.toString() + '\n';
       o.postfixCode +=
 `
 pathAmend_body
 ({
   moduleFile : module,
-  paths : [ '${paths.join( '\', \'' )}' ],
+  paths : '${_.entity.exportToString( paths )}',
   permanent : 0,
   globally : 0,
   locally : 1,
