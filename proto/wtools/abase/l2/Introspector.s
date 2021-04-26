@@ -482,7 +482,7 @@ function routineSourceGet( o )
   if( _.routineIs( o ) )
   o = { routine : o };
 
-  _.routineOptions( routineSourceGet, o );
+  _.routine.options_( routineSourceGet, o );
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.routineIs( o.routine ) );
   _.assert( _.routineIs( o.routine.toSource ) || _.routineIs( o.routine.toString ) );
@@ -584,7 +584,7 @@ function routineMake( o )
   if( _.strIs( o ) )
   o = { code : o };
 
-  _.routineOptions( routineMake, o );
+  _.routine.options_( routineMake, o );
   _.assert( arguments.length === 1, 'Expects single argument' );
   _.assert( _.objectIs( o.externals ) || o.externals === null );
   _.assert( !!_realGlobal_ );
@@ -782,7 +782,7 @@ function routineExec( o )
   if( _.strIs( o ) )
   o = { code : o };
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.routineOptions( routineExec, o );
+  _.routine.options_( routineExec, o );
 
   o.routine = _.routineMake
   ({
@@ -873,7 +873,7 @@ function execInWorker( o )
   if( _.strIs( o ) )
   o = { code : o };
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.routineOptions( execInWorker, o );
+  _.routine.options_( execInWorker, o );
 
   let blob = new Blob( [ o.code ], { type : 'text/javascript' } );
   let worker = new Worker( URL.createObjectURL( blob ) );
@@ -896,7 +896,7 @@ function makeWorker( o )
   if( _.strIs( o ) )
   o = { code : o };
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.routineOptions( makeWorker, o );
+  _.routine.options_( makeWorker, o );
 
   let blob = new Blob( [ o.code ], { type : 'text/javascript' } );
   let worker = new Worker( URL.createObjectURL( blob ) );
@@ -965,7 +965,7 @@ function _routineInfo( o )
   for( let i in o.routine.inline )
   {
     result += o.tab + i + ' : ';
-    let opt = _.mapExtend( null, o );
+    let opt = _.props.extend( null, o );
     o.routine = o.routine.inline[ i ];
     result += _routineInfo( o );
   }
@@ -1123,7 +1123,7 @@ function routineInline( o )
   o = { routine : o };
   _.assert( _.routineIs( o.routine ) );
   _.assert( arguments.length === 1 );
-  _.routineOptions( routineInline, o );
+  _.routine.options_( routineInline, o );
 
   // if( _.routineIs( o ) )
   // o = { routine : o };
@@ -1388,7 +1388,7 @@ function routineParse( o )
   o = { routine : o };
   _.assert( _.routineIs( o.routine ) );
   _.assert( arguments.length === 1 );
-  _.routineOptions( routineParse, o );
+  _.routine.options_( routineParse, o );
 
   let source = o.routine.toString();
   let result = Object.create( null );
@@ -1440,7 +1440,7 @@ function _elementsExportString( o )
 {
   let result = '';
 
-  _.routineOptions( _elementsExportString, arguments );
+  _.routine.options_( _elementsExportString, arguments );
 
   if( o.visited === null )
   o.visited = [];
@@ -1478,7 +1478,7 @@ function _elementExportString( o )
 {
   let result = '';
 
-  _.routineOptions( _elementExportString, arguments );
+  _.routine.options_( _elementExportString, arguments );
 
   if( o.visited === null )
   o.visited = [];
@@ -1496,7 +1496,7 @@ function _elementExportString( o )
   (
     _.routineIs( o.element ) || _.primitiveIs( o.element ) || _.regexpIs( o.element ) || _.setIs( o.element )
     || _.mapIs( o.element )
-    || ( _.arrayIs( o.element ) && _.lengthOf( o.element ) === 0 )
+    || ( _.arrayIs( o.element ) && _.entity.lengthOf( o.element ) === 0 )
     , () => `Cant export ${o.name} is ${_.entity.strType( o.element )}`
   );
   _.assert( !_.longHas( o.visited, o.element ) );
@@ -1577,7 +1577,7 @@ function _elementExportString( o )
   function routineDefaults( dstContainerPath, routine )
   {
     let r = '';
-    let defaults = _.property._ofAct({ srcMap : routine.defaults, onlyEnumerable : 1, onlyOwn : 0 });
+    let defaults = _.props._ofAct({ srcMap : routine.defaults, onlyEnumerable : 1, onlyOwn : 0 });
     r += `\n${dstContainerPath}.defaults =\n` + _.entity.exportJs( defaults );
     return r;
   }
@@ -1615,7 +1615,7 @@ ${routineProperties( `_${element.name}_head`, element.head )}
   var _${element.name}_body = ${routineToString( elementBodyRoutine )}
 ${routineProperties( `_${element.name}_body`, elementBodyRoutine )};`
 
-    if( _.longHas( [ 'routine.unite', 'routine.uniteCloning_' ], o.name ) )
+    if( _.longHas( [ 'routine.unite', 'routine.uniteCloning_replaceByUnite' ], o.name ) )
     {
       str += `\n${o.dstContainerPath}.${o.name} = ` + _.strLinesIndentation( element.toString(), '  ' );
       str += `\n${o.dstContainerPath}.${o.name}.head = ` + `_${element.name}_head;`
@@ -1624,7 +1624,7 @@ ${routineProperties( `_${element.name}_body`, elementBodyRoutine )};`
     }
     else
     {
-      str += `\n${o.dstContainerPath}.${o.name} = _.routine.uniteCloning_( _${element.name}_head, _${element.name}_body );`
+      str += `\n${o.dstContainerPath}.${o.name} = _.routine.uniteCloning_replaceByUnite( _${element.name}_head, _${element.name}_body );`
     }
 
     return str;
@@ -1826,7 +1826,7 @@ function preform_head( routine, args )
   let o = args[ 0 ];
   if( !_.mapIs( o ) )
   o = { routine : o }
-  _.routineOptions( routine, o );
+  _.routine.options_( routine, o );
   _.assert( args.length === 1 );
   _.assert( arguments.length === 2 );
   _.assert( _.routineIs( o.routine ) || _.strIs( o.sourceCode ), 'Expects either option::routine or option:sourceCode' );
@@ -1931,10 +1931,10 @@ let preform = _.routine.unite( preform_head, preform_body );
 function write_body( o )
 {
 
-  _.assertRoutineOptions( write_body, o );
+  _.routine.assertOptions( write_body, o );
 
   let o2 = this.preform.body.call( this, _.mapOnly_( null, o, this.preform.body.defaults ) ); /* xxx : remove mapOnly */
-  _.mapExtend( o, o2 );
+  _.props.extend( o, o2 );
 
   if( o.programPath === null )
   {
@@ -1974,7 +1974,7 @@ write_body.defaults =
   logger : null,
 }
 
-let write = _.routine.uniteCloning_( preform_head, write_body );
+let write = _.routine.uniteCloning_replaceByUnite( preform_head, write_body );
 
 // --
 // declare
@@ -2051,9 +2051,9 @@ let ProgramExtension =
   write,
 }
 
-_.mapExtend( Self, ToolsExtension );
-_.mapExtend( _.introspector, IntrospectorExtension );
-_.mapExtend( _.program, ProgramExtension );
+_.props.extend( Self, ToolsExtension );
+_.props.extend( _.introspector, IntrospectorExtension );
+_.props.extend( _.program, ProgramExtension );
 
 // --
 // export

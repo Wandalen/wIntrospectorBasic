@@ -620,7 +620,7 @@ function exportUnitedRoutine( test )
   function testRoutine_head( routine, args )
   {
     let o = args[ 0 ];
-    _.routineOptions( routine, o );
+    _.routine.options_( routine, o );
     return o;
   }
 
@@ -634,7 +634,7 @@ function exportUnitedRoutine( test )
     src : null
   }
 
-  let testRoutine = _.routine.uniteCloning_( testRoutine_head, testRoutine_body );
+  let testRoutine = _.routine.uniteCloning_replaceByUnite( testRoutine_head, testRoutine_body );
 
   let code = _.introspector.elementExportString( { testRoutine }, 'space', 'testRoutine' );
 
@@ -662,7 +662,7 @@ function exportRoutineWithHeadOnly( test )
   function testRoutineHead( routine, args )
   {
     let o = args[ 0 ];
-    _.routineOptions( routine, o );
+    _.routine.options_( routine, o );
     return o;
   }
 
@@ -705,7 +705,7 @@ function exportRoutineWithBodyOnly( test )
   function testRoutine( ... args )
   {
     let o = args[ 0 ];
-    _.routineOptions( testRoutine, o );
+    _.routine.options_( testRoutine, o );
     return testRoutine.body( o );
   }
 
@@ -775,7 +775,7 @@ function elementExportString( test )
   function testRoutine2_head( routine, args )
   {
     let o = args[ 0 ];
-    _.routineOptions( routine, o );
+    _.routine.options_( routine, o );
     return o;
   }
   function testRoutine2_body( o )
@@ -786,14 +786,14 @@ function elementExportString( test )
   {
     src : null
   };
-  var testRoutine2 = _.routine.uniteCloning_( testRoutine2_head, testRoutine2_body );
+  var testRoutine2 = _.routine.uniteCloning_replaceByUnite( testRoutine2_head, testRoutine2_body );
   var got = _.introspector.elementExportString( { testRoutine : testRoutine2 }, 'space', 'testRoutine' );
   var exp =
 `
     var _testRoutine2_head = function testRoutine2_head( routine, args )
       {
         let o = args[ 0 ];
-        _.routineOptions( routine, o );
+        _.routine.options_( routine, o );
         return o;
       }
 
@@ -809,7 +809,7 @@ function elementExportString( test )
 
   _testRoutine2_body.defaults = { "src" : null }
     ;
-  space.testRoutine = _.routine.uniteCloning_( _testRoutine2_head, _testRoutine2_body );
+  space.testRoutine = _.routine.uniteCloning_replaceByUnite( _testRoutine2_head, _testRoutine2_body );
   space.testRoutine.defaults =
   { "src" : null };
 
@@ -823,7 +823,7 @@ function elementExportString( test )
   function testRoutine3_head( routine, args )
   {
     let o = args[ 0 ];
-    _.routineOptions( routine, o );
+    _.routine.options_( routine, o );
     return o;
   }
   function testRoutine3()
@@ -842,7 +842,7 @@ function elementExportString( test )
   function testRoutine3_head( routine, args )
       {
         let o = args[ 0 ];
-        _.routineOptions( routine, o );
+        _.routine.options_( routine, o );
         return o;
       }
 
@@ -872,7 +872,7 @@ function elementExportString( test )
   function testRoutine4( ... args )
   {
     let o = args[ 0 ];
-    _.routineOptions( testRoutine4, o );
+    _.routine.options_( testRoutine4, o );
     return testRoutine4.body( o );
   }
   testRoutine4.body = testRoutine4_body;
@@ -894,7 +894,7 @@ function elementExportString( test )
   space.testRoutine = function testRoutine4( ... args )
     {
       let o = args[ 0 ];
-      _.routineOptions( testRoutine4, o );
+      _.routine.options_( testRoutine4, o );
       return testRoutine4.body( o );
     }
   space.testRoutine.body = testRoutine4_body;
