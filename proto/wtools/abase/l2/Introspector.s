@@ -132,8 +132,8 @@ function routineTolerantCall( context, routine, options )
 
   _.assert( arguments.length === 3, 'Expects exactly three arguments' );
   _.assert( _.routineIs( routine ) );
-  _.assert( _.objectIs( routine.defaults ) );
-  _.assert( _.objectIs( options ) );
+  _.assert( _.object.isBasic( routine.defaults ) );
+  _.assert( _.object.isBasic( options ) );
 
   options = _.mapOnly_( null, options, routine.defaults );
   let result = routine.call( context, options );
@@ -155,7 +155,7 @@ function routinesJoin()
   function makeResult()
   {
 
-    _.assert( _.objectIs( routines ) || _.arrayIs( routines ) || _.routineIs( routines ) );
+    _.assert( _.object.isBasic( routines ) || _.arrayIs( routines ) || _.routineIs( routines ) );
 
     if( _.routineIs( routines ) )
     routines = [ routines ];
@@ -317,7 +317,7 @@ function _routinesCall( o )
 
     _.assert
     (
-      _.objectIs( routines ) || _.arrayIs( routines ) || _.routineIs( routines ),
+      _.object.isBasic( routines ) || _.arrayIs( routines ) || _.routineIs( routines ),
       'Expects object, array or routine (-routines-), but got', _.entity.strType( routines )
     );
 
@@ -586,7 +586,7 @@ function routineMake( o )
 
   _.routine.options_( routineMake, o );
   _.assert( arguments.length === 1, 'Expects single argument' );
-  _.assert( _.objectIs( o.externals ) || o.externals === null );
+  _.assert( _.object.isBasic( o.externals ) || o.externals === null );
   _.assert( !!_realGlobal_ );
 
   /* prefix */
@@ -1735,7 +1735,7 @@ function rou( namesapce, name )
 function fields( namespace )
 {
   let result = [];
-  _.assert( _.objectIs( _[ namespace ] ) );
+  _.assert( _.object.isBasic( _[ namespace ] ) );
   for( let f in _[ namespace ] )
   {
     let e = _[ namespace ][ f ];
