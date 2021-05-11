@@ -2,13 +2,10 @@ format: outwillfile-2.0
 root:
   - wIntrospectorBasic.out
 consistency:
-  wIntrospectorBasic.out.will.yml: &ref_0
-    hash: a1f587c1d5cebbac9d406bb5d91eac8f
-    size: 38748
-  ../.ex.will.yml: &ref_1
+  ../.ex.will.yml: &ref_0
     hash: 061147e73d82dadabd82783c901da6f0
     size: 1809
-  ../.im.will.yml: &ref_2
+  ../.im.will.yml: &ref_1
     hash: 768daeca95c7a4930e3cc7c145b6c5b0
     size: 5000
 module:
@@ -21,18 +18,18 @@ module:
         execution of such and analyze them.
       enabled: 1
       version: 0.4.0
-      interpreters:
+      interpreters: &ref_2
         - njs >= 10.0.0
         - chrome >= 60.0.0
         - firefox >= 60.0.0
-      keywords:
+      keywords: &ref_3
         - wTools
       license: MIT
       author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors:
+      contributors: &ref_4
         - Kostiantyn Wandalen <wanalen@01.school>
       npm.name: wintrospectorbasic
-      npm.scripts:
+      npm.scripts: &ref_5
         test: wtest .run proto/**
         docgen: wdocgen .build proto
     path:
@@ -703,24 +700,6 @@ module:
           content: prime
         inherit:
           - files.transpile
-      exported.proto.export:
-        opts:
-          filePath: 'reflector::exported.proto.export'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
-      exported.files.proto.export:
-        opts:
-          filePath: 'reflector::exported.files.proto.export'
-        criterion:
-          generated: 1
-          content: proto
-          export: 1
-        inherit:
-          - files.reflect
     build:
       proto.export:
         steps:
@@ -809,9 +788,8 @@ module:
           content: proto
           export: 1
     consistency:
-      wIntrospectorBasic.out.will.yml: *ref_0
-      ../.ex.will.yml: *ref_1
-      ../.im.will.yml: *ref_2
+      ../.ex.will.yml: *ref_0
+      ../.im.will.yml: *ref_1
   ../:
     about:
       name: wIntrospectorBasic
@@ -821,20 +799,13 @@ module:
         execution of such and analyze them.
       enabled: 1
       version: 0.4.0
-      interpreters:
-        - njs >= 10.0.0
-        - chrome >= 60.0.0
-        - firefox >= 60.0.0
-      keywords:
-        - wTools
+      interpreters: *ref_2
+      keywords: *ref_3
       license: MIT
       author: Kostiantyn Wandalen <wanalen@01.school>
-      contributors:
-        - Kostiantyn Wandalen <wanalen@01.school>
+      contributors: *ref_4
       npm.name: wintrospectorbasic
-      npm.scripts:
-        test: wtest .run proto/**
-        docgen: wdocgen .build proto
+      npm.scripts: *ref_5
     path:
       module.willfiles:
         criterion:
@@ -1508,4 +1479,3 @@ module:
       ../.im.will.yml:
         hash: 768daeca95c7a4930e3cc7c145b6c5b0
         size: 5000
-      wIntrospectorBasic.out.will.yml: *ref_0
