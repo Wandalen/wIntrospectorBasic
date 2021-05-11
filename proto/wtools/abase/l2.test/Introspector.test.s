@@ -369,8 +369,9 @@ function writeBasic( test )
   var src =
   {
     tempPath : a.abs( '.' ),
-    routine : testApp
-  }
+    routine : testApp,
+    namePostfix : '.js',
+  };
   var got = _.program.write( src )
   test.identical( got.programPath, a.abs( '.' ) + '/testApp.js' );
 
@@ -379,12 +380,13 @@ function writeBasic( test )
   {
     tempPath : a.abs( '.' ),
     routine : testApp,
-    dirPath : 'dir'
-  }
+    namePostfix : '.js',
+    dirPath : 'dir',
+  };
   var got = _.program.write( src )
   test.identical( got.programPath, a.abs( '.' ) + '/dir/testApp.js' );
 
-  /* - */
+  /* */
 
   function testApp(){}
 }
@@ -541,7 +543,7 @@ xxx
   {
     let ModuleFileNative = require( 'module' );
     ModuleFileNative.globalPaths.push( '/program1/global' );
-    module.paths.push( '/program1/local' ); debugger;
+    module.paths.push( '/program1/local' );
     console.log( `program1.before.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
     console.log( `program1.before.paths\n  ${module.paths.join( '\n  ' )}` );
 
