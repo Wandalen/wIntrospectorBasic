@@ -1639,7 +1639,8 @@ ${routineProperties( `_${element.name}_body`, elementBodyRoutine )};`
     }
     else
     {
-      str += `\n${o.dstContainerPath}.${o.name} = _.routine.uniteCloning_replaceByUnite( _${element.name}_head, _${element.name}_body );`
+      str += `\n${o.dstContainerPath}.${o.name} = `
+             + `_.routine.uniteCloning_replaceByUnite( _${element.name}_head, _${element.name}_body );`;
     }
 
     return str;

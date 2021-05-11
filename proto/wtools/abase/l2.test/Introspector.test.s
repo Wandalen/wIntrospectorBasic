@@ -543,7 +543,7 @@ xxx
   {
     let ModuleFileNative = require( 'module' );
     ModuleFileNative.globalPaths.push( '/program1/global' );
-    module.paths.push( '/program1/local' ); debugger;
+    module.paths.push( '/program1/local' );
     console.log( `program1.before.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
     console.log( `program1.before.paths\n  ${module.paths.join( '\n  ' )}` );
 
