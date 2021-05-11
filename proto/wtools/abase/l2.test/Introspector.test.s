@@ -369,8 +369,9 @@ function writeBasic( test )
   var src =
   {
     tempPath : a.abs( '.' ),
-    routine : testApp
-  }
+    routine : testApp,
+    namePostfix : '.js',
+  };
   var got = _.program.write( src )
   test.identical( got.programPath, a.abs( '.' ) + '/testApp.js' );
 
@@ -379,12 +380,13 @@ function writeBasic( test )
   {
     tempPath : a.abs( '.' ),
     routine : testApp,
-    dirPath : 'dir'
-  }
+    namePostfix : '.js',
+    dirPath : 'dir',
+  };
   var got = _.program.write( src )
   test.identical( got.programPath, a.abs( '.' ) + '/dir/testApp.js' );
 
-  /* - */
+  /* */
 
   function testApp(){}
 }
