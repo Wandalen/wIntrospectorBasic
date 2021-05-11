@@ -1538,7 +1538,15 @@ function _elementExportString( o )
     }
     else if( o.element.functor )
     {
-      result += o.dstContainerPath + '.' + o.name + ' = ' + '(' + o.element.functor.toString() + ')();';
+      if( o.element.functor.length === 0 ) /* qqq : for Dmytro : cover, find way to use functors properly */
+      {
+        result += o.dstContainerPath + '.' + o.name + ' = ' + '(' + o.element.functor.toString() + ')();';
+      }
+      else
+      {
+        result += o.dstContainerPath + '.' + o.name + ' = ' + o.element.toString() + '\n';
+        result += o.dstContainerPath + '.' + o.name + '.functor = ' + o.element.functor.toString();
+      }
     }
     else
     {
@@ -1548,6 +1556,13 @@ function _elementExportString( o )
     if( o.element.defaults )
     {
       result += routineDefaults( `${o.dstContainerPath}.${o.name}`, o.element );
+    }
+
+    if( o.element.meta ) /* xxx qqq : find way to prevent duplicating of locals */
+    {
+      if( o.element.meta.locals )
+      for( let key in o.element.meta.locals )
+      result += '\n\n' + o.element.meta.locals[ key ].toString();
     }
 
   }
@@ -1665,7 +1680,6 @@ ${routineProperties( `${element.body.name}`, element.body )}`
 
     return str;
   }
-
 }
 
 _elementExportString.defaults =
