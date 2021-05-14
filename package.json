@@ -1,6 +1,6 @@
 {
   "name" : "wintrospectorbasic",
-  "version" : "0.3.209",
+  "version" : "0.3.210",
   "description" : "Collection of cross-platform routines to generate functions, manage execution of such and analyze them.",
   "author" : "Kostiantyn Wandalen <wanalen@01.school>",
   "license" : "MIT",
@@ -16,7 +16,7 @@
   {
     "url" : "https://github.com/Wandalen/wIntrospectorBasic/issues"
   },
-  "dependencies" : { "wTools" : "stable", "wstringer" : "stable" },
-  "devDependencies" : { "eslint" : "7.1.0", "wTesting" : "stable" },
+  "dependencies" : { "wTools" : "delta", "wstringer" : "delta" },
+  "devDependencies" : { "eslint" : "7.1.0", "wTesting" : "delta" },
   "keywords" : [ "wTools" ]
 }
