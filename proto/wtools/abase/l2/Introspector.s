@@ -24,7 +24,6 @@ if( typeof module !== 'undefined' )
 }
 
 let Esprima;
-const Self = _global_.wTools;
 const _global = _global_;
 const _ = _global_.wTools;
 _.program = _.program || Object.create( null );
@@ -2044,6 +2043,10 @@ let ToolsExtension =
 
 }
 
+_.props.extend( _, ToolsExtension );
+
+//
+
 let IntrospectorExtension =
 {
 
@@ -2058,6 +2061,10 @@ let IntrospectorExtension =
 
 }
 
+/* _.props.extend */Object.assign( _.introspector, IntrospectorExtension );
+
+//
+
 let ProgramExtension =
 {
   // preformAmendPath,
@@ -2066,15 +2073,13 @@ let ProgramExtension =
   write,
 }
 
-_.props.extend( Self, ToolsExtension );
-_.props.extend( _.introspector, IntrospectorExtension );
-_.props.extend( _.program, ProgramExtension );
+/* _.props.extend */Object.assign( _.program, ProgramExtension );
 
 // --
 // export
 // --
 
 if( typeof module !== 'undefined' )
-module[ 'exports' ] = Self;
+module[ 'exports' ] = _;
 
 })();
