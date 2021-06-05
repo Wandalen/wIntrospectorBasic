@@ -1,19 +1,13 @@
-( function _Introspector_test_s()
+( function _Common_test_s()
 {
 
 'use strict';
 
 if( typeof module !== 'undefined' )
 {
-
-  const _ = require( '../../../node_modules/Tools' );
-
-  require( '../l2/Introspector.s' );
-
+  const _ = require( 'Tools' );
+  require( '../l2_introspector/Include.s' );
   _.include( 'wTesting' );
-  _.include( 'wFiles' );
-  _.include( 'wConsequence' );
-
 }
 
 const _global = _global_;
@@ -30,8 +24,9 @@ function onSuiteBegin()
 {
   let self = this;
   self.suiteTempPath = path.tempOpen( path.join( __dirname, '../..' ), 'Routine' );
-
 }
+
+//
 
 function onSuiteEnd()
 {
@@ -39,35 +34,6 @@ function onSuiteEnd()
   _.assert( _.strHas( self.suiteTempPath, 'Routine' ) )
   path.tempClose( self.suiteTempPath );
 }
-
-//
-
-function testFunction1( x, y )
-{
-  return x + y
-}
-
-function testFunction2( x, y )
-{
-  return this;
-}
-
-function testFunction3( x, y )
-{
-  return x + y + this.k;
-}
-
-function testFunction4( x, y )
-{
-  return this;
-}
-
-function contextConstructor3()
-{
-  this.k = 15
-}
-
-var context3 = new contextConstructor3();
 
 // --
 // test
@@ -195,25 +161,7 @@ function routinesCall( test )
   var value2 = 4;
   var value3 = 5;
 
-  function function1()
-  {
-    return value1;
-  }
-
-  function function2()
-  {
-    return value2;
-  }
-
-  function function3()
-  {
-    return value3;
-  }
-
-  function function5( x, y )
-  {
-    return x + y * this.k;
-  }
+  var context3 = new contextConstructor3();
 
   var function4 = testFunction3
   var function6 = testFunction4;
@@ -275,6 +223,51 @@ function routinesCall( test )
   {
     _.routinesCall( context3, testFunction3, value2 )
   });
+
+  function testFunction1( x, y )
+  {
+    return x + y
+  }
+
+  function testFunction2( x, y )
+  {
+    return this;
+  }
+
+  function testFunction3( x, y )
+  {
+    return x + y + this.k;
+  }
+
+  function testFunction4( x, y )
+  {
+    return this;
+  }
+
+  function contextConstructor3()
+  {
+    this.k = 15
+  }
+
+  function function1()
+  {
+    return value1;
+  }
+
+  function function2()
+  {
+    return value2;
+  }
+
+  function function3()
+  {
+    return value3;
+  }
+
+  function function5( x, y )
+  {
+    return x + y * this.k;
+  }
 
 }
 
@@ -356,568 +349,7 @@ function exec( test )
     context : { a : 1, b : 1 }
   });
   test.identical( got, 4 );
-}
 
-//
-
-function writeBasic( test )
-{
-  let context = this;
-  let a = test.assetFor( false );
-
-  test.case = 'options : tempPath, routine, dirPath - default';
-  var src =
-  {
-    tempPath : a.abs( '.' ),
-    routine : testApp,
-    namePostfix : '.js',
-  };
-  var got = _.program.write( src )
-  test.identical( got.programPath, a.abs( '.' ) + '/testApp.js' );
-
-  test.case = 'options : tempPath, routine, dirPath';
-  var src =
-  {
-    tempPath : a.abs( '.' ),
-    routine : testApp,
-    namePostfix : '.js',
-    dirPath : 'dir',
-  };
-  var got = _.program.write( src )
-  test.identical( got.programPath, a.abs( '.' ) + '/dir/testApp.js' );
-
-  /* */
-
-  function testApp(){}
-}
-
-//
-
-function writeOptionWithSubmodulesAndModuleIsIncluded( test )
-{
-  let context = this;
-  let a = test.assetFor( false );
-  let ready = _.take( null );
-
-  let start = __.process.starter
-  ({
-    outputCollecting : 1,
-    outputPiping : 1,
-    inputMirroring : 1,
-    throwingExitCode : 0,
-    mode : 'fork',
-  });
-
-  test.true( _.module.isIncluded( 'wTesting' ) );
-  test.true( !_.module.isIncluded( 'abcdef123' ) );
-
-  act({ routine : _programWithRequire });
-  act({ routine : _programWithIncludeLower });
-  act({ routine : _programWithIncludeUpper });
-
-  /* */
-
-  function act( env )
-  {
-
-    ready.then( () =>
-    {
-      test.case = `basic, ${__.entity.exportStringSolo( env )}`;
-
-      let program = _.program.write
-      ({
-        routine : env.routine,
-        withSubmodules : 1,
-        tempPath : a.abs( '.' ),
-      });
-
-      console.log( _.strLinesNumber( program.sourceCode ) );
-
-      return start
-      ({
-        execPath : program.programPath,
-        currentPath : _.path.dir( program.programPath ),
-      })
-    })
-    .then( ( op ) =>
-    {
-      var exp =
-  `
-  isIncluded( wLooker ) false
-  isIncluded( wlooker ) false
-  isIncluded( wLooker ) true
-  isIncluded( wlooker ) true
-  `
-      test.identical( op.exitCode, 0 );
-      test.equivalent( op.output, exp );
-      return op;
-    });
-
-  }
-
-  /* */
-
-  return ready;
-
-  /* - */
-
-  function _programWithRequire()
-  {
-    const _ = require( toolsPath );
-    // let ModuleFileNative = require( 'module' );
-    // console.log( `program1.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
-    // console.log( `program1.paths\n  ${module.paths.join( '\n  ' )}` );
-    console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
-    console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
-    _global_.debugger = true;
-    require( 'wlooker' );
-    console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
-    console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
-  }
-
-  /* - */
-
-  function _programWithIncludeLower()
-  {
-    const _ = require( toolsPath );
-    console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
-    console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
-    _.include( 'wlooker' );
-    console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
-    console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
-  }
-
-  /* - */
-
-  function _programWithIncludeUpper()
-  {
-    const _ = require( toolsPath );
-    console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
-    console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
-    _.include( 'wlooker' );
-    console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
-    console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
-  }
-
-  /* - */
-
-}
-
-//
-
-function dependancyAssumption( test )
-{
-  let context = this;
-  let a = test.assetFor( false );
-
-  programWrite( program1 );
-  programWrite( program2 );
-  programWrite( program3 );
-
-  return a.fork({ execPath : a.abs( 'program1' ) })
-  .then( ( op ) =>
-  {
-    var exp =
-`
-xxx
-`
-    test.equivalent( op.output, exp );
-    test.identical( op.exitCode, 0 );
-    return op;
-  });
-
-  /* */
-
-  function programWrite( program )
-  {
-    var postfix =
-    `
-    ${program.name}();
-    `
-    __.fileProvider.fileWrite( a.abs( program.name ), program.toString() + postfix );
-  }
-
-  /* */
-
-  function program1()
-  {
-    let ModuleFileNative = require( 'module' );
-    ModuleFileNative.globalPaths.push( '/program1/global' );
-    module.paths.push( '/program1/local' );
-    console.log( `program1.before.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
-    console.log( `program1.before.paths\n  ${module.paths.join( '\n  ' )}` );
-
-    require( './program2' );
-
-    console.log( `program1.after.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
-    console.log( `program1.after.paths\n  ${module.paths.join( '\n  ' )}` );
-  }
-
-  /* */
-
-  function program2()
-  {
-    let ModuleFileNative = require( 'module' );
-    ModuleFileNative.globalPaths.push( '/program2/global' );
-    module.paths.push( '/program2/local' );
-    console.log( `program2.before.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
-    console.log( `program2.before.paths\n  ${module.paths.join( '\n  ' )}` );
-
-    require( './program3' );
-
-    console.log( `program2.after.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
-    console.log( `program2.after.paths\n  ${module.paths.join( '\n  ' )}` );
-  }
-
-  /* */
-
-  function program3()
-  {
-    let ModuleFileNative = require( 'module' );
-    ModuleFileNative.globalPaths.push( '/program3/global' );
-    module.paths.push( '/program3/local' );
-    console.log( `program3.globalPaths\n  ${ModuleFileNative.globalPaths.join( '\n  ' )}` );
-    console.log( `program3.paths\n  ${module.paths.join( '\n  ' )}` );
-  }
-
-  /* */
-
-}
-
-dependancyAssumption.experimental = 1;
-
-//
-
-function exportRoutine( test )
-{
-
-  function testRoutine( src )
-  {
-    return src;
-  }
-
-  let code = _.introspector.elementExportString( { testRoutine }, 'space', 'testRoutine' );
-
-  code =
-  `
-  let space = Object.create( null );
-  ${code}
-  return space.testRoutine( 123 );
-  `
-
-  var got = _.routineExec( code );
-  test.identical( got.result, 123 );
-}
-
-exportRoutine.description =
-`
-  Exports regular routine and executes it.
-`
-
-//
-
-function exportUnitedRoutine( test )
-{
-
-  function testRoutine_head( routine, args )
-  {
-    let o = args[ 0 ];
-    _.routine.options_( routine, o );
-    return o;
-  }
-
-  function testRoutine_body( o )
-  {
-    return o.src;
-  }
-
-  testRoutine_body.defaults =
-  {
-    src : null
-  }
-
-  let testRoutine = _.routine.uniteCloning_replaceByUnite( testRoutine_head, testRoutine_body );
-
-  let code = _.introspector.elementExportString( { testRoutine }, 'space', 'testRoutine' );
-
-  code =
-  `
-  const _ = _global_.wTools;
-  let space = Object.create( null );
-  ${code}
-  return space.testRoutine({ src : 123 });
-  `
-
-  var got = _.routineExec( code );
-  test.identical( got.result, 123 );
-}
-
-exportUnitedRoutine.description =
-`
-  Exports united routine and executes it.
-`
-
-//
-
-function exportRoutineWithHeadOnly( test )
-{
-  function testRoutineHead( routine, args )
-  {
-    let o = args[ 0 ];
-    _.routine.options_( routine, o );
-    return o;
-  }
-
-  function testRoutine()
-  {
-    let o = testRoutine.head( testRoutine, arguments );
-    return o.src;
-  }
-
-  testRoutine.head = testRoutineHead;
-  testRoutine.defaults =
-  {
-    src : null
-  }
-
-  let code = _.introspector.elementExportString( { testRoutine }, 'space', 'testRoutine' );
-
-  code =
-  `
-  const _ = _global_.wTools;
-  let space = Object.create( null );
-  ${code}
-  return space.testRoutine({ src : 123 });
-  `
-
-  var got = _.routineExec( code );
-  test.identical( got.result, 123 );
-}
-
-//
-
-//
-
-function exportRoutineWithBodyOnly( test )
-{
-  function testRoutineBody( o )
-  {
-    return o.src;
-  }
-  function testRoutine( ... args )
-  {
-    let o = args[ 0 ];
-    _.routine.options_( testRoutine, o );
-    return testRoutine.body( o );
-  }
-
-  testRoutine.body = testRoutineBody;
-  testRoutine.defaults =
-  {
-    src : null
-  }
-
-  let code = _.introspector.elementExportString( { testRoutine }, 'space', 'testRoutine' );
-
-  code =
-  `
-  const _ = _global_.wTools;
-  let space = Object.create( null );
-  ${code}
-  return space.testRoutine({ src : 123 });
-  `
-
-  var got = _.routineExec( code );
-  test.identical( got.result, 123 );
-}
-
-//
-
-function exportSet( test )
-{
-  let set = _.setFrom([ 1, 2, 3 ])
-
-  let code = _.introspector.elementExportString( { set }, 'space', 'set' );
-
-  code =
-  `
-  const _ = _global_.wTools;
-  let space = Object.create( null );
-  ${code}
-  return space.set.has( 3 );
-  `
-
-  var got = _.routineExec( code );
-  test.identical( got.result, true );
-}
-
-//
-
-function elementExportString( test )
-{
-  test.case = 'simple routine';
-  function testRoutine1( src )
-  {
-    return src;
-  }
-  var got = _.introspector.elementExportString( { testRoutine : testRoutine1 }, 'space', 'testRoutine' );
-  var exp =
-`space.testRoutine = function testRoutine1( src )
-    {
-      return src;
-    };
-
-//
-`;
-  test.identical( got, exp );
-
-  /* */
-
-  test.case = 'united routine';
-  function testRoutine2_head( routine, args )
-  {
-    let o = args[ 0 ];
-    _.routine.options_( routine, o );
-    return o;
-  }
-  function testRoutine2_body( o )
-  {
-    return o.src;
-  }
-  testRoutine2_body.defaults =
-  {
-    src : null
-  };
-  var testRoutine2 = _.routine.uniteCloning_replaceByUnite( testRoutine2_head, testRoutine2_body );
-  var got = _.introspector.elementExportString( { testRoutine : testRoutine2 }, 'space', 'testRoutine' );
-  var exp =
-`
-    var _testRoutine2_head = function testRoutine2_head( routine, args )
-      {
-        let o = args[ 0 ];
-        _.routine.options_( routine, o );
-        return o;
-      }
-
-    //
-
-
-    var _testRoutine2_body = function testRoutine2_body( o )
-      {
-        return o.src;
-      }
-
-    //
-
-  _testRoutine2_body.defaults = { "src" : null }
-    ;
-  space.testRoutine = _.routine.uniteCloning_replaceByUnite( _testRoutine2_head, _testRoutine2_body );
-  space.testRoutine.defaults =
-  { "src" : null };
-
-//
-`;
-  test.equivalent( got, exp );
-
-  /* - */
-
-  test.case = 'routine with only head';
-  function testRoutine3_head( routine, args )
-  {
-    let o = args[ 0 ];
-    _.routine.options_( routine, o );
-    return o;
-  }
-  function testRoutine3()
-  {
-    let o = testRoutine3.head( testRoutine3, arguments );
-    return o.src;
-  }
-  testRoutine3.head = testRoutine3_head;
-  testRoutine3.defaults =
-  {
-    src : null,
-  };
-  var got = _.introspector.elementExportString( { testRoutine : testRoutine3 }, 'space', 'testRoutine' );
-  var exp =
-`
-  function testRoutine3_head( routine, args )
-      {
-        let o = args[ 0 ];
-        _.routine.options_( routine, o );
-        return o;
-      }
-
-    //
-
-
-  space.testRoutine = function testRoutine3()
-    {
-      let o = testRoutine3.head( testRoutine3, arguments );
-      return o.src;
-    }
-  space.testRoutine.head = testRoutine3_head;
-  space.testRoutine.defaults =
-  { "src" : null };
-
-//
-`;
-  test.equivalent( got, exp );
-
-  /* - */
-
-  test.case = 'routine with only body';
-  function testRoutine4_body( o )
-  {
-    return o.src;
-  }
-  function testRoutine4( ... args )
-  {
-    let o = args[ 0 ];
-    _.routine.options_( testRoutine4, o );
-    return testRoutine4.body( o );
-  }
-  testRoutine4.body = testRoutine4_body;
-  testRoutine4.defaults =
-  {
-    src : null
-  };
-  var got = _.introspector.elementExportString( { testRoutine : testRoutine4 }, 'space', 'testRoutine' );
-  var exp =
-`
-  function testRoutine4_body( o )
-      {
-        return o.src;
-      }
-
-    //
-
-
-  space.testRoutine = function testRoutine4( ... args )
-    {
-      let o = args[ 0 ];
-      _.routine.options_( testRoutine4, o );
-      return testRoutine4.body( o );
-    }
-  space.testRoutine.body = testRoutine4_body;
-  space.testRoutine.defaults =
-  { "src" : null };
-
-//
-`;
-  test.equivalent( got, exp );
-
-  /* - */
-
-  test.case = 'set to export';
-  var set = _.setFrom([ 1, 2, 3 ])
-  var got = _.introspector.elementExportString( { set }, 'space', 'set' );
-  var exp =
-`space.set = new Set([ 1, 2, 3 ]);
-
-//
-`;
-  test.identical( got, exp );
 }
 
 // --
@@ -927,7 +359,7 @@ function elementExportString( test )
 const Proto =
 {
 
-  name : 'Tools.l3.IntrospectorBasic',
+  name : 'Tools.introspector.Common',
   silencing : 1,
 
   onSuiteBegin,
@@ -943,22 +375,9 @@ const Proto =
 
     routineCall,
     routineTolerantCall,
-
     routinesCall,
-
     routineMake,
     exec,
-
-    writeBasic,
-    writeOptionWithSubmodulesAndModuleIsIncluded,
-    dependancyAssumption,
-
-    exportRoutine,
-    exportUnitedRoutine,
-    exportRoutineWithHeadOnly,
-    exportRoutineWithBodyOnly,
-    exportSet,
-    elementExportString,
 
   },
 
