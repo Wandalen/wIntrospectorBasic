@@ -3,8 +3,8 @@ root:
   - wIntrospectorBasic.out
 consistency:
   ../will.yml: &ref_0
-    hash: aac5967c4f6457a25ad326d8609ec063
-    size: 6597
+    hash: 770badb472d34404b0a06a47aa3db0f2
+    size: 6764
 module:
   wIntrospectorBasic.out:
     about:
@@ -173,6 +173,18 @@ module:
     submodule:
       wTools:
         path: 'npm:///wTools'
+        autoExporting: 0
+        enabled: 0
+      wPathBasic:
+        path: 'npm:///wpathbasic'
+        autoExporting: 0
+        enabled: 0
+      wStringer:
+        path: 'npm:///wstringer'
+        autoExporting: 0
+        enabled: 0
+      wFiles:
+        path: 'npm:///wFiles'
         autoExporting: 0
         enabled: 0
       wintrospectorbasic:
@@ -919,6 +931,18 @@ module:
         path: 'npm:///wTools'
         autoExporting: 0
         enabled: 0
+      wPathBasic:
+        path: 'npm:///wpathbasic'
+        autoExporting: 0
+        enabled: 0
+      wStringer:
+        path: 'npm:///wstringer'
+        autoExporting: 0
+        enabled: 0
+      wFiles:
+        path: 'npm:///wFiles'
+        autoExporting: 0
+        enabled: 0
       wintrospectorbasic:
         path: 'hd://.'
         autoExporting: 0
@@ -1469,5 +1493,5 @@ module:
           - 'build::npm'
     consistency:
       ../will.yml:
-        hash: aac5967c4f6457a25ad326d8609ec063
-        size: 6597
+        hash: 770badb472d34404b0a06a47aa3db0f2
+        size: 6764
