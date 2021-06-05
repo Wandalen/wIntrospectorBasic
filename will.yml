@@ -292,6 +292,15 @@ submodule:
   wTools:
     path: 'npm:///wTools'
     enabled: 0
+  wPathBasic:
+    path: 'npm:///wpathbasic'
+    enabled: 0
+  wStringer:
+    path: 'npm:///wstringer'
+    enabled: 0
+  wFiles:
+    path: 'npm:///wFiles'
+    enabled: 0
   wintrospectorbasic:
     path: 'hd://.'
     enabled: 0
