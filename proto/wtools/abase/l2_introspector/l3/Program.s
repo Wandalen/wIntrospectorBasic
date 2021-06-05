@@ -101,9 +101,14 @@ function preform_body( o )
   if( o.sourceCode === null )
   {
     if( _.routineIs( o.routine ) )
-    o.sourceCode = _.introspector.elementExportNode({ element : o.routine, name : o.name, locals : o._locals }).dstNode.exportString();
+    {
+      let r = _.introspector.elementExportNode({ element : o.routine, name : o.name, locals : o._locals });
+      o.sourceCode = r.dstNode.exportString();
+    }
     else
-    o.sourceCode = o.routine;
+    {
+      o.sourceCode = o.routine;
+    }
   }
 
   _.assert( _.str.is( o.sourceCode ) );
