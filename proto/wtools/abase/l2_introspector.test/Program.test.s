@@ -146,7 +146,6 @@ function writeOptionWithSubmodulesAndModuleIsIncluded( test )
     // console.log( `program1.paths\n  ${module.paths.join( '\n  ' )}` );
     console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
     console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
-    _global_.debugger = true;
     require( 'wlooker' );
     console.log( 'isIncluded( wLooker )', _.module.isIncluded( 'wLooker' ) );
     console.log( 'isIncluded( wlooker )', _.module.isIncluded( 'wlooker' ) );
@@ -311,7 +310,6 @@ function writeRoutineLocals( test )
 
   function programRoutine1()
   {
-    debugger;
     console.log( a + b );
   }
 
@@ -427,11 +425,8 @@ function makeSeralTimes( test )
     {
       test.case = `basic, ${__.entity.exportStringSolo( env )}`;
 
-      debugger;
       let program1 = _.program.make({ routine : programRoutine1, locals : { a : 1 } });
-      debugger;
       let program2 = _.program.make({ routine : programRoutine1, locals : { a : 2 } });
-      debugger;
 
       return _.Consequence.And( program1.start(), program2.start() );
     })

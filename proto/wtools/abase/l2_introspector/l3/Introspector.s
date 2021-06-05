@@ -117,25 +117,6 @@ function elementExportNode_head( routine, args )
   }
 
   return _.introspector._exportNodeHead( routine, [ o ] );
-
-  // _.routine.options( routine, o );
-  //
-  // if( o.locality === null )
-  // o.locality = o.namespacePath === null ? 'local' : 'global';
-  // debugger;
-  // if( o.dstNode )
-  // {
-  //   _.assert( o.locals === null || o.locals === o.dstNode.locals );
-  // }
-  // else
-  // {
-  //   o.dstNode = _.introspector.node.namespace();
-  //   if( o.locals )
-  //   o.dstNode.locals = o.locals;
-  // }
-  // _.assert( o.dstNode.type === 'namespace' );
-  //
-  // return o;
 }
 
 //
