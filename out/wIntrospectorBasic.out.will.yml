@@ -3,8 +3,8 @@ root:
   - wIntrospectorBasic.out
 consistency:
   ../will.yml: &ref_0
-    hash: a50b20f3b5e6f93326fc7907f047fa13
-    size: 6573
+    hash: aac5967c4f6457a25ad326d8609ec063
+    size: 6597
 module:
   wIntrospectorBasic.out:
     about:
@@ -105,7 +105,7 @@ module:
       entry.proto.no.tests:
         criterion:
           tests: no.tests
-        path: ../proto/wtools/abase/l2/Introspector.s
+        path: ../proto/wtools/abase/l2_introspector/Include.s
       entry.proto.only.tests:
         criterion:
           tests: only.tests
@@ -115,13 +115,13 @@ module:
           debug: debug
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/wtools/abase/l2/Introspector.s'
+        path: '{path::out.*=1}/source/wtools/abase/l2_introspector/Include.s'
       entry.out.raw.debug.release:
         criterion:
           debug: release
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/wtools/abase/l2/Introspector.s'
+        path: '{path::out.*=1}/source/wtools/abase/l2_introspector/Include.s'
       entry.out.compiled.debug.debug:
         criterion:
           debug: debug
@@ -136,7 +136,7 @@ module:
         path: '{path::out.*=}/source/Index.s'
       npm.proto.entry:
         path:
-          - ../proto/wtools/abase/l2/Introspector.s
+          - ../proto/wtools/abase/l2_introspector/Include.s
           - ../proto/node_modules/wintrospectorbasic
       exported.dir.proto.export:
         criterion:
@@ -157,10 +157,17 @@ module:
           - ../proto/node_modules/wintrospectorbasic
           - ../proto/wtools
           - ../proto/wtools/abase
-          - ../proto/wtools/abase/l2
-          - ../proto/wtools/abase/l2/Introspector.s
-          - ../proto/wtools/abase/l2.test
-          - ../proto/wtools/abase/l2.test/Introspector.test.s
+          - ../proto/wtools/abase/l2_introspector
+          - ../proto/wtools/abase/l2_introspector/Include.s
+          - ../proto/wtools/abase/l2_introspector/l3
+          - ../proto/wtools/abase/l2_introspector/l3/Introspector.s
+          - ../proto/wtools/abase/l2_introspector/l3/Node.s
+          - ../proto/wtools/abase/l2_introspector/l3/Program.s
+          - ../proto/wtools/abase/l2_introspector/l3/Tools.s
+          - ../proto/wtools/abase/l2_introspector.test
+          - ../proto/wtools/abase/l2_introspector.test/Common.test.s
+          - ../proto/wtools/abase/l2_introspector.test/Export.test.s
+          - ../proto/wtools/abase/l2_introspector.test/Program.test.s
           - ../proto/wtools/amid
           - ../proto/wtools/atop
     submodule:
@@ -874,7 +881,7 @@ module:
       entry.proto.no.tests:
         criterion:
           tests: no.tests
-        path: proto/wtools/abase/l2/Introspector.s
+        path: proto/wtools/abase/l2_introspector/Include.s
       entry.proto.only.tests:
         criterion:
           tests: only.tests
@@ -884,13 +891,13 @@ module:
           debug: debug
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/wtools/abase/l2/Introspector.s'
+        path: '{path::out.*=1}/source/wtools/abase/l2_introspector/Include.s'
       entry.out.raw.debug.release:
         criterion:
           debug: release
           raw: raw
           content: prime
-        path: '{path::out.*=1}/source/wtools/abase/l2/Introspector.s'
+        path: '{path::out.*=1}/source/wtools/abase/l2_introspector/Include.s'
       entry.out.compiled.debug.debug:
         criterion:
           debug: debug
@@ -905,7 +912,7 @@ module:
         path: '{path::out.*=}/source/Index.s'
       npm.proto.entry:
         path:
-          - proto/wtools/abase/l2/Introspector.s
+          - proto/wtools/abase/l2_introspector/Include.s
           - proto/node_modules/wintrospectorbasic
     submodule:
       wTools:
@@ -1462,5 +1469,5 @@ module:
           - 'build::npm'
     consistency:
       ../will.yml:
-        hash: a50b20f3b5e6f93326fc7907f047fa13
-        size: 6573
+        hash: aac5967c4f6457a25ad326d8609ec063
+        size: 6597
