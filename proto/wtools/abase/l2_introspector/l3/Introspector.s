@@ -143,7 +143,7 @@ function elementExportNode_body( o )
 
     if( o.element.vectorized )
     assign( [ o.name ], vectorizedExport( o.element ) );
-    else if( o.element.head || o.element.body || o.element.tail )
+    else if( o.element.head || o.element.body ||  o.element.tail )
     assign( [ o.name ], routineUnitedExport( o.element ) );
     else if( o.element.functor )
     assign( [ o.name ], routineFunctorExport( o.element ) );
@@ -197,9 +197,8 @@ function elementExportNode_body( o )
     );
     _.assert
     (
-      _.routineIs( o.element ) || _.primitiveIs( o.element ) || _.regexpIs( o.element ) || _.setIs( o.element )
-      || _.mapIs( o.element )
-      || ( _.arrayIs( o.element ) && _.entity.lengthOf( o.element ) === 0 )
+      _.routine.is( o.element ) || _.primitive.is( o.element ) || _.regexp.is( o.element )
+      || _.set.is( o.element ) || _.map.is( o.element ) || _.array.is( o.element ) || _.hashMap.is( o.element )
       , () => `Cant export ${o.name} is ${_.entity.strType( o.element )}`
     );
 

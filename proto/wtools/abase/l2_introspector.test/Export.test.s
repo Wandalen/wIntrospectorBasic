@@ -51,9 +51,9 @@ function exportRoutine( test )
   {
     test.case = `${__.entity.exportStringSolo( env )}`;
 
-    let code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
-    let code2 = code.dstNode.exportString();
-    let code3 =
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 = code.dstNode.exportString();
+    var code3 =
     `
     'use strict';
     let namespace = Object.create( null );
@@ -99,9 +99,9 @@ function exportRoutineDefaults( test )
   {
     test.case = `${__.entity.exportStringSolo( env )}`;
 
-    let code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
-    let code2 = code.dstNode.exportString();
-    let code3 =
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 = code.dstNode.exportString();
+    var code3 =
     `
     'use strict';
     const _ = _global_.wTools;
@@ -149,11 +149,11 @@ function exportUnitedRoutine( test )
     test.case = `${__.entity.exportStringSolo( env )}`;
 
     let routine1 = _.routine.unite( routine1_head, routine1_body );
-    let code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
-    let code2 = code.dstNode.exportString();
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 = code.dstNode.exportString();
     console.log( _.strLinesNumber( code2 ) );
 
-    let code3 =
+    var code3 =
     `
     'use strict';
     const _ = _global_.wTools;
@@ -207,9 +207,9 @@ function exportRoutineWithHeadOnly( test )
   {
     test.case = `${__.entity.exportStringSolo( env )}`;
 
-    let code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
-    let code2 = code.dstNode.exportString();
-    let code3 =
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 = code.dstNode.exportString();
+    var code3 =
     `
     'use strict';
     const _ = _global_.wTools;
@@ -259,9 +259,9 @@ function exportRoutineWithBodyOnly( test )
   {
     test.case = `${__.entity.exportStringSolo( env )}`;
 
-    let code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
-    let code2 = code.dstNode.exportString();
-    let code3 =
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 = code.dstNode.exportString();
+    var code3 =
     `
     'use strict';
     const _ = _global_.wTools;
@@ -301,26 +301,176 @@ function exportSet( test )
 
   function act( env )
   {
-    test.case = `${__.entity.exportStringSolo( env )}`;
 
-    let set = _.set.from([ 1, 2, 3 ])
-    let code = _.introspector.selectAndExportString( { set }, env.dstNamespace, 'set' );
-    let code2 = code.dstNode.exportString();
+    /* */
+
+    test.case = `basic, ${__.entity.exportStringSolo( env )}`;
+    var element = _.set.from([ 1, 2, 3 ])
+    var code = _.introspector.selectAndExportString( { element }, env.dstNamespace, 'element' );
+    var code2 = code.dstNode.exportString();
+    var exp =
+`
+namespace.element = new Set([ 1, 2, 3 ]);
+//
+`
+    if( env.dstNamespace === null )
+    exp =
+`
+var element = new Set([ 1, 2, 3 ]);
+//
+`
+    test.equivalent( code2, exp );
     console.log( code2 );
-    let code3 =
+    var code3 =
     `
     'use strict';
     const _ = _global_.wTools;
     let namespace = Object.create( null );
     ${code2}
-    if( namespace.set )
-    return namespace.set.has( 3 );
+    if( namespace.element )
+    return namespace.element.has( 3 );
     else
-    return set.has( 3 );
+    return element.has( 3 );
     `
 
     var got = _.routineExec( code3 );
     test.identical( got.result, true );
+
+    /* */
+
+    test.case = `2 levels, ${__.entity.exportStringSolo( env )}`;
+    var element = _.set.from([ _.set.from([ 'a', 'b' ]), [ 1, 2 ], { a : 1, b : 2 } ]);
+    var code = _.introspector.selectAndExportString( { element }, env.dstNamespace, 'element' );
+    var code2 = code.dstNode.exportString();
+    var exp =
+`
+namespace.element = new Set([ 1, 2, 3 ]);
+//
+`
+    if( env.dstNamespace === null )
+    exp =
+`
+var element = new Set([ 1, 2, 3 ]);
+//
+`
+    test.equivalent( code2, exp );
+    console.log( code2 );
+    var code3 =
+    `
+    'use strict';
+    const _ = _global_.wTools;
+    let namespace = Object.create( null );
+    ${code2}
+    if( namespace.element )
+    return namespace.element.has( 3 );
+    else
+    return element.has( 3 );
+    `
+
+    var got = _.routineExec( code3 );
+    test.identical( got.result, true );
+
+    /* */
+
+  }
+
+}
+
+//
+
+function exportArray( test )
+{
+
+  act({ dstNamespace : 'namespace' });
+  act({ dstNamespace : null });
+
+  function act( env )
+  {
+
+    /* */
+
+    test.case = `basic, ${__.entity.exportStringSolo( env )}`;
+    var element = [ 1, 2, 3 ];
+    var code = _.introspector.selectAndExportString( { element }, env.dstNamespace, 'element' );
+    var code2 = code.dstNode.exportString();
+    var exp =
+`
+namespace.element = [ 1, 2, 3 ];
+//
+`
+    if( env.dstNamespace === null )
+    exp =
+`
+var element = [ 1, 2, 3 ];
+//
+`
+    test.equivalent( code2, exp );
+    console.log( code2 );
+    var code3 =
+    `
+    'use strict';
+    const _ = _global_.wTools;
+    let namespace = Object.create( null );
+    ${code2}
+    if( namespace.element )
+    return namespace.element.includes( 3 );
+    else
+    return element.includes( 3 );
+    `
+
+    var got = _.routineExec( code3 );
+    test.identical( got.result, true );
+
+    /* */
+
+  }
+
+}
+
+//
+
+function exportComplex( test )
+{
+
+  act({ dstNamespace : 'namespace' });
+  act({ dstNamespace : null });
+
+  function act( env )
+  {
+
+    /* */
+
+    test.case = `2 levels, ${__.entity.exportStringSolo( env )}`;
+    var element = [ _.set.from([ 'a', 'b' ]), [ 1, 2 ], { a : 1, b : 2 }, new HashMap([ [ 'a', 1 ], [ 'b', 2 ] ]) ]
+    var code = _.introspector.selectAndExportString( { element }, env.dstNamespace, 'element' );
+    var code2 = code.dstNode.exportString();
+    var exp =
+`
+xxx
+`
+    if( env.dstNamespace === null )
+    exp =
+`
+xxx
+`
+    test.equivalent( code2, exp );
+    console.log( code2 );
+    var code3 =
+    `
+    'use strict';
+    const _ = _global_.wTools;
+    let namespace = Object.create( null );
+    ${code2}
+    if( namespace.element )
+    return namespace.element[ 0 ].has( 'a' );
+    else
+    return element[ 0 ].has( 'a' );
+    `
+
+    var got = _.routineExec( code3 );
+    test.identical( got.result, true );
+
+    /* */
 
   }
 
@@ -344,10 +494,10 @@ function exportMapLocalityLocal( test )
       f1 : 1,
       f2 : 10,
     }
-    let code = _.introspector.elementsExportNode({ srcContainer : src });
-    let code2 = code.dstNode.exportString();
+    var code = _.introspector.elementsExportNode({ srcContainer : src });
+    var code2 = code.dstNode.exportString();
     console.log( _.strLinesNumber( code2 ) );
-    let code3 =
+    var code3 =
     `
     'use strict';
     const _ = _global_.wTools;
@@ -386,10 +536,10 @@ function exportLocalsSimple( test )
     r1.meta.locals.r3 = r3;
     r1.meta.locals.factor = 13;
 
-    let code = _.introspector.selectAndExportString( { r1 }, null, 'r1' );
-    let code2 = code.dstNode.exportString();
+    var code = _.introspector.selectAndExportString( { r1 }, null, 'r1' );
+    var code2 = code.dstNode.exportString();
     console.log( _.strLinesNumber( code.dstNode.exportString() ) );
-    let code3 =
+    var code3 =
     `
     'use strict';
     const _ = _global_.wTools;
@@ -444,10 +594,10 @@ function exportLocalsDuplication( test )
     r3.meta.locals = {};
     r3.meta.locals.r4 = r4;
 
-    let code = _.introspector.selectAndExportString( { r1 }, env.dstNamespace, 'r1' );
+    var code = _.introspector.selectAndExportString( { r1 }, env.dstNamespace, 'r1' );
     console.log( _.strLinesNumber( code.dstNode.exportString() ) );
 
-    let code2 = code.dstNode.exportString();
+    var code2 = code.dstNode.exportString();
     test.identical( _.strCount( code2, 'function r1' ), 1 );
     test.identical( _.strCount( code2, 'function r2' ), 1 );
     test.identical( _.strCount( code2, 'function r3' ), 1 );
@@ -486,7 +636,7 @@ ${ env.dstNamespace ? 'namespace.r1 = function r1()' : 'var r1 = function r1()' 
 `
     test.equivalent( code2, exp );
 
-    let code3 =
+    var code3 =
     `
     'use strict';
     const _ = _global_.wTools;
@@ -698,7 +848,7 @@ ${ env.dstNamespace ? 'namespace.r1 = function r1()' : 'var r1 = function r1()' 
 //   var set = _.setFrom([ 1, 2, 3 ])
 //   var got = _.introspector.selectAndExportString( { set }, 'namespace', 'set' );
 //   var exp =
-// `namespace.set = new Set([ 1, 2, 3 ]);
+// `namespace.element = new Set([ 1, 2, 3 ]);
 //
 // //
 // `;
@@ -728,6 +878,8 @@ const Proto =
     exportRoutineWithBodyOnly,
     /* qqq : implement more test routine for united routine */
     exportSet,
+    exportArray,
+    // exportComplex,
     exportMapLocalityLocal,
     exportLocalsSimple,
     exportLocalsDuplication,
