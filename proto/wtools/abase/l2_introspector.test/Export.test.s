@@ -338,40 +338,6 @@ var element = new Set([ 1, 2, 3 ]);
 
     /* */
 
-    test.case = `2 levels, ${__.entity.exportStringSolo( env )}`;
-    var element = _.set.from([ _.set.from([ 'a', 'b' ]), [ 1, 2 ], { a : 1, b : 2 } ]);
-    var code = _.introspector.selectAndExportString( { element }, env.dstNamespace, 'element' );
-    var code2 = code.dstNode.exportString();
-    var exp =
-`
-namespace.element = new Set([ 1, 2, 3 ]);
-//
-`
-    if( env.dstNamespace === null )
-    exp =
-`
-var element = new Set([ 1, 2, 3 ]);
-//
-`
-    test.equivalent( code2, exp );
-    console.log( code2 );
-    var code3 =
-    `
-    'use strict';
-    const _ = _global_.wTools;
-    let namespace = Object.create( null );
-    ${code2}
-    if( namespace.element )
-    return namespace.element.has( 3 );
-    else
-    return element.has( 3 );
-    `
-
-    var got = _.routineExec( code3 );
-    test.identical( got.result, true );
-
-    /* */
-
   }
 
 }
