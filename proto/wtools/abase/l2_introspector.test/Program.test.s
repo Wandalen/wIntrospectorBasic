@@ -232,8 +232,8 @@ function writeStart( test )
     {
       var exp =
 `
-Current path : ${_.path.dir( program.programPath )}
-Program path : ${program.programPath}
+Current path : ${_.path.nativize( _.path.dir( program.programPath ) )}
+Program path : ${_.path.nativize( program.programPath )}
 `
       test.identical( op.exitCode, 0 );
       test.equivalent( op.output, exp );

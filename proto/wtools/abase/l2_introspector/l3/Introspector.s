@@ -143,7 +143,7 @@ function elementExportNode_body( o )
 
     if( o.element.vectorized )
     assign( [ o.name ], vectorizedExport( o.element ) );
-    else if( o.element.head || o.element.body ||  o.element.tail )
+    else if( o.element.head || o.element.body || o.element.tail )
     assign( [ o.name ], routineUnitedExport( o.element ) );
     else if( o.element.functor )
     assign( [ o.name ], routineFunctorExport( o.element ) );
