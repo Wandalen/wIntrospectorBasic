@@ -324,6 +324,48 @@ function exportRoutineWithFunctor( test )
 
 //
 
+function exportRoutineComposed( test )
+{
+
+  var routine1 = _.routine.s.compose( [ _routine0, _routine1 ] );
+
+  act({ dstNamespace : 'namespace' });
+
+  function act( env )
+  {
+    test.case = `${__.entity.exportStringSolo( env )}`;
+
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 = code.dstNode.exportString();
+    var code3 =
+    `
+    'use strict';
+    const _ = _global_.wTools;
+    let namespace = Object.create( _.entity );
+    debugger
+    ${code2}
+    return namespace.routine1( 1 );
+    `
+
+    var got = _.routineExec( code3 );
+    test.identical( got.result, [ 2, 3 ] );
+
+  }
+
+  function _routine0( src )
+  {
+    return src + 1;
+  }
+
+  function _routine1( src )
+  {
+    return src + 2;
+  }
+
+}
+
+//
+
 function exportSet( test )
 {
 
@@ -874,6 +916,7 @@ const Proto =
     exportRoutineWithHeadOnly,
     exportRoutineWithBodyOnly,
     exportRoutineWithFunctor,
+    exportRoutineComposed,
     /* qqq : implement more test routine for united routine */
     exportSet,
     exportArray,

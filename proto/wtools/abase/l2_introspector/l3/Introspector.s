@@ -147,6 +147,8 @@ function elementExportNode_body( o )
     assign( [ o.name ], routineUnitedExport( o.element ) );
     else if( o.element.functor )
     assign( [ o.name ], routineFunctorExport( o.element ) );
+    else if( o.element.composed )
+    assign( [ o.name ], routineComposedExport( o.element ) );
     else
     assign( [ o.name ], routineExport( o.element ) );
 
@@ -435,6 +437,35 @@ ${strLinesIndentation( routineProperties( `_${element.name}_tail`, element.tail 
 })();
 `
     return functor;
+  }
+
+  /* */
+
+  function routineComposedExport( routine )
+  {
+    let composedExported = _.introspector.elementExportNode
+    ({
+      srcContainer : routine,
+      element : routine.composed,
+      name : `_${o.name}_composed`,
+      locality : 'local'
+    })
+
+    let result =
+`( function() {
+`
+    result += `\n  ${composedExported.dstNode.exportString()}`;
+
+    result += `\n  const o = _.mapOnly_( null, _${o.name}_composed, _.routine.s.compose.defaults );`
+
+    result += `\n  const _${o.name}_ = _.routine.s.compose( o );`
+
+    result +=
+`
+  return _${o.name}_;
+})();
+`
+    return result;
   }
 
   /* */
