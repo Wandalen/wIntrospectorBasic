@@ -310,6 +310,9 @@ function elementExportNode_body( o )
 
   function routineExport( routine )
   {
+    if( routine.locals )
+    localsExport( routine.locals );
+
     return routineOriginal( routine ).toString();
   }
 
@@ -318,8 +321,8 @@ function elementExportNode_body( o )
   function routineOriginal( routine )
   {
     _.assert( _.routineIs( routine ) );
-    while( routine.original )
-    routine = routine.original;
+    while( routine.original || routine.originalRoutine )
+    routine = routine.original || routine.originalRoutine;
     return routine;
   }
 
