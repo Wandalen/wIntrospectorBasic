@@ -293,6 +293,37 @@ function exportRoutineWithBodyOnly( test )
 
 //
 
+function exportRoutineWithFunctor( test )
+{
+  var routine1 = _.entity.lengthOf;
+
+  act({ dstNamespace : 'namespace' });
+
+  function act( env )
+  {
+    test.case = `${__.entity.exportStringSolo( env )}`;
+
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 = code.dstNode.exportString();
+    var code3 =
+    `
+    'use strict';
+    const _ = _global_.wTools;
+    let namespace = Object.create( _.entity );
+    debugger
+    ${code2}
+    return namespace.routine1([ 1 ]);
+    `
+
+    var got = _.routineExec( code3 );
+    test.identical( got.result, 1 );
+
+  }
+
+}
+
+//
+
 function exportSet( test )
 {
 
@@ -842,6 +873,7 @@ const Proto =
     exportUnitedRoutine,
     exportRoutineWithHeadOnly,
     exportRoutineWithBodyOnly,
+    exportRoutineWithFunctor,
     /* qqq : implement more test routine for united routine */
     exportSet,
     exportArray,

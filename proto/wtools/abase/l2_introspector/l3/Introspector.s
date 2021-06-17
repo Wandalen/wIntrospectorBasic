@@ -395,8 +395,12 @@ ${strLinesIndentation( routineProperties( `_${element.name}_tail`, element.tail 
   function routineFunctorExport( element )
   {
     let result = '';
+
     if( element.functor.length === 0 )
     {
+      if( element.functor.functor )
+      result += routineFunctorExport( element.functor );
+      else
       result += '( ' + routineExport( element.functor ) + ' )();';
     }
     else
@@ -405,7 +409,7 @@ ${strLinesIndentation( routineProperties( `_${element.name}_tail`, element.tail 
 `( function()
 {
   const ${o.name} = ${routineExport( element )};
-  ${o.name}.functor = ${routineExport( element.functor )};
+  ${o.name}.functor = ${element.functor.functor ? routineFunctorExport( element.functor ) : routineExport( element.functor )};
   return ${o.name};
 })();`;
     }
