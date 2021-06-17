@@ -432,6 +432,86 @@ function exportRoutineComposedComplex( test )
 
 //
 
+function exportUnitedRoutineWithMultipleHeads( test )
+{
+  function _routineUnited_head1( routine, args )
+  {
+    let o = args[ 0 ];
+    if( _.number.is( o ) )
+    o = { src : o };
+    return o;
+  }
+
+  function _routineUnited_head2( routine, args )
+  {
+    let o = args[ 0 ];
+    _.routine.options_( routine, o );
+    return o;
+  }
+
+  function _routineUnited_body( o )
+  {
+    o.src += 1;
+    return o;
+  }
+
+  _routineUnited_body.defaults =
+  {
+    src : null
+  }
+
+  let head =
+  [
+    _routineUnited_head1,
+    _routineUnited_head2,
+  ]
+
+  let routine1 = _.routine.unite( head, _routineUnited_body );
+
+  /* - */
+
+  act({ dstNamespace : 'namespace' });
+
+  function act( env )
+  {
+    test.case = `${__.entity.exportStringSolo( env )}`;
+
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 =
+    `
+    'use strict';
+    const _ = _global_.wTools;
+    let namespace = Object.create( _.entity );
+    ${code.dstNode.exportString()}
+    return namespace.routine1( 1 );
+    `
+
+    var got = _.routineExec( code2 );
+    test.identical( got.result, { src : 2 } );
+
+    /* */
+
+    test.case = `${__.entity.exportStringSolo( env )} throwing`;
+
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 =
+    `
+    'use strict';
+    const _ = _global_.wTools;
+    let namespace = Object.create( _.entity );
+    ${code.dstNode.exportString()}
+    return namespace.routine1({ dst : 1 });
+    `
+
+    test.shouldThrowErrorSync( () => _.routineExec( code2 ), ( err ) =>
+    {
+      test.true( _.strHas( err, 'does not expect options: "dst"' ) )
+    });
+  }
+}
+
+//
+
 function exportSet( test )
 {
 
@@ -984,6 +1064,7 @@ const Proto =
     exportRoutineWithFunctor,
     exportRoutineComposed,
     exportRoutineComposedComplex,
+    exportUnitedRoutineWithMultipleHeads,
     /* qqq : implement more test routine for united routine */
     exportSet,
     exportArray,
