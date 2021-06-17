@@ -443,22 +443,47 @@ ${strLinesIndentation( routineProperties( `_${element.name}_tail`, element.tail 
 
   function routineComposedExport( routine )
   {
-    let composedExported = _.introspector.elementExportNode
-    ({
-      srcContainer : routine,
-      element : routine.composed,
-      name : `_${o.name}_composed`,
-      locality : 'local'
-    })
+    let bodies = routine.composed.bodies;
 
     let result =
 `( function() {
 `
-    result += `\n  ${composedExported.dstNode.exportString()}`;
+    result += `\n  let bodies = [];`;
 
-    result += `\n  const o = _.mapOnly_( null, _${o.name}_composed, _.routine.s.compose.defaults );`
+    bodies.forEach( ( body, i ) =>
+    {
+      let name = `_${o.name}_body_${i}`;
+      let bodyExported = _.introspector.elementExportNode
+      ({
+        srcContainer : bodies,
+        element : body,
+        name,
+        locality : 'local'
+      })
+      result += `\n  ${bodyExported.dstNode.exportString()}`;
+      result += `\n bodies.push( ${name} );`;
+    })
 
-    result += `\n  const _${o.name}_ = _.routine.s.compose( o );`
+    let chainerExported = _.introspector.elementExportNode
+    ({
+      srcContainer : routine.composed,
+      element : routine.composed.chainer,
+      name : 'chainer',
+      locality : 'local'
+    })
+
+    let tailExported = _.introspector.elementExportNode
+    ({
+      srcContainer : routine.composed,
+      element : routine.composed.tail,
+      name : 'tail',
+      locality : 'local'
+    })
+
+    result += `\n  ${chainerExported.dstNode.exportString()}`;
+    result += `\n  ${tailExported.dstNode.exportString()}`;
+
+    result += `\n  const _${o.name}_ = _.routine.s.compose({ bodies, chainer, tail });`
 
     result +=
 `

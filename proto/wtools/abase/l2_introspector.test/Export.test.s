@@ -366,6 +366,72 @@ function exportRoutineComposed( test )
 
 //
 
+function exportRoutineComposedComplex( test )
+{
+  function _routineWithDefaults( o )
+  {
+    if( _.number.is( o ) )
+    o = { src : o };
+    o = _.routine.options_( _routineWithDefaults, o );
+    return o.src + 1;
+  }
+  _routineWithDefaults.defaults =
+  {
+    src : null
+  }
+
+  /* */
+
+  function _routineUnited_head( routine, args )
+  {
+    let o = args[ 0 ];
+    if( _.number.is( o ) )
+    o = { src : o };
+    _.routine.options_( routine, o );
+    return o;
+  }
+  function _routineUnited_body( o )
+  {
+    return o.src + 2;
+  }
+  _routineUnited_body.defaults =
+  {
+    src : null
+  }
+
+  let _routineUnited = _.routine.unite( _routineUnited_head, _routineUnited_body );
+
+  /* */
+
+  var routine1 = _.routine.s.compose( [ _routineWithDefaults, _routineUnited ] );
+
+  act({ dstNamespace : 'namespace' });
+
+  function act( env )
+  {
+    test.case = `${__.entity.exportStringSolo( env )}`;
+
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 = code.dstNode.exportString();
+    var code3 =
+    `
+    'use strict';
+    const _ = _global_.wTools;
+    let namespace = Object.create( _.entity );
+    debugger
+    ${code2}
+    return namespace.routine1( 1 );
+    `
+
+    var got = _.routineExec( code3 );
+    test.identical( got.result, [ 2, 3 ] );
+
+  }
+
+}
+
+//
+
 function exportSet( test )
 {
 
@@ -917,6 +983,7 @@ const Proto =
     exportRoutineWithBodyOnly,
     exportRoutineWithFunctor,
     exportRoutineComposed,
+    exportRoutineComposedComplex,
     /* qqq : implement more test routine for united routine */
     exportSet,
     exportArray,
