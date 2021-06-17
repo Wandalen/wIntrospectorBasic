@@ -43,7 +43,6 @@ function preformLocals_body( o )
   if( o.withSubmodules )
   {
     o.locals.pathAmend_body = _.module.filePathAmend.body;
-    // o.postfixCode += '\n' + _.module.filePathAmend.body.toString() + '\n';
   }
 
   return o.locals;
@@ -173,9 +172,6 @@ function write_body( o )
 
   _.map.assertHasAll( o, write_body.defaults );
 
-  // let o2 = this.preform.body.call( this, _.mapOnly_( null, o, this.preform.body.defaults ) ); /* xxx : remove mapOnly */
-  // _.props.extend( o, o2 );
-
   if( o.programPath === null )
   {
     if( !o.tempPath )
@@ -207,7 +203,6 @@ function write_body( o )
 
   if( o.logger && o.logger.verbosity )
   {
-    // o.logger = o.logger || logger;
     o.logger.log( o.programPath );
     if( o.logger.verbosity >= 2 )
     o.logger.log( _.strLinesNumber( o.sourceCode ) );

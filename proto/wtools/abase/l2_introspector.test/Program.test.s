@@ -358,10 +358,7 @@ function writeLocalsConflict( test )
     })
     .then( ( op ) =>
     {
-      var exp =
-`
-6
-`
+      var exp = `6`;
       test.identical( op.exitCode, 0 );
       test.equivalent( op.output, exp );
       return op;
@@ -406,7 +403,7 @@ writeLocalsConflict.description =
 
 //
 
-function makeSeralTimes( test )
+function makeSeveralTimes( test )
 {
   let context = this;
   let a = test.assetFor( false );
@@ -454,7 +451,81 @@ function makeSeralTimes( test )
 
 }
 
-makeSeralTimes.description =
+makeSeveralTimes.description =
+`
+- several writing works if tempPath is not specified
+`
+
+//
+
+function makeSeveralRoutines( test )
+{
+  let context = this;
+  let a = test.assetFor( false );
+  let ready = _.take( null );
+
+  act({});
+
+  return ready;
+
+  /* */
+
+  function act( env )
+  {
+
+    ready.then( () =>
+    {
+      test.case = `basic, ${__.entity.exportStringSolo( env )}`;
+
+      let routines =
+      {
+        programRoutine1,
+        programRoutine2,
+        programRoutine3,
+      }
+      let program = _.program.make({ routine : programRoutine1, routines, locals : { a : 1 } });
+
+      return program.start();
+    })
+    .then( ( ops ) =>
+    {
+      var exp = '1';
+      test.identical( ops[ 0 ].exitCode, 0 );
+      test.equivalent( ops[ 0 ].output, exp );
+      var exp = '2';
+      test.identical( ops[ 1 ].exitCode, 0 );
+      test.equivalent( ops[ 1 ].output, exp );
+      return ops;
+    });
+
+  }
+
+  /* - */
+
+  function programRoutine1()
+  {
+    console.log( `programRoutine1 ${a}` );
+  }
+
+  /* - */
+
+  function programRoutine2()
+  {
+    console.log( `programRoutine2 ${a}` );
+  }
+
+  /* - */
+
+  function programRoutine3()
+  {
+    console.log( `programRoutine3 ${a}` );
+  }
+
+  /* - */
+
+}
+
+makeSeveralTimes.description =
 `
 - several writing works if tempPath is not specified
 `
@@ -485,7 +556,8 @@ const Proto =
     writeStart,
     writeRoutineLocals,
     writeLocalsConflict,
-    makeSeralTimes,
+    makeSeveralTimes,
+    // makeSeveralRoutines, /* xxx2 : switch on */
 
   },
 
