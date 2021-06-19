@@ -293,6 +293,225 @@ function exportRoutineWithBodyOnly( test )
 
 //
 
+function exportRoutineWithFunctor( test )
+{
+  var routine1 = _.entity.lengthOf;
+
+  act({ dstNamespace : 'namespace' });
+
+  function act( env )
+  {
+    test.case = `${__.entity.exportStringSolo( env )}`;
+
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 = code.dstNode.exportString();
+    var code3 =
+    `
+    'use strict';
+    const _ = _global_.wTools;
+    let namespace = Object.create( _.entity );
+    debugger
+    ${code2}
+    return namespace.routine1([ 1 ]);
+    `
+
+    var got = _.routineExec( code3 );
+    test.identical( got.result, 1 );
+
+  }
+
+}
+
+//
+
+function exportRoutineComposed( test )
+{
+
+  var routine1 = _.routine.s.compose( [ _routine0, _routine1 ] );
+
+  act({ dstNamespace : 'namespace' });
+
+  function act( env )
+  {
+    test.case = `${__.entity.exportStringSolo( env )}`;
+
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 = code.dstNode.exportString();
+    var code3 =
+    `
+    'use strict';
+    const _ = _global_.wTools;
+    let namespace = Object.create( _.entity );
+    debugger
+    ${code2}
+    return namespace.routine1( 1 );
+    `
+
+    var got = _.routineExec( code3 );
+    test.identical( got.result, [ 2, 3 ] );
+
+  }
+
+  function _routine0( src )
+  {
+    return src + 1;
+  }
+
+  function _routine1( src )
+  {
+    return src + 2;
+  }
+
+}
+
+//
+
+function exportRoutineComposedComplex( test )
+{
+  function _routineWithDefaults( o )
+  {
+    if( _.number.is( o ) )
+    o = { src : o };
+    o = _.routine.options_( _routineWithDefaults, o );
+    return o.src + 1;
+  }
+  _routineWithDefaults.defaults =
+  {
+    src : null
+  }
+
+  /* */
+
+  function _routineUnited_head( routine, args )
+  {
+    let o = args[ 0 ];
+    if( _.number.is( o ) )
+    o = { src : o };
+    _.routine.options_( routine, o );
+    return o;
+  }
+  function _routineUnited_body( o )
+  {
+    return o.src + 2;
+  }
+  _routineUnited_body.defaults =
+  {
+    src : null
+  }
+
+  let _routineUnited = _.routine.unite( _routineUnited_head, _routineUnited_body );
+
+  /* */
+
+  var routine1 = _.routine.s.compose( [ _routineWithDefaults, _routineUnited ] );
+
+  act({ dstNamespace : 'namespace' });
+
+  function act( env )
+  {
+    test.case = `${__.entity.exportStringSolo( env )}`;
+
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 = code.dstNode.exportString();
+    var code3 =
+    `
+    'use strict';
+    const _ = _global_.wTools;
+    let namespace = Object.create( _.entity );
+    debugger
+    ${code2}
+    return namespace.routine1( 1 );
+    `
+
+    var got = _.routineExec( code3 );
+    test.identical( got.result, [ 2, 3 ] );
+
+  }
+
+}
+
+//
+
+function exportUnitedRoutineWithMultipleHeads( test )
+{
+  function _routineUnited_head1( routine, args )
+  {
+    let o = args[ 0 ];
+    if( _.number.is( o ) )
+    o = { src : o };
+    return o;
+  }
+
+  function _routineUnited_head2( routine, args )
+  {
+    let o = args[ 0 ];
+    _.routine.options_( routine, o );
+    return o;
+  }
+
+  function _routineUnited_body( o )
+  {
+    o.src += 1;
+    return o;
+  }
+
+  _routineUnited_body.defaults =
+  {
+    src : null
+  }
+
+  let head =
+  [
+    _routineUnited_head1,
+    _routineUnited_head2,
+  ]
+
+  let routine1 = _.routine.unite( head, _routineUnited_body );
+
+  /* - */
+
+  act({ dstNamespace : 'namespace' });
+
+  function act( env )
+  {
+    test.case = `${__.entity.exportStringSolo( env )}`;
+
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 =
+    `
+    'use strict';
+    const _ = _global_.wTools;
+    let namespace = Object.create( _.entity );
+    ${code.dstNode.exportString()}
+    return namespace.routine1( 1 );
+    `
+
+    var got = _.routineExec( code2 );
+    test.identical( got.result, { src : 2 } );
+
+    /* */
+
+    test.case = `${__.entity.exportStringSolo( env )} throwing`;
+
+    var code = _.introspector.selectAndExportString( { routine1 }, env.dstNamespace, 'routine1' );
+    var code2 =
+    `
+    'use strict';
+    const _ = _global_.wTools;
+    let namespace = Object.create( _.entity );
+    ${code.dstNode.exportString()}
+    return namespace.routine1({ dst : 1 });
+    `
+
+    test.shouldThrowErrorSync( () => _.routineExec( code2 ), ( err ) =>
+    {
+      test.true( _.strHas( err, 'does not expect options: "dst"' ) )
+    });
+  }
+}
+
+//
+
 function exportSet( test )
 {
 
@@ -842,6 +1061,10 @@ const Proto =
     exportUnitedRoutine,
     exportRoutineWithHeadOnly,
     exportRoutineWithBodyOnly,
+    exportRoutineWithFunctor,
+    exportRoutineComposed,
+    exportRoutineComposedComplex,
+    exportUnitedRoutineWithMultipleHeads,
     /* qqq : implement more test routine for united routine */
     exportSet,
     exportArray,

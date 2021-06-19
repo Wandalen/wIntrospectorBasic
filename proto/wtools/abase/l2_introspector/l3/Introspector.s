@@ -147,6 +147,8 @@ function elementExportNode_body( o )
     assign( [ o.name ], routineUnitedExport( o.element ) );
     else if( o.element.functor )
     assign( [ o.name ], routineFunctorExport( o.element ) );
+    else if( o.element.composed )
+    assign( [ o.name ], routineComposedExport( o.element ) );
     else
     assign( [ o.name ], routineExport( o.element ) );
 
@@ -308,6 +310,9 @@ function elementExportNode_body( o )
 
   function routineExport( routine )
   {
+    if( routine.locals )
+    localsExport( routine.locals );
+
     return routineOriginal( routine ).toString();
   }
 
@@ -316,8 +321,8 @@ function elementExportNode_body( o )
   function routineOriginal( routine )
   {
     _.assert( _.routineIs( routine ) );
-    while( routine.original )
-    routine = routine.original;
+    while( routine.original || routine.originalRoutine )
+    routine = routine.original || routine.originalRoutine;
     return routine;
   }
 
@@ -325,12 +330,17 @@ function elementExportNode_body( o )
 
   function routineUnitedExport( element )
   {
-
     let result =
 `( function() {
 `
 
-    if( element.head )
+    if( element.head && element.head.composed )
+    result +=
+`
+    ${_.strLinesIndentation( routineComposedExportBodies( element.head.composed.bodies, `_${element.name}_head` ), '  ' )}
+`
+
+    if( element.head && !element.head.composed )
     result +=
 `
   const _${element.name}_head = ${_.strLinesIndentation( routineExport( element.head ), '  ' )}
@@ -395,8 +405,12 @@ ${strLinesIndentation( routineProperties( `_${element.name}_tail`, element.tail 
   function routineFunctorExport( element )
   {
     let result = '';
+
     if( element.functor.length === 0 )
     {
+      if( element.functor.functor )
+      result += routineFunctorExport( element.functor );
+      else
       result += '( ' + routineExport( element.functor ) + ' )();';
     }
     else
@@ -405,7 +419,7 @@ ${strLinesIndentation( routineProperties( `_${element.name}_tail`, element.tail 
 `( function()
 {
   const ${o.name} = ${routineExport( element )};
-  ${o.name}.functor = ${routineExport( element.functor )};
+  ${o.name}.functor = ${element.functor.functor ? routineFunctorExport( element.functor ) : routineExport( element.functor )};
   return ${o.name};
 })();`;
     }
@@ -431,6 +445,72 @@ ${strLinesIndentation( routineProperties( `_${element.name}_tail`, element.tail 
 })();
 `
     return functor;
+  }
+
+  /* */
+
+  function routineComposedExportBodies( bodies, dstContainerName )
+  {
+    if( dstContainerName === undefined )
+    dstContainerName = 'bodies';
+
+    let result = `const ${dstContainerName} = [];`;
+
+    bodies.forEach( ( body, i ) =>
+    {
+      let name = `_body_${i}`;
+      let bodyExported = _.introspector.elementExportNode
+      ({
+        srcContainer : bodies,
+        element : body,
+        name,
+        locality : 'local'
+      })
+      result += `\n  ${bodyExported.dstNode.exportString()}`;
+      result += `\n ${dstContainerName}.push( ${name} );`;
+    })
+
+    return result;
+  }
+
+  /* */
+
+  function routineComposedExport( routine )
+  {
+    let bodies = routine.composed.bodies;
+
+    let result =
+`( function() {
+`
+    result += `\n  ${routineComposedExportBodies( bodies )}`;
+
+    let chainerExported = _.introspector.elementExportNode
+    ({
+      srcContainer : routine.composed,
+      element : routine.composed.chainer,
+      name : 'chainer',
+      locality : 'local'
+    })
+
+    let tailExported = _.introspector.elementExportNode
+    ({
+      srcContainer : routine.composed,
+      element : routine.composed.tail,
+      name : 'tail',
+      locality : 'local'
+    })
+
+    result += `\n  ${chainerExported.dstNode.exportString()}`;
+    result += `\n  ${tailExported.dstNode.exportString()}`;
+
+    result += `\n  const _${o.name}_ = _.routine.s.compose({ bodies, chainer, tail });`
+
+    result +=
+`
+  return _${o.name}_;
+})();
+`
+    return result;
   }
 
   /* */
