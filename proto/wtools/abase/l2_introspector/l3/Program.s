@@ -18,21 +18,10 @@ _.program = _.program || Object.create( null );
 // program
 // --
 
-/* xxx : work on _.program.* to
-  - implement er
-  - make possible to make single call,
-  - expose start method
-
-var programPath = a.program({ routine : mainSingleBefore, locals : env }).programPath;
-a.program({ routine : single1, locals : env });
-a.program({ routine : single2, locals : env });
-
-*/
-
-function preformLocals_body( o )
+function groupPreformLocals_body( o )
 {
 
-  _.map.assertHasAll( o, preformLocals_body.defaults );
+  _.map.assertHasAll( o, groupPreformLocals_body.defaults );
 
   if( o.locals === null )
   {
@@ -48,13 +37,13 @@ function preformLocals_body( o )
   return o.locals;
 }
 
-preformLocals_body.defaults =
+groupPreformLocals_body.defaults =
 {
   locals : null,
   withSubmodules : true,
 }
 
-let preformLocals = _.routine.unite( null, preformLocals_body );
+let groupPreformLocals = _.routine.unite( null, groupPreformLocals_body );
 
 //
 
@@ -62,11 +51,10 @@ function preform_head( routine, args )
 {
   let o = args[ 0 ];
   if( !_.mapIs( o ) )
-  o = { routine : o }
+  o = { entry : o }
   _.routine.options( routine, o );
   _.assert( args.length === 1 );
   _.assert( arguments.length === 2 );
-  _.assert( _.routineIs( o.routine ) || _.strIs( o.sourceCode ), 'Expects either option::routine or option:sourceCode' );
 
   if( o.logger !== undefined )
   o.logger = _.logger.maybe( o.logger );
@@ -83,81 +71,367 @@ function preform_head( routine, args )
 
 //
 
-function preform_body( o )
+function filePreform( o )
 {
 
-  if( !o.name )
-  o.name = o.routine.name;
-
-  _.map.assertHasAll( o, preform_body.defaults );
+  _.routine.options( filePreform, o );
   _.assert( !o.routine || !o.routine.name || o.name === o.routine.name );
   _.assert( _.strDefined( o.name ), 'Program should have name' );
+  _.assert( _.routineIs( o.routine ) || _.strIs( o.routineCode ), 'Expects either option::routine or option:routineCode' );
 
-  _.program.preformLocals.body.call( _.program, o );
+  o.codeLocals = o.codeLocals || Object.create( null );
 
-  o._locals = o._locals || Object.create( null );
-
-  if( o.sourceCode === null )
+  if( !o.routineCode )
   {
     if( _.routineIs( o.routine ) )
     {
-      let r = _.introspector.elementExportNode({ element : o.routine, name : o.name, locals : o._locals });
-      o.sourceCode = r.dstNode.exportString();
+      let r = _.introspector.elementExportNode({ element : o.routine, name : o.name, locals : o.codeLocals });
+      o.routineCode = r.dstNode.exportString();
     }
     else
     {
-      o.sourceCode = o.routine;
+      o.routineCode = o.routine;
     }
   }
 
-  _.assert( _.str.is( o.sourceCode ) );
+  _.assert( _.str.is( o.routineCode ) );
 
-  if( o.postfixCode === null )
-  o.postfixCode = '';
-
-  if( o.locals )
-  o.postfixCode += _.introspector.elementsExportNode({ srcContainer : o.locals, locals : o._locals }).dstNode.exportString();
-
-  if( o.withSubmodules )
+  if( o.group.locals || o.locals )
+  if( o.localsCode === undefined || o.localsCode === null )
   {
-    let paths = _.module.filePathGet
-    ({
-      locally : 1,
-      globally : 0,
-      moduleFile : o.moduleFile,
-    }).local;
-    _.assert( paths.length > 0 );
-    _.assert( _.arrayIs( paths ) );
-    o.postfixCode +=
-`
-  pathAmend_body
-  ({
-    moduleFile : module,
-    paths : ${_.entity.exportJs( paths )},
-    permanent : 0,
-    globally : 0,
-    locally : 1,
-    recursive : 2,
-    amending : 'prepend',
-  });
-`;
+    o.localsCode = '';
+    if( o.group.locals )
+    o.localsCode += _.introspector.elementsExportNode({ srcContainer : o.group.locals, locals : o.codeLocals }).dstNode.exportString();
+    if( o.locals )
+    o.localsCode += _.introspector.elementsExportNode({ srcContainer : o.locals, locals : o.codeLocals }).dstNode.exportString();
   }
 
-  o.postfixCode +=
+  if( !o.startCode )
+  {
+
+    if( o.group.withSubmodules )
+    {
+      let paths = _.module.filePathGet
+      ({
+        locally : 1,
+        globally : 0,
+        moduleFile : o.group.moduleFile,
+      }).local;
+      _.assert( paths.length > 0 );
+      _.assert( _.arrayIs( paths ) );
+      o.startCode +=
+`
+      pathAmend_body
+      ({
+        moduleFile : module,
+        paths : ${_.entity.exportJs( paths )},
+        permanent : 0,
+        globally : 0,
+        locally : 1,
+        recursive : 2,
+        amending : 'prepend',
+      });
+`;
+    }
+
+    o.startCode +=
 `
 ${o.name}();
 `
+  }
 
   return o;
 }
 
-preform_body.defaults =
+filePreform.defaults =
 {
+
   routine : null,
   name : null,
-  prefixCode : null,
-  sourceCode : null,
-  postfixCode : null,
+  prefixCode : '',
+  routineCode : '',
+  postfixCode : '',
+  beforeStartCode : '',
+  startCode : '',
+  afterStartCode : '',
+
+  group : null,
+  locals : null,
+  codeLocals : null,
+  localsCode : null,
+
+}
+
+//
+
+function groupPreform_body( o )
+{
+
+  _.map.assertHasAll( o, groupPreform_body.defaults );
+  _.map.assertHasOnly( o, groupPreform_body.defaults );
+
+  /* locals */
+
+  _.program.groupPreformLocals.body.call( _.program, o );
+  o.entry.codeLocals = o.entry.codeLocals || Object.create( null );
+
+  /* files */
+
+  o.files = o.files || Object.create( null );
+  _.assert( _.aux.is( o.files ) );
+
+  _.assert( _.aux.is( o.entry ) );
+  if( !o.entry.name && o.entry.routine )
+  o.entry.name = o.entry.routine.name;
+  _.assert( !o.entry.routine || !o.entry.routine.name || o.entry.name === o.entry.routine.name );
+  _.assert( _.strDefined( o.entry.name ), 'Program should have name' );
+
+  _.assert( o.files[ o.entry.name ] === undefined || o.files[ o.entry.name ] === o.entry );
+  o.files[ o.entry.name ] = o.entry.routine;
+
+  o.files = o.files || Object.create( null );
+  o.files[ o.entry.name ] = o.entry;
+
+  for( let name in o.files )
+  {
+    if( name === o.entry.name )
+    continue;
+    let program = o.files[ name ];
+    if( _.routine.is( program ) )
+    {
+      let routine = program;
+      program = o.files[ name ] = _.map.extend( null, o.entry );
+      program.routine = routine;
+      program.name = name;
+      delete program.codeLocals;
+    }
+    else
+    {
+      _.map.supplement( program, _.mapBut_( null, o.entry, [ 'codeLocals' ] ) );
+      program.name = name;
+    }
+  }
+
+  for( let name in o.files )
+  {
+    let file = o.files[ name ];
+    _.assert( name === file.name );
+    _.assert( !file.routine || !file.routine.name || file.name === file.routine.name );
+    _.program.filePreform( o.files[ name ] );
+  }
+
+  return o;
+}
+
+groupPreform_body.defaults =
+{
+  entry : null,
+  files : null,
+  locals : null,
+  withSubmodules : true,
+  moduleFile : null,
+  prefixCode : '',
+  beforeStartCode : '',
+  afterStartCode : '',
+  postfixCode : '',
+}
+
+let groupPreform = _.routine.unite( null, groupPreform_body );
+
+//
+
+function preform_body( o )
+{
+
+  _.map.assertHasAll( o, preform_body.defaults );
+  _.assert( o.group === null );
+  _.assert( o.localsCode === undefined );
+  _.assert
+  (
+    _.routine.is( o.entry ) || _.str.is( o.entry ) || _.aux.is( o.entry ) || o.entry === null,
+    () => `Expects entry which is any of [ routine, string, aux, null ], but it is ${_.strType( o.entry )}`
+  );
+  _.assert( ( o.entry === null ) === ( _.strDefined( o.routineCode ) ) );
+
+  o.group = Object.create( null );
+  o.group.files = o.files;
+  o.group.locals = o.locals;
+  o.group.withSubmodules = o.withSubmodules;
+  o.group.moduleFile = o.moduleFile;
+  o.group.files = o.files;
+  o.group.prefixCode = o.prefixCode;
+  o.group.postfixCode = o.postfixCode;
+  o.group.beforeStartCode = o.beforeStartCode;
+  o.group.afterStartCode = o.afterStartCode;
+  delete o.files;
+  delete o.locals;
+  delete o.withSubmodules;
+  delete o.moduleFile;
+  delete o.prefixCode;
+  delete o.postfixCode;
+  delete o.beforeStartCode;
+  delete o.afterStartCode;
+
+  if( _.strDefined( o.routineCode ) )
+  entryFromRoutineCode();
+  if( _.str.is( o.entry ) )
+  entryFromStr();
+  else if( _.routine.is( o.entry ) )
+  entryFromRoutine();
+  else
+  entryFromAux();
+
+  o.group.entry.name = o.group.entry.name || o.name;
+  o.group.entry.routineCode = o.group.entry.routineCode || o.routineCode;
+  o.group.entry.startCode = o.group.entry.startCode || o.startCode;
+  o.group.entry.group = o.group;
+  delete o.name;
+  delete o.routineCode;
+  delete o.startCode;
+
+  _.program.groupPreform.body.call( _.program, o.group );
+  o.files = o.group.files;
+
+  return o;
+
+  /* */
+
+  function entryFromFiles( name )
+  {
+    if( o.group.files )
+    {
+      let entry2 = o.group.files[ name ];
+      if( entry2 )
+      {
+        if( _.aux.is( entry2 ) )
+        {
+          _.assert( entry2.name === undefined || entry2.name === name );
+          entry2.name = name;
+          return entry2;
+        }
+        else
+        {
+          _.assert( _.routine.is( entry2 ) );
+          let entry = Object.create( null );
+          entry.routine = entry2;
+          entry.name = name;
+          o.group.files[ name ] = entry;
+          return entry
+        }
+      }
+    }
+  }
+
+  /* */
+
+  function entryFromRoutineCode()
+  {
+    let entry;
+
+    _.assert( o.entry === null );
+    _.assert( _.strDefined( o.routineCode ) );
+    _.assert( _.strDefined( o.name ) );
+
+    if( o.group.files )
+    {
+      entry = entryFromFiles( o.name );
+    }
+
+    if( !entry )
+    {
+      entry = Object.create( null );
+      entry.name = o.name;
+    }
+
+    entry.routineCode = o.routineCode;
+    o.entry = o.group.entry = entry;
+  }
+
+  /* */
+
+  function entryFromStr()
+  {
+    let name = o.entry;
+    _.assert( _.aux.is( o.group.files ), 'If entry is specified as a name of a file then option::files should also be provided' );
+    _.assert( !!o.group.files[ name ], () => `No file "${name}"` );
+    let entry = o.group.files[ name ];
+    if( _.aux.is( entry ) )
+    {
+      _.assert( name === entry.name || !entry.name );
+      entry.name = name;
+    }
+    else
+    {
+      _.assert( _.routine.is( entry ) );
+      entry = { name : name, routine : entry }
+    }
+    o.group.files[ o.entry ] = o.group.entry = o.entry = entry;
+  }
+
+  /* */
+
+  function entryFromRoutine()
+  {
+    let entry;
+    let routine = o.entry;
+    let name = o.name || o.entry.name;
+    _.assert( _.strDefined( name ) );
+    if( o.group.files )
+    {
+      let entry2 = entryFromFiles( name );
+      if( entry2 )
+      {
+        _.assert( !entry2.routine || entry2.routine === routine );
+        entry2.routine = routine;
+        entry = o.entry = o.group.entry = entry2;
+      }
+    }
+    if( !entry )
+    {
+      entry = o.entry = o.group.entry = Object.create( null );
+      entry.routine = routine;
+      entry.name = name;
+      if( o.group.files )
+      o.group.files[ name ] = entry;
+    }
+  }
+
+  /* */
+
+  function entryFromAux()
+  {
+    _.assert( _.aux.is( o.entry ) );
+    let entry = o.group.entry = o.entry;
+    let name = o.name || o.entry.name || o.entry.routine.name;
+    _.assert( _.strDefined( name ) );
+
+    if( o.group.files )
+    {
+      let entry2 = o.group.files[ name ];
+      if( entry2 )
+      {
+        if( _.aux.is( entry2 ) )
+        {
+          _.assert( entry2 === entry );
+        }
+        else
+        {
+          _.assert( _.routine.is( o.group.files[ name ] ) );
+          _.assert( o.group.files[ name ] === entry.routine );
+        }
+      }
+      o.group.files[ name ] = entry;
+    }
+  }
+
+  /* */
+
+}
+
+preform_body.defaults =
+{
+  ... _.mapBut_( null, filePreform.defaults, [ 'group', 'codeLocals', 'localsCode', 'routine' ] ),
+  files : null,
   locals : null,
   withSubmodules : true,
   moduleFile : null,
@@ -167,24 +441,24 @@ let preform = _.routine.unite( preform_head, preform_body );
 
 //
 
-function write_body( o )
+function fileWrite( o )
 {
 
-  _.map.assertHasAll( o, write_body.defaults );
+  _.routine.options( fileWrite, o );
 
   if( o.programPath === null )
   {
-    if( !o.tempPath )
+    if( !o.group.tempPath )
     {
-      o.tempObject = _.program._tempDirOpen();
-      o.tempPath = o.tempObject.tempPath;
+      o.group.tempObject = _.program._tempOpen();
+      o.group.tempPath = o.group.tempObject.tempPath;
     }
-    _.assert( _.strIs( o.tempPath ), 'Expects temp path {- o.tempPath -}' );
-    _.assert( _.strIs( o.dirPath ), 'Expects dir path {- o.dirPath -}' );
-    o.programPath = _.path.join( o.tempPath, o.dirPath, o.namePrefix + o.name + o.namePostfix );
+    _.assert( _.strIs( o.group.tempPath ), 'Expects temp path {- o.tempPath -}' );
+    _.assert( _.strIs( o.group.dirPath ), 'Expects dir path {- o.dirPath -}' );
+    o.programPath = _.path.join( o.group.tempPath, o.group.dirPath, o.group.namePrefix + o.name + o.group.namePostfix );
   }
 
-  if( !o.rewriting )
+  if( !o.group.rewriting )
   _.sure( !_.fileProvider.fileExists( o.programPath ), `Prgoram ${o.programPath} already exists!` );
 
   o.start = _.process.starter
@@ -195,34 +469,132 @@ function write_body( o )
     outputPiping : 1,
     inputMirroring : 1,
     throwingExitCode : 1,
-    logger : o.logger,
+    logger : o.group.logger,
     mode : 'fork',
   });
 
-  let code = ( o.prefixCode ? o.prefixCode + '\n//\n' : '' ) + o.sourceCode + ( o.postfixCode ? '\n//\n' + o.postfixCode : '' );
+  o.fullCode = '';
+  add( o.group.prefixCode, 'group prefix code' );
+  add( o.prefixCode, 'prefix code' );
 
-  if( o.logger && o.logger.verbosity )
+  add( o.routineCode );
+  add( o.localsCode, 'locals code' );
+  add( o.group.beforeStartCode, 'group before start code' );
+  add( o.beforeStartCode, 'before start code' );
+  add( o.startCode, 'start code' );
+  add( o.afterStartCode, 'after start code' );
+  add( o.group.afterStartCode, 'group after start code' );
+
+  add( o.postfixCode, 'postfix code' );
+  add( o.group.postfixCode, 'group postfix code' );
+
+  if( o.group.logger && o.group.logger.verbosity )
   {
-    o.logger.log( o.programPath );
-    if( o.logger.verbosity >= 2 )
-    o.logger.log( _.strLinesNumber( o.sourceCode ) );
+    o.group.logger.log( o.programPath );
+    if( o.group.logger.verbosity >= 2 )
+    o.group.logger.log( _.strLinesNumber( o.routineCode ) );
   }
 
-  _.fileProvider.fileWrite( o.programPath, code );
+  _.fileProvider.fileWrite( o.programPath, o.fullCode );
+
+  return o;
+
+  function add( code, name )
+  {
+    if( !code )
+    return;
+    if( name )
+    o.fullCode += `\n/* -- ${name} -- */\n`;
+    o.fullCode += code;
+  }
+
+}
+
+fileWrite.defaults =
+{
+  ... filePreform.defaults,
+  programPath : null,
+}
+
+//
+
+function groupWrite_body( o )
+{
+
+  _.map.assertHasAll( o, groupWrite_body.defaults );
+  _.map.assertHasOnly( o, groupWrite_body.defaults );
+
+  for( let name in o.files )
+  {
+    let program = o.files[ name ];
+    if( program.programPath === undefined )
+    program.programPath = null;
+    _.program.fileWrite( program );
+  }
 
   return o;
 }
 
-write_body.defaults =
+groupWrite_body.defaults =
 {
-  ... preform_body.defaults,
-  programPath : null,
+  ... groupPreform.defaults,
   tempPath : null,
   dirPath : '.',
   namePrefix : '',
   namePostfix : '',
   rewriting : 0,
   logger : 0,
+  entry : null,
+  files : null,
+}
+
+let groupWrite = _.routine.unite( null, groupWrite_body );
+
+//
+
+function write_body( o )
+{
+
+  _.map.assertHasAll( o, write_body.defaults );
+  _.map.assertHasOnly( o, write_body.defaults );
+
+  o.group.tempPath = o.tempPath;
+  o.group.dirPath = o.dirPath;
+  o.group.namePrefix = o.namePrefix;
+  o.group.namePostfix = o.namePostfix;
+  o.group.rewriting = o.rewriting;
+  o.group.logger = o.logger;
+  delete o.tempPath;
+  delete o.dirPath;
+  delete o.namePrefix;
+  delete o.namePostfix;
+  delete o.rewriting;
+  delete o.logger;
+
+  o.group.entry.programPath = o.programPath;
+  delete o.programPath;
+
+  _.program.groupWrite.body.call( _.program, o.group );
+
+  o.programPath = o.group.entry.programPath;
+  o.start = o.group.entry.start;
+
+  return o;
+}
+
+write_body.defaults =
+{
+  group : null,
+
+  tempPath : null,
+  dirPath : '.',
+  namePrefix : '',
+  namePostfix : '',
+  rewriting : 0,
+  logger : 0,
+  programPath : null,
+  entry : null,
+  files : null,
 }
 
 let write = _.routine.unite( preform_head, write_body );
@@ -233,11 +605,9 @@ function make_body( o )
 {
 
   _.map.assertHasAll( o, make_body.defaults );
+  _.map.assertHasOnly( o, make_body.defaults );
 
-  // let o2 = this.preform.body.call( this, _.mapOnly_( null, o, this.preform.body.defaults ) ); /* xxx : remove mapOnly */
-  // _.props.extend( o, o2 );
-
-  this.preform.body.call( this, o ); /* xxx : remove mapOnly */
+  this.preform.body.call( this, o );
   this.write.body.call( this, o );
 
   return o;
@@ -245,6 +615,7 @@ function make_body( o )
 
 make_body.defaults =
 {
+  ... preform_body.defaults,
   ... write_body.defaults,
 }
 
@@ -252,7 +623,7 @@ let make = _.routine.unite( preform_head, make_body );
 
 //
 
-function _tempDirOpen()
+function _tempOpen()
 {
   return _.fileProvider.tempOpen( ... arguments );
 }
@@ -264,12 +635,16 @@ function _tempDirOpen()
 let ProgramExtension =
 {
 
-  preformLocals,
+  groupPreformLocals,
+  filePreform,
+  groupPreform,
   preform,
+  fileWrite,
+  groupWrite,
   write,
   make,
 
-  _tempDirOpen,
+  _tempOpen,
 
 }
 

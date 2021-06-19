@@ -37,7 +37,10 @@ function exportString( src )
   if( _.str.is( src ) )
   result += src;
   else
-  result += src.exportString();
+  {
+    _.assert( _.routine.is( src.exportString ) );
+    result += src.exportString();
+  }
   return result;
 }
 
