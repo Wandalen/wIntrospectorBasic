@@ -39,6 +39,70 @@ function onSuiteEnd()
 // test
 // --
 
+function preformBasic( test )
+{
+  let context = this;
+  let a = test.assetFor( false );
+  let ready = _.take( null );
+
+  act({});
+
+  return ready;
+
+  /* - */
+
+  function act( env )
+  {
+
+    /* */
+
+    ready.then( () =>
+    {
+      test.case = `argument, ${__.entity.exportStringSolo( env )}`;
+      var program1 = _.program.preform( programRoutine1 );
+      test.identical( _.strCount( _.str.lines.split( program1.entry.fullCode )[ 0 ], 'function programRoutine1()' ), 1 );
+      test.identical( _.strCount( _.str.lines.split( program1.entry.routineCode )[ 0 ], 'function programRoutine1()' ), 1 );
+      console.log( _.strLinesNumber( program1.entry.fullCode ) );
+      console.log( _.strLinesNumber( program1.entry.routineCode ) );
+      return null;
+    })
+
+    /* */
+
+    ready.then( () =>
+    {
+      test.case = `options map, ${__.entity.exportStringSolo( env )}`;
+      var program1 = _.program.preform({ entry : programRoutine1 });
+      test.identical( _.strCount( _.str.lines.split( program1.entry.fullCode )[ 0 ], 'function programRoutine1()' ), 1 );
+      test.identical( _.strCount( _.str.lines.split( program1.entry.routineCode )[ 0 ], 'function programRoutine1()' ), 1 );
+      console.log( _.strLinesNumber( program1.entry.fullCode ) );
+      console.log( _.strLinesNumber( program1.entry.routineCode ) );
+      return null;
+    })
+
+    /* */
+
+  }
+
+  /* - */
+
+  function programRoutine1()
+  {
+    const _ = require( toolsPath );
+    console.log( `programRoutine1` );
+  }
+
+  /* - */
+
+}
+
+preformBasic.description =
+`
+- preform basic
+`
+
+//
+
 function writeBasic( test )
 {
   let context = this;
@@ -1262,6 +1326,8 @@ const Proto =
 
   tests :
   {
+
+    preformBasic,
 
     writeBasic,
     writeOptionWithSubmodulesAndModuleIsIncluded,

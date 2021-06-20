@@ -47,30 +47,6 @@ let groupPreformLocals = _.routine.unite( null, groupPreformLocals_body );
 
 //
 
-function preform_head( routine, args )
-{
-  let o = args[ 0 ];
-  if( !_.mapIs( o ) )
-  o = { entry : o }
-  _.routine.options( routine, o );
-  _.assert( args.length === 1 );
-  _.assert( arguments.length === 2 );
-
-  if( o.logger !== undefined )
-  o.logger = _.logger.maybe( o.logger );
-
-  if( o.moduleFile === null )
-  {
-    let moduleFile = _.module.fileNativeWith( 2 );
-    if( moduleFile )
-    o.moduleFile = moduleFile;
-  }
-
-  return o;
-}
-
-//
-
 function filePreform( o )
 {
 
@@ -140,7 +116,39 @@ ${o.name}();
 `
   }
 
+  o.fullCode = '';
+  add( o.group.prefixCode, 'group prefix code' );
+  add( o.prefixCode, 'prefix code' );
+
+  add( o.routineCode );
+  add( o.localsCode, 'locals code' );
+  add( o.group.beforeStartCode, 'group before start code' );
+  add( o.beforeStartCode, 'before start code' );
+  add( o.startCode, 'start code' );
+  add( o.afterStartCode, 'after start code' );
+  add( o.group.afterStartCode, 'group after start code' );
+
+  add( o.postfixCode, 'postfix code' );
+  add( o.group.postfixCode, 'group postfix code' );
+
+  if( o.group.logger && o.group.logger.verbosity )
+  {
+    o.group.logger.log( o.programPath );
+    if( o.group.logger.verbosity >= 2 )
+    o.group.logger.log( _.strLinesNumber( o.routineCode ) );
+  }
+
   return o;
+
+  function add( code, name )
+  {
+    if( !code )
+    return;
+    if( name )
+    o.fullCode += `\n/* -- ${name} -- */\n`;
+    o.fullCode += code;
+  }
+
 }
 
 filePreform.defaults =
@@ -237,6 +245,30 @@ groupPreform_body.defaults =
 }
 
 let groupPreform = _.routine.unite( null, groupPreform_body );
+
+//
+
+function preform_head( routine, args )
+{
+  let o = args[ 0 ];
+  if( !_.mapIs( o ) )
+  o = { entry : o }
+  _.routine.options( routine, o );
+  _.assert( args.length === 1 );
+  _.assert( arguments.length === 2 );
+
+  if( o.logger !== undefined )
+  o.logger = _.logger.maybe( o.logger );
+
+  if( o.moduleFile === null )
+  {
+    let moduleFile = _.module.fileNativeWith( 2 );
+    if( moduleFile )
+    o.moduleFile = moduleFile;
+  }
+
+  return o;
+}
 
 //
 
@@ -431,7 +463,9 @@ function preform_body( o )
 preform_body.defaults =
 {
   ... _.mapBut_( null, filePreform.defaults, [ 'group', 'codeLocals', 'localsCode', 'routine' ] ),
+  entry : null,
   files : null,
+  group : null,
   locals : null,
   withSubmodules : true,
   moduleFile : null,
@@ -473,46 +507,15 @@ function fileWrite( o )
     mode : 'fork',
   });
 
-  o.fullCode = '';
-  add( o.group.prefixCode, 'group prefix code' );
-  add( o.prefixCode, 'prefix code' );
-
-  add( o.routineCode );
-  add( o.localsCode, 'locals code' );
-  add( o.group.beforeStartCode, 'group before start code' );
-  add( o.beforeStartCode, 'before start code' );
-  add( o.startCode, 'start code' );
-  add( o.afterStartCode, 'after start code' );
-  add( o.group.afterStartCode, 'group after start code' );
-
-  add( o.postfixCode, 'postfix code' );
-  add( o.group.postfixCode, 'group postfix code' );
-
-  if( o.group.logger && o.group.logger.verbosity )
-  {
-    o.group.logger.log( o.programPath );
-    if( o.group.logger.verbosity >= 2 )
-    o.group.logger.log( _.strLinesNumber( o.routineCode ) );
-  }
-
   _.fileProvider.fileWrite( o.programPath, o.fullCode );
 
   return o;
-
-  function add( code, name )
-  {
-    if( !code )
-    return;
-    if( name )
-    o.fullCode += `\n/* -- ${name} -- */\n`;
-    o.fullCode += code;
-  }
-
 }
 
 fileWrite.defaults =
 {
   ... filePreform.defaults,
+  fullCode : null,
   programPath : null,
 }
 
