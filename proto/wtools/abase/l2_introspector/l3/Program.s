@@ -77,9 +77,15 @@ function filePreform( o )
   {
     o.localsCode = '';
     if( o.group.locals )
-    o.localsCode += _.introspector.elementsExportNode({ srcContainer : o.group.locals, locals : o.codeLocals }).dstNode.exportString();
+    {
+      let exported = _.introspector.elementsExportNode({ srcContainer : o.group.locals, locals : o.codeLocals });
+      o.localsCode += exported.dstNode.exportString();
+    }
     if( o.locals )
-    o.localsCode += _.introspector.elementsExportNode({ srcContainer : o.locals, locals : o.codeLocals }).dstNode.exportString();
+    {
+      let exported = _.introspector.elementsExportNode({ srcContainer : o.locals, locals : o.codeLocals });
+      o.localsCode += exported.dstNode.exportString();
+    }
   }
 
   if( !o.startCode )
@@ -395,7 +401,7 @@ function preform_body( o )
     else
     {
       _.assert( _.routine.is( entry ) );
-      entry = { name : name, routine : entry }
+      entry = { name, routine : entry }
     }
     o.group.files[ o.entry ] = o.group.entry = o.entry = entry;
   }

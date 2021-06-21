@@ -267,9 +267,7 @@ function writeStart( test )
       program = _.program.make( programRoutine1 );
 
       var exp = new Set
-      ([
-        'group', 'entry', 'files', 'programPath', 'start'
-      ]);
+      ([ 'group', 'entry', 'files', 'programPath', 'start' ]);
       test.identical( new Set( _.props.keys( program ) ), exp );
 
       console.log( _.strLinesNumber( program.entry.routineCode ) );
