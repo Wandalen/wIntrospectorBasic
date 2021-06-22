@@ -6,11 +6,11 @@ function sum(){ return a + b }
 var result = _.program.preform
 ({
   name : 'sum',
-  routine : sum,
+  entry : sum,
   locals : { a : 1, b : 2 }
 });
 
-console.log( result.sourceCode );
+console.log( result.entry.fullCode );
 /*
 logs
 `
