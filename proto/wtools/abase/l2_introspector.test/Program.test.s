@@ -1304,6 +1304,78 @@ makeEntryAndFilesCodeLocals.description =
 - adding local into option::codeLocals removes such local from code of a program file
 `
 
+//
+
+function makeOptionFullCode( test )
+{
+  let context = this;
+  let a = test.assetFor( false );
+  let ready = _.take( null );
+
+  act({});
+
+  return ready;
+
+  /* - */
+
+  function act( env )
+  {
+
+    /* */
+
+    ready.then( () =>
+    {
+      test.case = `group locals, ${__.entity.exportStringSolo( env )}`;
+      let locals = { a : 1, b : 2, c : 3 };
+      let entry = { fullCode : `(${programRoutine1.toString()})()` };
+      let files =
+      {
+        programRoutine1 : entry,
+        programRoutine2 : { fullCode : `(${programRoutine2.toString()})()` },
+      }
+      let program = _.program.make({ files, locals, entry });
+      return program.start();
+    })
+    .then( ( op ) =>
+    {
+      var exp =
+`
+programRoutine1
+programRoutine2
+`
+      test.identical( op.exitCode, 0 );
+      test.equivalent( op.output, exp );
+      return op;
+    });
+
+    /* */
+
+  }
+
+  /* - */
+
+  function programRoutine1()
+  {
+    console.log( `programRoutine1` );
+    require( './programRoutine2' );
+  }
+
+  /* - */
+
+  function programRoutine2()
+  {
+    console.log( `programRoutine2` );
+  }
+
+  /* - */
+
+}
+
+makeOptionFullCode.description =
+`
+  - full code is possible to pass as argument
+`
+
 // --
 // declare
 // --
@@ -1341,6 +1413,7 @@ const Proto =
     makeEntryAndFilesLocals,
     makeEntryAndFilesCode,
     makeEntryAndFilesCodeLocals,
+    makeOptionFullCode,
 
   },
 

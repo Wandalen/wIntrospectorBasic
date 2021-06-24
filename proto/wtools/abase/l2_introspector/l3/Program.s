@@ -53,11 +53,15 @@ function filePreform( o )
   _.routine.options( filePreform, o );
   _.assert( !o.routine || !o.routine.name || o.name === o.routine.name );
   _.assert( _.strDefined( o.name ), 'Program should have name' );
-  _.assert( _.routineIs( o.routine ) || _.strIs( o.routineCode ), 'Expects either option::routine or option:routineCode' );
+  _.assert
+  (
+    _.routineIs( o.routine ) || _.strIs( o.routineCode ) || o.routineCode === null,
+    'Expects either option::routine or option:routineCode'
+  );
 
   o.codeLocals = o.codeLocals || Object.create( null );
 
-  if( !o.routineCode )
+  if( o.routineCode === null )
   {
     if( _.routineIs( o.routine ) )
     {
@@ -70,8 +74,9 @@ function filePreform( o )
     }
   }
 
-  _.assert( _.str.is( o.routineCode ) );
+  _.assert( _.str.is( o.routineCode ) !== _.str.is( o.fullCode ) );
 
+  if( o.fullCode === null )
   if( o.group.locals || o.locals )
   if( o.localsCode === undefined || o.localsCode === null )
   {
@@ -88,6 +93,7 @@ function filePreform( o )
     }
   }
 
+  if( o.fullCode === null )
   if( !o.startCode )
   {
 
@@ -122,24 +128,30 @@ ${o.name}();
 `
   }
 
-  o.fullCode = '';
-  add( o.group.prefixCode, 'group prefix code' );
-  add( o.prefixCode, 'prefix code' );
+  if( o.fullCode === null )
+  {
+    o.fullCode = '';
 
-  add( o.routineCode );
-  add( o.localsCode, 'locals code' );
-  add( o.group.beforeStartCode, 'group before start code' );
-  add( o.beforeStartCode, 'before start code' );
-  add( o.startCode, 'start code' );
-  add( o.afterStartCode, 'after start code' );
-  add( o.group.afterStartCode, 'group after start code' );
+    add( o.group.prefixCode, 'group prefix code' );
+    add( o.prefixCode, 'prefix code' );
 
-  add( o.postfixCode, 'postfix code' );
-  add( o.group.postfixCode, 'group postfix code' );
+    add( o.routineCode );
+    add( o.localsCode, 'locals code' );
+    add( o.group.beforeStartCode, 'group before start code' );
+    add( o.beforeStartCode, 'before start code' );
+    add( o.startCode, 'start code' );
+    add( o.afterStartCode, 'after start code' );
+    add( o.group.afterStartCode, 'group after start code' );
+
+    add( o.postfixCode, 'postfix code' );
+    add( o.group.postfixCode, 'group postfix code' );
+
+  }
 
   if( o.group.logger && o.group.logger.verbosity )
   {
     o.group.logger.log( o.programPath );
+    if( o.routineCode !== null )
     if( o.group.logger.verbosity >= 2 )
     o.group.logger.log( _.strLinesNumber( o.routineCode ) );
   }
@@ -163,11 +175,12 @@ filePreform.defaults =
   routine : null,
   name : null,
   prefixCode : '',
-  routineCode : '',
+  routineCode : null,
   postfixCode : '',
   beforeStartCode : '',
   startCode : '',
   afterStartCode : '',
+  fullCode : null,
 
   group : null,
   locals : null,
@@ -296,7 +309,7 @@ function preform_body( o )
   o.group.locals = o.locals;
   o.group.withSubmodules = o.withSubmodules;
   o.group.moduleFile = o.moduleFile;
-  o.group.files = o.files;
+  o.group.files = o.files = o.files || Object.create( null );
   o.group.prefixCode = o.prefixCode;
   o.group.postfixCode = o.postfixCode;
   o.group.beforeStartCode = o.beforeStartCode;
@@ -310,10 +323,12 @@ function preform_body( o )
   delete o.beforeStartCode;
   delete o.afterStartCode;
 
+  filesPreform();
+
   if( _.strDefined( o.routineCode ) )
   entryFromRoutineCode();
-  if( _.str.is( o.entry ) )
-  entryFromStr();
+  // if( _.str.is( o.entry ) )
+  // entryFromStr();
   else if( _.routine.is( o.entry ) )
   entryFromRoutine();
   else
@@ -322,15 +337,107 @@ function preform_body( o )
   o.group.entry.name = o.group.entry.name || o.name;
   o.group.entry.routineCode = o.group.entry.routineCode || o.routineCode;
   o.group.entry.startCode = o.group.entry.startCode || o.startCode;
+  o.group.entry.fullCode = o.group.entry.fullCode || o.fullCode;
   o.group.entry.group = o.group;
   delete o.name;
   delete o.routineCode;
   delete o.startCode;
+  delete o.fullCode;
 
   _.program.groupPreform.body.call( _.program, o.group );
   o.files = o.group.files;
 
   return o;
+
+  /* */
+
+  function filesPreform()
+  {
+    if( _.str.is( o.entry ) )
+    o.entry = o.group.files[ o.entry ];
+
+    let matchedEntry;
+    let entryIsFile = _.aux.is( o.entry );
+    let entryIsRoutine = _.routine.is( o.entry );
+
+    for( let name in o.group.files )
+    {
+      let file = o.group.files[ name ];
+      let fileIsRoutine = _.routine.is( file );
+      let routine;
+
+      if( fileIsRoutine )
+      routine = file;
+      else
+      routine = file.routine;
+
+      if( entryIsFile )
+      {
+        if( eq( entryIsRoutine, fileIsRoutine, o.entry, file ) )
+        {
+          _.assert( fileIsRoutine || file === o.entry );
+          matchedEntry = file = o.entry;
+        }
+        else if( fileIsRoutine )
+        {
+          file = { routine };
+        }
+      }
+      else
+      {
+        if( eq( entryIsRoutine, fileIsRoutine, o.entry, file ) )
+        {
+          file = { routine };
+          matchedEntry = o.entry = file;
+        }
+        else if( fileIsRoutine )
+        {
+          file = { routine }
+        }
+      }
+
+      _.assert( _.aux.is( file ) );
+      _.assert( file.name === undefined || file.name === name );
+      _.assert( !file.routine || !file.routine.name || file.routine.name === name );
+
+      file.name = name;
+      o.group.files[ name ] = file;
+    }
+
+    if( o.entry !== null )
+    {
+
+      if( !matchedEntry )
+      {
+        if( _.routine.is( o.entry ) )
+        o.entry = { routine : o.entry }
+        if( !o.entry )
+        debugger;
+        if( o.entry.name === undefined )
+        o.entry.name = o.entry.routine.name;
+        _.assert( _.strDefined( o.entry.name ) );
+        _.assert( !o.group.files[ o.entry.name ] );
+        o.group.files[ o.entry.name ] = o.entry;
+      }
+
+      _.assert( _.aux.is( o.entry ) );
+      _.assert( o.entry === o.group.files[ o.entry.name ] );
+
+    }
+
+  }
+
+  /* */
+
+  function eq( entryIsRoutine, fileIsRoutine, entry, file )
+  {
+    if( entryIsRoutine === fileIsRoutine )
+    return entry === file;
+    else if( entryIsRoutine )
+    return entry === file.routine;
+    else
+    return entry.routine === file;
+  }
 
   /* */
 
@@ -387,24 +494,24 @@ function preform_body( o )
 
   /* */
 
-  function entryFromStr()
-  {
-    let name = o.entry;
-    _.assert( _.aux.is( o.group.files ), 'If entry is specified as a name of a file then option::files should also be provided' );
-    _.assert( !!o.group.files[ name ], () => `No file "${name}"` );
-    let entry = o.group.files[ name ];
-    if( _.aux.is( entry ) )
-    {
-      _.assert( name === entry.name || !entry.name );
-      entry.name = name;
-    }
-    else
-    {
-      _.assert( _.routine.is( entry ) );
-      entry = { name, routine : entry }
-    }
-    o.group.files[ o.entry ] = o.group.entry = o.entry = entry;
-  }
+  // function entryFromStr()
+  // {
+  //   let name = o.entry;
+  //   _.assert( _.aux.is( o.group.files ), 'If entry is specified as a name of a file then option::files should also be provided' );
+  //   _.assert( !!o.group.files[ name ], () => `No file "${name}"` );
+  //   let entry = o.group.files[ name ];
+  //   if( _.aux.is( entry ) )
+  //   {
+  //     _.assert( name === entry.name || !entry.name );
+  //     entry.name = name;
+  //   }
+  //   else
+  //   {
+  //     _.assert( _.routine.is( entry ) );
+  //     entry = { name, routine : entry }
+  //   }
+  //   o.group.files[ o.entry ] = o.group.entry = o.entry = entry;
+  // }
 
   /* */
 
@@ -514,6 +621,7 @@ function fileWrite( o )
   });
 
   _.fileProvider.fileWrite( o.programPath, o.fullCode );
+  console.log( _.strLinesNumber( o.fullCode ) );
 
   return o;
 }
