@@ -138,7 +138,6 @@ function elementExportNode_body( o )
     {
       if( o.element.meta.locals )
       localsExport( o.element.meta.locals );
-      // write( '\n' );
     }
 
     if( o.element.vectorized )
@@ -160,7 +159,6 @@ function elementExportNode_body( o )
 
     if( o.element.meta )
     {
-      // write( '\n\n' );
       if( o.element.meta.globals )
       _.assert( 0, 'not implemented' );
     }
@@ -239,6 +237,7 @@ function elementExportNode_body( o )
     node.exportString = _.introspector.node._assignExportString;
     wrote += 1;
     o.dstNode.elements.push( node );
+    if( node.left.path.length === 1 )
     o.dstNode.locals[ node.left.path ] = right;
   }
 
@@ -312,7 +311,6 @@ function elementExportNode_body( o )
   {
     if( routine.locals )
     localsExport( routine.locals );
-
     return routineOriginal( routine ).toString();
   }
 

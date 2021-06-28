@@ -150,7 +150,7 @@ ${o.name}();
 
   if( o.group.logger && o.group.logger.verbosity )
   {
-    o.group.logger.log( o.programPath );
+    o.group.logger.log( o.filePath/*programPath*/ );
     if( o.routineCode !== null )
     if( o.group.logger.verbosity >= 2 )
     o.group.logger.log( _.strLinesNumber( o.routineCode ) );
@@ -174,6 +174,7 @@ filePreform.defaults =
 
   routine : null,
   name : null,
+
   prefixCode : '',
   routineCode : null,
   postfixCode : '',
@@ -181,6 +182,11 @@ filePreform.defaults =
   startCode : '',
   afterStartCode : '',
   fullCode : null,
+
+  filePath : null,
+  dirPath : null,
+  namePrefix : null,
+  namePostfix : null,
 
   group : null,
   locals : null,
@@ -327,8 +333,6 @@ function preform_body( o )
 
   if( _.strDefined( o.routineCode ) )
   entryFromRoutineCode();
-  // if( _.str.is( o.entry ) )
-  // entryFromStr();
   else if( _.routine.is( o.entry ) )
   entryFromRoutine();
   else
@@ -494,27 +498,6 @@ function preform_body( o )
 
   /* */
 
-  // function entryFromStr()
-  // {
-  //   let name = o.entry;
-  //   _.assert( _.aux.is( o.group.files ), 'If entry is specified as a name of a file then option::files should also be provided' );
-  //   _.assert( !!o.group.files[ name ], () => `No file "${name}"` );
-  //   let entry = o.group.files[ name ];
-  //   if( _.aux.is( entry ) )
-  //   {
-  //     _.assert( name === entry.name || !entry.name );
-  //     entry.name = name;
-  //   }
-  //   else
-  //   {
-  //     _.assert( _.routine.is( entry ) );
-  //     entry = { name, routine : entry }
-  //   }
-  //   o.group.files[ o.entry ] = o.group.entry = o.entry = entry;
-  // }
-
-  /* */
-
   function entryFromRoutine()
   {
     let entry;
@@ -593,25 +576,30 @@ function fileWrite( o )
 
   _.routine.options( fileWrite, o );
 
-  if( o.programPath === null )
+  if( o.filePath/*programPath*/ === null )
   {
+    o.dirPath = o.dirPath !== null ? o.dirPath : o.group.dirPath;
+    o.namePrefix = o.namePrefix !== null ? o.namePrefix : o.group.namePrefix;
+    o.namePostfix = o.namePostfix !== null ? o.namePostfix : o.group.namePostfix;
     if( !o.group.tempPath )
     {
       o.group.tempObject = _.program._tempOpen();
       o.group.tempPath = o.group.tempObject.tempPath;
     }
     _.assert( _.strIs( o.group.tempPath ), 'Expects temp path {- o.tempPath -}' );
-    _.assert( _.strIs( o.group.dirPath ), 'Expects dir path {- o.dirPath -}' );
-    o.programPath = _.path.join( o.group.tempPath, o.group.dirPath, o.group.namePrefix + o.name + o.group.namePostfix );
+    _.assert( _.strIs( o.dirPath ), 'Expects dir path {- o.dirPath -}' );
+    _.assert( _.strIs( o.namePrefix ), 'Expects name prefix {- o.namePrefix -}' );
+    _.assert( _.strIs( o.namePostfix ), 'Expects name postfix {- o.namePostfix -}' );
+    o.filePath/*programPath*/ = _.path.join( o.group.tempPath, o.group.dirPath, o.group.namePrefix + o.name + o.group.namePostfix );
   }
 
   if( !o.group.rewriting )
-  _.sure( !_.fileProvider.fileExists( o.programPath ), `Prgoram ${o.programPath} already exists!` );
+  _.sure( !_.fileProvider.fileExists( o.filePath/*programPath*/ ), `Prgoram ${o.filePath/*programPath*/} already exists!` );
 
   o.start = _.process.starter
   ({
-    execPath : o.programPath,
-    currentPath : _.path.dir( o.programPath ),
+    execPath : o.filePath/*programPath*/,
+    currentPath : _.path.dir( o.filePath/*programPath*/ ),
     outputCollecting : 1,
     outputPiping : 1,
     inputMirroring : 1,
@@ -620,7 +608,7 @@ function fileWrite( o )
     mode : 'fork',
   });
 
-  _.fileProvider.fileWrite( o.programPath, o.fullCode );
+  _.fileProvider.fileWrite( o.filePath/*programPath*/, o.fullCode );
   console.log( _.strLinesNumber( o.fullCode ) );
 
   return o;
@@ -630,7 +618,11 @@ fileWrite.defaults =
 {
   ... filePreform.defaults,
   fullCode : null,
-  programPath : null,
+  filePath/*programPath*/ : null,
+
+  dirPath : null,
+  namePrefix : null,
+  namePostfix : null,
 }
 
 //
@@ -643,10 +635,10 @@ function groupWrite_body( o )
 
   for( let name in o.files )
   {
-    let program = o.files[ name ];
-    if( program.programPath === undefined )
-    program.programPath = null;
-    _.program.fileWrite( program );
+    let file = o.files[ name ];
+    if( file.filePath/*programPath*/ === undefined )
+    file.filePath/*programPath*/ = null;
+    _.program.fileWrite( file );
   }
 
   return o;
@@ -688,12 +680,14 @@ function write_body( o )
   delete o.rewriting;
   delete o.logger;
 
-  o.group.entry.programPath = o.programPath;
-  delete o.programPath;
+  _.assert( o.group.entry.filePath !== undefined );
+  if( o.group.entry.filePath === null )
+  o.group.entry.filePath/*programPath*/ = o.filePath/*programPath*/;
+  delete o.filePath/*programPath*/;
 
   _.program.groupWrite.body.call( _.program, o.group );
 
-  o.programPath = o.group.entry.programPath;
+  o.filePath/*programPath*/ = o.group.entry.filePath/*programPath*/;
   o.start = o.group.entry.start;
 
   return o;
@@ -709,7 +703,7 @@ write_body.defaults =
   namePostfix : '',
   rewriting : 0,
   logger : 0,
-  programPath : null,
+  filePath/*programPath*/ : null,
   entry : null,
   files : null,
 }

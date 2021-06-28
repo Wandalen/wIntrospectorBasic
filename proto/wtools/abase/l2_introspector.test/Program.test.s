@@ -116,7 +116,7 @@ function writeBasic( test )
     namePostfix : '.js',
   };
   var got = _.program.make( src )
-  test.identical( got.programPath, a.abs( '.' ) + '/testApp.js' );
+  test.identical( got.filePath/*programPath*/, a.abs( '.' ) + '/testApp.js' );
 
   test.case = 'options : tempPath, entry, dirPath';
   var src =
@@ -127,7 +127,7 @@ function writeBasic( test )
     dirPath : 'dir',
   };
   var got = _.program.make( src )
-  test.identical( got.programPath, a.abs( '.' ) + '/dir/testApp.js' );
+  test.identical( got.filePath/*programPath*/, a.abs( '.' ) + '/dir/testApp.js' );
 
   /* */
 
@@ -180,8 +180,8 @@ function writeOptionWithSubmodulesAndModuleIsIncluded( test )
 
       return start
       ({
-        execPath : program.programPath,
-        currentPath : _.path.dir( program.programPath ),
+        execPath : program.filePath/*programPath*/,
+        currentPath : _.path.dir( program.filePath/*programPath*/ ),
       })
     })
     .then( ( op ) =>
@@ -267,7 +267,7 @@ function writeStart( test )
       program = _.program.make( programRoutine1 );
 
       var exp = new Set
-      ([ 'group', 'entry', 'files', 'programPath', 'start' ]);
+      ([ 'group', 'entry', 'files', 'filePath', 'start' ]);
       test.identical( new Set( _.props.keys( program ) ), exp );
 
       console.log( _.strLinesNumber( program.entry.routineCode ) );
@@ -277,8 +277,8 @@ function writeStart( test )
     {
       var exp =
 `
-Current path : ${_.path.nativize( _.path.dir( program.programPath ) )}
-Program path : ${_.path.nativize( program.programPath )}
+Current path : ${_.path.nativize( _.path.dir( program.filePath/*programPath*/ ) )}
+Program path : ${_.path.nativize( program.filePath/*programPath*/ )}
 `
       test.identical( op.exitCode, 0 );
       test.equivalent( op.output, exp );
@@ -496,6 +496,154 @@ programRoutine1
 makeOptionRoutineCode.description =
 `
 - making from option routineCode works
+`
+
+//
+
+function makeOptionFullCode( test )
+{
+  let context = this;
+  let a = test.assetFor( false );
+  let ready = _.take( null );
+
+  act({});
+
+  return ready;
+
+  /* - */
+
+  function act( env )
+  {
+
+    /* */
+
+    ready.then( () =>
+    {
+      test.case = `basic, ${__.entity.exportStringSolo( env )}`;
+      let entry = { fullCode : `(${programRoutine1.toString()})()` };
+      let files =
+      {
+        programRoutine1 : entry,
+        programRoutine2 : { fullCode : `(${programRoutine2.toString()})()` },
+      }
+      let program = _.program.make({ files, entry });
+      return program.start();
+    })
+    .then( ( op ) =>
+    {
+      var exp =
+`
+programRoutine1
+programRoutine2
+`
+      test.identical( op.exitCode, 0 );
+      test.equivalent( op.output, exp );
+      return op;
+    });
+
+    /* */
+
+  }
+
+  /* - */
+
+  function programRoutine1()
+  {
+    console.log( `programRoutine1` );
+    require( './programRoutine2' );
+  }
+
+  /* - */
+
+  function programRoutine2()
+  {
+    console.log( `programRoutine2` );
+  }
+
+  /* - */
+
+}
+
+makeOptionFullCode.description =
+`
+  - full code is possible to pass as argument
+`
+
+//
+
+function makeFilePorgramPath( test )
+{
+  let context = this;
+  let a = test.assetFor( false );
+  let ready = _.take( null );
+
+  act({});
+
+  return ready;
+
+  /* - */
+
+  function act( env )
+  {
+
+    /* */
+
+    ready.then( () =>
+    {
+      test.case = `basic, ${__.entity.exportStringSolo( env )}`;
+      var files =
+      {
+        r1 : { routine : r1, filePath : a.abs( 'dir1/r11' ) },
+        r2 : { routine : r2, filePath : a.abs( 'dir2/r22' ) },
+      }
+      var entry = files.r1;
+      var program = _.program.make({ files, entry });
+
+      test.identical( program.filePath, a.abs( 'dir1/r11' ) );
+      test.identical( program.entry.filePath, a.abs( 'dir1/r11' ) );
+      test.identical( program.files.r1.filePath, a.abs( 'dir1/r11' ) );
+      test.identical( program.files.r2.filePath, a.abs( 'dir2/r22' ) );
+
+      return program.start();
+    })
+    .then( ( op ) =>
+    {
+      var exp =
+`
+${a.abs( 'dir1/r11' )}
+${a.abs( 'dir2/r22' )}
+`
+      test.identical( op.exitCode, 0 );
+      test.equivalent( op.output, exp );
+      return op;
+    });
+
+    /* */
+
+  }
+
+  /* - */
+
+  function r1()
+  {
+    console.log( __filename );
+    require( '../dir2/r22' );
+  }
+
+  /* - */
+
+  function r2()
+  {
+    console.log( __filename );
+  }
+
+  /* - */
+
+}
+
+makeFilePorgramPath.description =
+`
+  - each file has its own program path
 `
 
 //
@@ -1304,78 +1452,6 @@ makeEntryAndFilesCodeLocals.description =
 - adding local into option::codeLocals removes such local from code of a program file
 `
 
-//
-
-function makeOptionFullCode( test )
-{
-  let context = this;
-  let a = test.assetFor( false );
-  let ready = _.take( null );
-
-  act({});
-
-  return ready;
-
-  /* - */
-
-  function act( env )
-  {
-
-    /* */
-
-    ready.then( () =>
-    {
-      test.case = `group locals, ${__.entity.exportStringSolo( env )}`;
-      let locals = { a : 1, b : 2, c : 3 };
-      let entry = { fullCode : `(${programRoutine1.toString()})()` };
-      let files =
-      {
-        programRoutine1 : entry,
-        programRoutine2 : { fullCode : `(${programRoutine2.toString()})()` },
-      }
-      let program = _.program.make({ files, locals, entry });
-      return program.start();
-    })
-    .then( ( op ) =>
-    {
-      var exp =
-`
-programRoutine1
-programRoutine2
-`
-      test.identical( op.exitCode, 0 );
-      test.equivalent( op.output, exp );
-      return op;
-    });
-
-    /* */
-
-  }
-
-  /* - */
-
-  function programRoutine1()
-  {
-    console.log( `programRoutine1` );
-    require( './programRoutine2' );
-  }
-
-  /* - */
-
-  function programRoutine2()
-  {
-    console.log( `programRoutine2` );
-  }
-
-  /* - */
-
-}
-
-makeOptionFullCode.description =
-`
-  - full code is possible to pass as argument
-`
-
 // --
 // declare
 // --
@@ -1406,6 +1482,9 @@ const Proto =
     writeLocalsConflict,
 
     makeOptionRoutineCode,
+    makeOptionFullCode,
+    makeFilePorgramPath,
+
     makeSourceLocation,
     makeSeveralTimes,
     makeSeveralRoutines,
@@ -1413,7 +1492,7 @@ const Proto =
     makeEntryAndFilesLocals,
     makeEntryAndFilesCode,
     makeEntryAndFilesCodeLocals,
-    makeOptionFullCode,
+
 
   },
 
