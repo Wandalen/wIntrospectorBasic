@@ -610,8 +610,8 @@ function makeFilePorgramPath( test )
     {
       var exp =
 `
-${a.abs( 'dir1/r11' )}
-${a.abs( 'dir2/r22' )}
+${a.path.nativize( a.abs( 'dir1/r11' ) )}
+${a.path.nativize( a.abs( 'dir2/r22' ) )}
 `
       test.identical( op.exitCode, 0 );
       test.equivalent( op.output, exp );
