@@ -415,8 +415,6 @@ function preform_body( o )
       {
         if( _.routine.is( o.entry ) )
         o.entry = { routine : o.entry }
-        if( !o.entry )
-        debugger;
         if( o.entry.name === undefined )
         o.entry.name = o.entry.routine.name;
         _.assert( _.strDefined( o.entry.name ) );
@@ -433,8 +431,13 @@ function preform_body( o )
 
   /* */
 
-  function eq( entryIsRoutine, fileIsRoutine, entry, file )
+  function eq( /* entryIsRoutine, fileIsRoutine, entry, file */ )
   {
+    let entryIsRoutine = arguments[ 0 ];
+    let fileIsRoutine = arguments[ 1 ];
+    let entry = arguments[ 2 ];
+    let file = arguments[ 3 ];
+
     if( entryIsRoutine === fileIsRoutine )
     return entry === file;
     else if( entryIsRoutine )
@@ -578,9 +581,12 @@ function fileWrite( o )
 
   if( o.filePath/*programPath*/ === null )
   {
-    o.dirPath = o.dirPath !== null ? o.dirPath : o.group.dirPath;
-    o.namePrefix = o.namePrefix !== null ? o.namePrefix : o.group.namePrefix;
-    o.namePostfix = o.namePostfix !== null ? o.namePostfix : o.group.namePostfix;
+    o.dirPath = o.dirPath === null ? o.group.dirPath : o.dirPath;
+    o.namePrefix = o.namePrefix === null ? o.group.namePrefix : o.namePrefix;
+    o.namePostfix = o.namePostfix === null ? o.group.namePostfix : o.namePostfix;
+    // o.dirPath = o.dirPath !== null ? o.dirPath : o.group.dirPath;
+    // o.namePrefix = o.namePrefix !== null ? o.namePrefix : o.group.namePrefix;
+    // o.namePostfix = o.namePostfix !== null ? o.namePostfix : o.group.namePostfix;
     if( !o.group.tempPath )
     {
       o.group.tempObject = _.program._tempOpen();
@@ -590,7 +596,8 @@ function fileWrite( o )
     _.assert( _.strIs( o.dirPath ), 'Expects dir path {- o.dirPath -}' );
     _.assert( _.strIs( o.namePrefix ), 'Expects name prefix {- o.namePrefix -}' );
     _.assert( _.strIs( o.namePostfix ), 'Expects name postfix {- o.namePostfix -}' );
-    o.filePath/*programPath*/ = _.path.join( o.group.tempPath, o.group.dirPath, o.group.namePrefix + o.name + o.group.namePostfix );
+    o.filePath = _.path.join( o.group.tempPath, o.group.dirPath, o.group.namePrefix + o.name + o.group.namePostfix );
+    // o.programPath = _.path.join( o.group.tempPath, o.group.dirPath, o.group.namePrefix + o.name + o.group.namePostfix );
   }
 
   if( !o.group.rewriting )
