@@ -15,7 +15,7 @@ if( typeof module !== 'undefined' )
   _.include( 'wStringer' );
   _.include( 'wPathBasic' );
   _.include( 'wConsequence' );
-  _.include( 'wFiles' );
+  _.include( 'wFilesBasic' );
 
   require( './l3/Introspector.s' );
   require( './l3/Node.s' );
