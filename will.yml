@@ -298,8 +298,8 @@ submodule:
   wStringer:
     path: 'npm:///wstringer'
     enabled: 0
-  wFiles:
-    path: 'npm:///wFiles'
+  wFilesBasic:
+    path: 'npm:///wfilesbasic'
     enabled: 0
   wintrospectorbasic:
     path: 'hd://.'
