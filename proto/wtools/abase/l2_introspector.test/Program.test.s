@@ -1452,6 +1452,39 @@ makeEntryAndFilesCodeLocals.description =
 - adding local into option::codeLocals removes such local from code of a program file
 `
 
+//
+
+function makeDiffName( test )
+{
+  let context = this;
+  let a = test.assetFor( false );
+
+  let program = _.program.make({ entry : { routine : program1, name : 'program' } });
+
+  program.start()
+  .then( ( op ) =>
+  {
+    test.identical( op.exitCode, 0 );
+    test.identical( _.strCount( op.output, 'nhandled' ), 0 );
+    test.identical( _.strCount( op.output, 'error' ), 0 );
+    var exp = 'program1 : a';
+    test.equivalent( op.output, exp );
+    return null;
+  });
+
+  return a.ready;
+
+  function program1()
+  {
+    console.log( 'program1 : a' );
+    module.exports = 'a';
+  }
+
+}
+
+makeDiffName.experimental = 1;
+/* xxx : maybe enable? */
+
 // --
 // declare
 // --
@@ -1492,7 +1525,7 @@ const Proto =
     makeEntryAndFilesLocals,
     makeEntryAndFilesCode,
     makeEntryAndFilesCodeLocals,
-
+    makeDiffName,
 
   },
 
