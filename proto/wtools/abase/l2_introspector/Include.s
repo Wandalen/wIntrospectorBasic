@@ -1,4 +1,4 @@
-( function _Include_s_( )
+( function _Include_s_()
 {
 
 'use strict';
@@ -15,11 +15,9 @@ if( typeof module !== 'undefined' )
   _.include( 'wStringer' );
   _.include( 'wPathBasic' );
   _.include( 'wConsequence' );
-  _.include( 'wFilesBasic' );
 
   require( './l3/Introspector.s' );
   require( './l3/Node.s' );
-  require( './l3/Program.s' );
   require( './l3/Tools.s' );
 
   module[ 'exports' ] = wTools;
