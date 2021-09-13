@@ -26,8 +26,7 @@
   "dependencies": {
     "wTools": "",
     "wstringer": "",
-    "wpathbasic": "",
-    "wfilesbasic": ""
+    "wpathbasic": ""
   },
   "devDependencies": {
     "wTesting": "",
