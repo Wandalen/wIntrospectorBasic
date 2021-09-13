@@ -3,8 +3,8 @@ root:
   - wIntrospectorBasic.out
 consistency:
   ../will.yml: &ref_0
-    hash: 94f625359a654d174534c9ef9c46f812
-    size: 6774
+    hash: 00c046e57b262cbc2c23b1720fe0065c
+    size: 6621
 module:
   wIntrospectorBasic.out:
     about:
@@ -162,12 +162,10 @@ module:
           - ../proto/wtools/abase/l2_introspector/l3
           - ../proto/wtools/abase/l2_introspector/l3/Introspector.s
           - ../proto/wtools/abase/l2_introspector/l3/Node.s
-          - ../proto/wtools/abase/l2_introspector/l3/Program.s
           - ../proto/wtools/abase/l2_introspector/l3/Tools.s
           - ../proto/wtools/abase/l2_introspector.test
           - ../proto/wtools/abase/l2_introspector.test/Common.test.s
           - ../proto/wtools/abase/l2_introspector.test/Export.test.s
-          - ../proto/wtools/abase/l2_introspector.test/Program.test.s
           - ../proto/wtools/amid
           - ../proto/wtools/atop
     submodule:
@@ -183,16 +181,6 @@ module:
         path: 'npm:///wstringer'
         autoExporting: 0
         enabled: 0
-      wFilesBasic:
-        path: 'npm:///wfilesbasic'
-        autoExporting: 0
-        enabled: 0
-      wintrospectorbasic:
-        path: 'hd://..'
-        autoExporting: 0
-        enabled: 0
-        criterion:
-          development: 1
       wTesting:
         path: 'npm:///wTesting'
         autoExporting: 0
@@ -200,7 +188,7 @@ module:
         criterion:
           development: 1
       eslint:
-        path: 'npm:///eslint#7.1.0'
+        path: 'npm:///eslint!7.1.0'
         autoExporting: 0
         enabled: 0
         criterion:
@@ -939,16 +927,6 @@ module:
         path: 'npm:///wstringer'
         autoExporting: 0
         enabled: 0
-      wFilesBasic:
-        path: 'npm:///wfilesbasic'
-        autoExporting: 0
-        enabled: 0
-      wintrospectorbasic:
-        path: 'hd://.'
-        autoExporting: 0
-        enabled: 0
-        criterion:
-          development: 1
       wTesting:
         path: 'npm:///wTesting'
         autoExporting: 0
@@ -956,7 +934,7 @@ module:
         criterion:
           development: 1
       eslint:
-        path: 'npm:///eslint#7.1.0'
+        path: 'npm:///eslint!7.1.0'
         autoExporting: 0
         enabled: 0
         criterion:
@@ -1493,5 +1471,5 @@ module:
           - 'build::npm'
     consistency:
       ../will.yml:
-        hash: 94f625359a654d174534c9ef9c46f812
-        size: 6774
+        hash: 00c046e57b262cbc2c23b1720fe0065c
+        size: 6621
