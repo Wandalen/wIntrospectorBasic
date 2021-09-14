@@ -1,6 +1,6 @@
 {
   "name": "wintrospectorbasic",
-  "version": "0.3.249",
+  "version": "0.3.250",
   "description": "Collection of cross-platform routines to generate functions, manage execution of such and analyze them.",
   "author": "Kostiantyn Wandalen <wanalen@01.school>",
   "license": "MIT",
@@ -26,7 +26,8 @@
   "dependencies": {
     "wTools": "delta",
     "wstringer": "delta",
-    "wpathbasic": "delta"
+    "wpathbasic": "delta",
+    "wConsequence": "delta"
   },
   "devDependencies": {
     "wTesting": "delta",
