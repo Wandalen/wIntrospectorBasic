@@ -3,8 +3,8 @@ root:
   - wIntrospectorBasic.out
 consistency:
   ../will.yml: &ref_0
-    hash: 451b283a22735d87e3c3236c9f84362c
-    size: 6544
+    hash: 06107e6ebf12d4e91358a6e90f495138
+    size: 6552
 module:
   wIntrospectorBasic.out:
     about:
@@ -1461,5 +1461,5 @@ module:
           - 'build::npm'
     consistency:
       ../will.yml:
-        hash: 451b283a22735d87e3c3236c9f84362c
-        size: 6544
+        hash: 06107e6ebf12d4e91358a6e90f495138
+        size: 6552
