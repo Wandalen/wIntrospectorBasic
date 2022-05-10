@@ -1,6 +1,6 @@
 {
   "name": "wintrospectorbasic",
-  "version": "0.3.267",
+  "version": "0.3.268",
   "description": "Collection of cross-platform routines to generate functions, manage execution of such and analyze them.",
   "author": "Kostiantyn Wandalen <wandalen@obox.systems>",
   "license": "MIT",
